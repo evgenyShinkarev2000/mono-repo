@@ -5,6 +5,8 @@
     "packages/*"
   ],
   "scripts":{
-    "start": "yarn --cwd ./packages/root-project dev"
+    "dev": "yarn --cwd ./packages/root-project dev",
+    "build": "yarn --cwd ./packages/root-project build",
+    "preview": "yarn --cwd ./packages/root-project preview"
   }
 }

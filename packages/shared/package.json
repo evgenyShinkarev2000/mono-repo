@@ -1,0 +1,12 @@
+{
+  "name": "@mono-repo/shared",
+  "version": "1.0.0",
+  "main": "./src/index.ts",
+  "license": "MIT",
+  "dependencies": {
+    "@mono-repo/root-project": "^1.0.0",
+    "@mono-repo/kanban-project": "^1.0.0",
+    "@mono-repo/grade-project": "^1.0.0",
+    "@mono-repo/gant-project": "^1.0.0"
+  }
+}

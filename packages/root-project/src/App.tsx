@@ -1,8 +1,11 @@
 import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import './App.css'
-import { Route, Router, Routes } from 'react-router-dom'
+import { Navigate, Route, Router, Routes } from 'react-router-dom'
 import { CanbanPage } from "@mono-repo/kanban-project";
+import { GradePage } from '@mono-repo/grade-project';
+import { GantPage } from '@mono-repo/gant-project';
+import { MainPage } from './pages/main/MainPage';
 
 function App()
 {
@@ -10,10 +13,13 @@ function App()
 
   return (
     <>
-      <h2>it's main page</h2>
         <Routes>
           <Route path="/kanban" element={<CanbanPage></CanbanPage>} />
-          <Route path="/grade" />
+          <Route path="/grade" element={<GradePage></GradePage>}/>
+          <Route path="/gant" element={<GantPage></GantPage>}/>
+          <Route path="/main" element={<MainPage></MainPage>}/>
+          <Route path="/" element={<Navigate to="/main"/>}/>
+          <Route path="*" element={<Navigate to="/"/>}/>
         </Routes>
     </>
   )

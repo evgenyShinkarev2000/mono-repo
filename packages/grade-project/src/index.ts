@@ -1,1 +1,2 @@
-export {GradePage} from "./GradePage"
+export { gradeReducer } from './store/GradeSlice';
+export {GradePage} from "./GradePage";
