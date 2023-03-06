@@ -1,0 +1,10 @@
+{
+  "private": true,
+  "name": "@mono-repo/mono-repo",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts":{
+    "start": "yarn --cwd ./packages/root-project dev"
+  }
+}
