@@ -1,10 +1,9 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
-import { Navigate, Route, Router, Routes } from 'react-router-dom'
-import { CanbanPage } from "@mono-repo/kanban-project";
-import { GradePage } from '@mono-repo/grade-project';
 import { GantPage } from '@mono-repo/gant-project';
+import { GradePage } from '@mono-repo/grade-project';
+import { CanbanPage } from "@mono-repo/kanban-project";
+import { useState } from 'react';
+import { Navigate, Route, Routes } from 'react-router-dom';
+import './App.css';
 import { MainPage } from './pages/main/MainPage';
 
 function App()

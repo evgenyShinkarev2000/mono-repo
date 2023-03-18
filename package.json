@@ -7,6 +7,13 @@
   "scripts":{
     "dev": "yarn --cwd ./packages/root-project dev",
     "build": "yarn --cwd ./packages/root-project build",
-    "preview": "yarn --cwd ./packages/root-project preview"
+    "preview": "yarn --cwd ./packages/root-project preview",
+    "lint": "yarn eslint ./"
+  },
+  "devDependencies": {
+    "eslint": "^8.36.0",
+    "eslint-plugin-react": "^7.32.2",
+    "@typescript-eslint/eslint-plugin": "^5.55.0",
+    "@typescript-eslint/parser": "^5.55.0"
   }
 }
