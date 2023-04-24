@@ -20,6 +20,7 @@
     "paths": {
       "src/types/*": ["./src/types/*"],
       "src/icons/*": ["./src/icons/*"],
+      "src/hooks/*": ["./src/hooks/*"],
     }
   },
   "include": [

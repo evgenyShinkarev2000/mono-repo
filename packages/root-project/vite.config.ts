@@ -10,6 +10,7 @@ export default defineConfig({
             // Kanban
             "src/types": path.resolve(__dirname, "../kanban-project/src/types"),
             "src/icons": path.resolve(__dirname, "../kanban-project/src/icons"),
+            "src/hooks": path.resolve(__dirname, "../kanban-project/src/hooks"),
         },
     },
 });
