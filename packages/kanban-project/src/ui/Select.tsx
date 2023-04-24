@@ -1,37 +1,33 @@
-import styles from "./Select.module.scss";
-import React, { useState } from "react";
-import styled from "styled-components";
+import { useState } from "react";
 import { ArrowIcon } from "src/icons";
+import { CSSTransition } from "react-transition-group";
+import { Main, Placeholder, SelectText, StyledSelect, Value, Values } from "./Select.styled";
+import { useOnClickOutside } from "src/hooks/useOnClickOutside";
+import { useRef } from "react";
 
 type Props = {
     placeholder?: string;
     values: string[];
 };
 
-const Main = styled.div`
-    position: relative;
-    width: 248px;
-`;
-
 export function Select(props: Props): JSX.Element {
     const [isOpen, setIsOpen] = useState(false);
     const [selected, setSelected] = useState("");
 
+    const mainRef = useRef<HTMLDivElement>(null);
+    const valuesRef = useRef<HTMLDivElement>(null);
+    useOnClickOutside(mainRef, () => setIsOpen(false));
+
     return (
-        <Main>
-            <div className={styles.select} onClick={() => setIsOpen(!isOpen)}>
-                {selected ? (
-                    <div className={styles.selectText}>{selected}</div>
-                ) : (
-                    <div className={styles.placeholder}>{props.placeholder}</div>
-                )}
+        <Main ref={mainRef}>
+            <StyledSelect onClick={() => setIsOpen(!isOpen)}>
+                {selected ? <SelectText>{selected}</SelectText> : <Placeholder>{props.placeholder}</Placeholder>}
                 <ArrowIcon />
-            </div>
-            {isOpen && (
-                <div className={styles.values}>
+            </StyledSelect>
+            <CSSTransition timeout={1000} in={isOpen} unmountOnExit nodeRef={valuesRef}>
+                <Values height={props.values.length * 100} ref={valuesRef}>
                     {props.values.map((x) => (
-                        <div
-                            className={styles.value}
+                        <Value
                             key={x}
                             onClick={() => {
                                 setSelected(x);
@@ -39,10 +35,10 @@ export function Select(props: Props): JSX.Element {
                             }}
                         >
                             {x}
-                        </div>
+                        </Value>
                     ))}
-                </div>
-            )}
+                </Values>
+            </CSSTransition>
         </Main>
     );
 }
