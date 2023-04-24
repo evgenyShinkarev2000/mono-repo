@@ -3,6 +3,7 @@
   "name": "@mono-repo/mono-repo",
   "workspaces": [
     "packages/*"
+
   ],
   "scripts":{
     "dev": "yarn --cwd ./packages/root-project dev",

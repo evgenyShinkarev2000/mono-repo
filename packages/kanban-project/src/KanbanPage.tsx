@@ -1,10 +1,20 @@
 import React from "react";
-import styles from "./KanbanPage.module.scss";
+import styled from "styled-components";
+import { Board } from "./components/Board";
+import { KanbanHeader } from "./components/KanbanHeader";
+import { columns } from "./mock/mock";
 
-export const CanbanPage = () => {
-  return(
-    <>
-    <h4 className={styles.noUnderline}>It's Kanban page</h4>
-    </>
-  )
-}
+const Container = styled.div`
+    padding-top: 32px;
+    max-width: 1664px;
+    margin: 0 auto;
+`;
+
+export const KanbanPage = () => {
+    return (
+        <Container>
+            <KanbanHeader />
+            <Board columns={columns} />
+        </Container>
+    );
+};
