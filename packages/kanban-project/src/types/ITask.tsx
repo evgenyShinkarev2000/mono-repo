@@ -4,4 +4,5 @@ export type ITask = {
     tag: string;
     executorName: string;
     deadline: Date;
+    status: "В работу" | "Выполняются" | "Тестирование" | "Проверка" | "Завершенные";
 };

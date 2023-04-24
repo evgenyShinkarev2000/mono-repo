@@ -4,11 +4,6 @@ import { ITask } from "../types/ITask";
 import { Column } from "./Column";
 
 type Props = {
-    columns: Column[];
-};
-
-type Column = {
-    title: string;
     tasks: ITask[];
 };
 
@@ -22,11 +17,11 @@ const Columns = styled.div`
 
 export function Board(props: Props) {
     const cols: Record<string, ITask[]> = {};
-    props.columns.forEach((x) => {
-        if (!cols[x.title]) {
-            cols[x.title] = [...x.tasks];
+    props.tasks.forEach((task) => {
+        if (!cols[task.status]) {
+            cols[task.status] = [task];
         } else {
-            cols[x.title].push(...x.tasks);
+            cols[task.status].push(task);
         }
     });
     return (

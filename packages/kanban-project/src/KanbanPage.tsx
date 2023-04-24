@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Board } from "./components/Board";
 import { KanbanHeader } from "./components/KanbanHeader";
-import { columns } from "./mock/mock";
+import { tasks } from "./mock/mock";
 
 const Container = styled.div`
     padding-top: 32px;
@@ -14,7 +14,9 @@ export const KanbanPage = () => {
     return (
         <Container>
             <KanbanHeader />
-            <Board columns={columns} />
+            <Board tasks={tasks} />
         </Container>
     );
 };
+
+// TODO: variant enum refactor
