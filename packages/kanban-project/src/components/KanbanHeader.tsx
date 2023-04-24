@@ -13,14 +13,18 @@ const Selects = styled.div`
     gap: 16px;
 `;
 
-export function KanbanHeader(): JSX.Element {
+type Props = {
+    onButtonClick: () => void;
+};
+
+export function KanbanHeader(props: Props) {
     return (
         <StyledHeader>
             <Selects>
                 <Select placeholder="Select" values={["1", "2"]} />
                 <Select placeholder="Select" values={["3", "4"]} />
             </Selects>
-            <Button text="Удалить завершенные задачи" variant="primary" />
+            <Button text="Удалить завершенные задачи" variant="primary" onClick={props.onButtonClick} />
         </StyledHeader>
     );
 }

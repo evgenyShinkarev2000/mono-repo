@@ -1,6 +1,6 @@
 import { ITask } from "src/types/ITask";
 
-export const tasks: ITask[] = [
+export const mockTasks: ITask[] = [
     {
         title: "Создать дизайн для нового лендинга",
         project: "Маркетинг",

@@ -11,6 +11,7 @@ type Variant = `${VariantEnum}`;
 type Props = {
     text: string;
     variant: Variant;
+    onClick: () => void;
 };
 
 const StyledButton = styled.button<{ variant: Variant }>`
@@ -38,5 +39,9 @@ const StyledButton = styled.button<{ variant: Variant }>`
 `;
 
 export function Button(props: Props): JSX.Element {
-    return <StyledButton variant={props.variant}>{props.text}</StyledButton>;
+    return (
+        <StyledButton variant={props.variant} onClick={props.onClick}>
+            {props.text}
+        </StyledButton>
+    );
 }
