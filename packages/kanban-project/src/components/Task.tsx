@@ -1,3 +1,4 @@
+import { DragEventHandler } from "react";
 import { PersonIcon } from "src/icons";
 import { CalendarIcon } from "src/icons/Calendar";
 import { ITask } from "src/types/ITask";
@@ -5,6 +6,9 @@ import styled from "styled-components";
 
 type Props = {
     task: ITask;
+    onDragOver: DragEventHandler<HTMLDivElement>;
+    onDrop: DragEventHandler<HTMLDivElement>;
+    onDragStart: DragEventHandler<HTMLDivElement>;
 };
 
 const StyledTask = styled.div`
@@ -15,6 +19,7 @@ const StyledTask = styled.div`
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
+    cursor: grab;
 `;
 
 const TaskTitle = styled.h3`
@@ -60,7 +65,7 @@ const Date = styled.div`
 
 export function Task(props: Props): JSX.Element {
     return (
-        <StyledTask>
+        <StyledTask draggable onDragOver={props.onDragOver} onDrop={props.onDrop} onDragStart={props.onDragStart}>
             <TaskTitle>{props.task.title}</TaskTitle>
             <ProjectTitle>{props.task.project}</ProjectTitle>
             <Tag>#{props.task.tag}</Tag>

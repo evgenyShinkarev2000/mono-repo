@@ -4,6 +4,7 @@ import { Board } from "./components/Board";
 import { KanbanHeader } from "./components/KanbanHeader";
 import { mockTasks } from "./mock/mock";
 import { ITask } from "./types/ITask";
+import { TaskPosition } from "./types/ITaskPosition";
 
 const Container = styled.div`
     padding-top: 32px;
@@ -28,7 +29,7 @@ export const KanbanPage = () => {
     return (
         <Container>
             <KanbanHeader onButtonClick={removeCompletedTasks} />
-            <Board tasks={tasks} />
+            <Board tasks={tasks} onTasksChange={setTasks} />
         </Container>
     );
 };
