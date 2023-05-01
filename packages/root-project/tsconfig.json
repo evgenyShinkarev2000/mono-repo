@@ -14,7 +14,10 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "paths": {
+      "@kanban/*": ["../kanban-project/src/*"]
+    }
   },
   "include": ["src", "../shared/src/Hooks.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]

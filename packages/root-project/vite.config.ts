@@ -8,9 +8,7 @@ export default defineConfig({
     resolve: {
         alias: {
             // Kanban
-            "src/types": path.resolve(__dirname, "../kanban-project/src/types"),
-            "src/ui/icons": path.resolve(__dirname, "../kanban-project/src/ui/icons"),
-            "src/hooks": path.resolve(__dirname, "../kanban-project/src/hooks"),
+            "@kanban": path.resolve(__dirname, "../kanban-project/src/"),
         },
     },
 });
