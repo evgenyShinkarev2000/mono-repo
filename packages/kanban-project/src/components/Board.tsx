@@ -44,10 +44,6 @@ export function Board(props: Props) {
         const entries = Object.entries(cols) as [ITaskStatus, ITask[]][];
         const deleted = removeDraggedTask(entries);
 
-        if (dragTarget.current?.colIndex === to.colIndex && dragTarget.current?.itemIndex === to.itemIndex) {
-            return;
-        }
-
         entries.forEach((col, colIndex) => {
             if (colIndex === to.colIndex) {
                 const currentStatus = col[0];
@@ -77,6 +73,9 @@ export function Board(props: Props) {
         e.preventDefault();
         if (!dragTarget.current) {
             console.error("Error");
+            return;
+        }
+        if (dragTarget.current?.colIndex === colIndex && dragTarget.current?.itemIndex === itemIndex) {
             return;
         }
         onReplaceItems({ colIndex, itemIndex });
