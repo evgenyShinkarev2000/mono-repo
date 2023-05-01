@@ -47,3 +47,4 @@ export const KanbanPage = () => {
 };
 
 // TODO: variant enum refactor
+// TODO: fix Выполняются Выполняется

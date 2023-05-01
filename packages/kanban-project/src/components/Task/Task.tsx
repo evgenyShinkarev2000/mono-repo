@@ -48,8 +48,8 @@ export function Task(props: Props): JSX.Element {
                     </S.Date>
                     {isHovered && (
                         <S.Icons>
-                            <PlayIcon style={{ cursor: "pointer" }} />
-                            <TrashIcon style={{ cursor: "pointer" }} />
+                            <PlayIcon style={{ cursor: "pointer" }} onClick={() => alert("Типа старт задачи")} />
+                            <TrashIcon style={{ cursor: "pointer" }} onClick={() => alert("Типа удалилась")} />
                         </S.Icons>
                     )}
                 </S.Footer>

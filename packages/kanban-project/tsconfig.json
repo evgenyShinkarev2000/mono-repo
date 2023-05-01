@@ -19,7 +19,7 @@
     "baseUrl": ".",
     "paths": {
       "src/types/*": ["./src/types/*"],
-      "src/icons/*": ["src/ui/icons/*"],
+      "src/ui/icons/*": ["./src/ui/icons/*"],
       "src/hooks/*": ["./src/hooks/*"],
     }
   },
