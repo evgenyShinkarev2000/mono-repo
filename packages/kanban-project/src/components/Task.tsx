@@ -6,12 +6,15 @@ import styled from "styled-components";
 
 type Props = {
     task: ITask;
+    isDragOver: boolean;
+
     onDragOver: DragEventHandler<HTMLDivElement>;
     onDrop: DragEventHandler<HTMLDivElement>;
     onDragStart: DragEventHandler<HTMLDivElement>;
+    onDragLeave: DragEventHandler<HTMLDivElement>;
 };
 
-const StyledTask = styled.div`
+const StyledTask = styled.div<{ isDragOver: boolean }>`
     background: #ffffff;
     border-radius: 5px;
     padding: 16px;
@@ -20,6 +23,12 @@ const StyledTask = styled.div`
     align-items: flex-start;
     gap: 10px;
     cursor: grab;
+    & > * {
+        pointer-events: none;
+    }
+    ${({ isDragOver }) => {
+        return "";
+    }}
 `;
 
 const TaskTitle = styled.h3`
@@ -65,7 +74,14 @@ const Date = styled.div`
 
 export function Task(props: Props): JSX.Element {
     return (
-        <StyledTask draggable onDragOver={props.onDragOver} onDrop={props.onDrop} onDragStart={props.onDragStart}>
+        <StyledTask
+            isDragOver={props.isDragOver}
+            draggable
+            onDragOver={props.onDragOver}
+            onDrop={props.onDrop}
+            onDragStart={props.onDragStart}
+            onDragLeave={props.onDragLeave}
+        >
             <TaskTitle>{props.task.title}</TaskTitle>
             <ProjectTitle>{props.task.project}</ProjectTitle>
             <Tag>#{props.task.tag}</Tag>
