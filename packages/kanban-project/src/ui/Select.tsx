@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowIcon } from "src/icons";
+import { ArrowIcon } from "src/ui/icons";
 import { CSSTransition } from "react-transition-group";
 import { Main, Placeholder, SelectText, StyledSelect, Value, Values } from "./Select.styled";
 import { useOnClickOutside } from "src/hooks/useOnClickOutside";

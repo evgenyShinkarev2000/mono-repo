@@ -1,4 +1,4 @@
-import { PlusIcon } from "src/icons";
+import { PlusIcon } from "src/ui/icons";
 import styled from "styled-components";
 
 const DropPlaceholder = styled.div`

@@ -2,7 +2,7 @@ import React, { DragEvent, useRef } from "react";
 import { TaskPosition } from "src/types/ITaskPosition";
 import styled from "styled-components";
 import { ITask, ITaskStatus } from "../types/ITask";
-import { Column } from "./Column";
+import { Column } from "./Column/Column";
 
 type Props = {
     tasks: ITask[];
