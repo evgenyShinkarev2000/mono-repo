@@ -2,6 +2,7 @@ import { ITask } from "src/types/ITask";
 import { DragEvent, useRef, useState } from "react";
 import styled from "styled-components";
 import { Task } from "./Task";
+import { DndPlaceholder } from "./DndPlaceholder";
 
 type ColumnProps = {
     title: string;
@@ -53,6 +54,7 @@ const Tasks = styled.div`
 export function Column(props: ColumnProps): JSX.Element {
     const ref = useRef<HTMLDivElement | null>(null);
     const [draggedOver, setDraggedOver] = useState<number | null>(null);
+    const [showPlaceholder, setShowPlaceholder] = useState(false);
 
     return (
         <StyledColumn
@@ -60,9 +62,13 @@ export function Column(props: ColumnProps): JSX.Element {
             draggable
             onDragOver={(e: DragEvent) => {
                 e.preventDefault();
+                if (props.tasks.length === 0) {
+                    setShowPlaceholder(true);
+                }
             }}
             onDrop={(e: DragEvent) => {
                 e.preventDefault();
+                setShowPlaceholder(false);
                 if (props.tasks.length === 0) {
                     props.onEmptyColumnDrop();
                 }
@@ -72,27 +78,34 @@ export function Column(props: ColumnProps): JSX.Element {
                     e.preventDefault();
                 }
             }}
+            onDragLeave={(e) => {
+                setShowPlaceholder(false);
+            }}
         >
             <Header>{props.title}</Header>
-            <Tasks>
-                {props.tasks.map((task, i) => (
-                    <Task
-                        isDragOver={i === draggedOver}
-                        key={task.title}
-                        task={task}
-                        onDragOver={(e) => {
-                            e.preventDefault();
-                            setDraggedOver(i);
-                        }}
-                        onDragLeave={(e) => setDraggedOver(null)}
-                        onDrop={(e) => {
-                            props.onDrop(e, i);
-                            setDraggedOver(null);
-                        }}
-                        onDragStart={(e) => props.onDragStart(e, i)}
-                    />
-                ))}
-            </Tasks>
+            {showPlaceholder ? (
+                <DndPlaceholder />
+            ) : (
+                <Tasks>
+                    {props.tasks.map((task, i) => (
+                        <Task
+                            isDragOver={i === draggedOver}
+                            key={task.title}
+                            task={task}
+                            onDragOver={(e) => {
+                                e.preventDefault();
+                                setDraggedOver(i);
+                            }}
+                            onDragLeave={(e) => setDraggedOver(null)}
+                            onDrop={(e) => {
+                                props.onDrop(e, i);
+                                setDraggedOver(null);
+                            }}
+                            onDragStart={(e) => props.onDragStart(e, i)}
+                        />
+                    ))}
+                </Tasks>
+            )}
         </StyledColumn>
     );
 }

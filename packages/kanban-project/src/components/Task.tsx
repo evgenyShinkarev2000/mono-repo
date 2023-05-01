@@ -2,6 +2,7 @@ import { DragEventHandler } from "react";
 import { CalendarIcon, PersonIcon, PlusIcon } from "src/icons";
 import { ITask } from "src/types/ITask";
 import styled from "styled-components";
+import { DndPlaceholder } from "./DndPlaceholder";
 
 type Props = {
     task: ITask;
@@ -97,22 +98,7 @@ export function Task(props: Props): JSX.Element {
                     <time>{props.task.deadline.toLocaleDateString("ru")}</time>
                 </Date>
             </Wrapper>
-            {props.isDragOver && (
-                <DropPlaceholder>
-                    <PlusIcon />
-                </DropPlaceholder>
-            )}
+            {props.isDragOver && <DndPlaceholder />}
         </StyledTask>
     );
 }
-
-const DropPlaceholder = styled.div`
-    width: 100%;
-    height: 200px;
-    border: 2px dashed #333;
-    margin-top: 20px;
-    pointer-events: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-`;
