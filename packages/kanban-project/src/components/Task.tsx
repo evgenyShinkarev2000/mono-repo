@@ -1,6 +1,5 @@
 import { DragEventHandler } from "react";
-import { PersonIcon } from "src/icons";
-import { CalendarIcon } from "src/icons/Calendar";
+import { CalendarIcon, PersonIcon, PlusIcon } from "src/icons";
 import { ITask } from "src/types/ITask";
 import styled from "styled-components";
 
@@ -15,20 +14,21 @@ type Props = {
 };
 
 const StyledTask = styled.div<{ isDragOver: boolean }>`
-    background: #ffffff;
+    cursor: grab;
+`;
+
+const Wrapper = styled.div`
+    background-color: #ffffff;
     border-radius: 5px;
     padding: 16px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    pointer-events: none;
     gap: 10px;
-    cursor: grab;
     & > * {
         pointer-events: none;
     }
-    ${({ isDragOver }) => {
-        return "";
-    }}
 `;
 
 const TaskTitle = styled.h3`
@@ -82,19 +82,37 @@ export function Task(props: Props): JSX.Element {
             onDragStart={props.onDragStart}
             onDragLeave={props.onDragLeave}
         >
-            <TaskTitle>{props.task.title}</TaskTitle>
-            <ProjectTitle>{props.task.project}</ProjectTitle>
-            <Tag>#{props.task.tag}</Tag>
-            <Name>
-                <PersonIcon />
-                <p>{props.task.executorName}</p>
-            </Name>
-            <Date>
-                <div>
-                    <CalendarIcon />
-                </div>
-                <time>{props.task.deadline.toLocaleDateString("ru")}</time>
-            </Date>
+            <Wrapper>
+                <TaskTitle>{props.task.title}</TaskTitle>
+                <ProjectTitle>{props.task.project}</ProjectTitle>
+                <Tag>#{props.task.tag}</Tag>
+                <Name>
+                    <PersonIcon />
+                    <p>{props.task.executorName}</p>
+                </Name>
+                <Date>
+                    <div>
+                        <CalendarIcon />
+                    </div>
+                    <time>{props.task.deadline.toLocaleDateString("ru")}</time>
+                </Date>
+            </Wrapper>
+            {props.isDragOver && (
+                <DropPlaceholder>
+                    <PlusIcon />
+                </DropPlaceholder>
+            )}
         </StyledTask>
     );
 }
+
+const DropPlaceholder = styled.div`
+    width: 100%;
+    height: 200px;
+    border: 2px dashed #333;
+    margin-top: 20px;
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
