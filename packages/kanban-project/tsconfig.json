@@ -1,4 +1,5 @@
 {
+  "extends": "../root-project/tsconfig.json",
   "compilerOptions": {
     "target": "ESNext",
     "useDefineForClassFields": true,
@@ -18,13 +19,14 @@
     "types": ["node"],
     "baseUrl": ".",
     "paths": {
-      "src/types/*": ["./src/types/*"],
-      "src/ui/icons/*": ["./src/ui/icons/*"],
-      "src/hooks/*": ["./src/hooks/*"],
+      "@kanban/*": ["src/*"],
     }
   },
   "include": [
-    "./src/",
+    "src",
+    "src/types",
+    "src/ui/icons",
+    "src/hooks"
   ],
   "exclude": [
     "node_modules",
