@@ -116,11 +116,12 @@ export function Task(props: Props): JSX.Element {
                         </div>
                         <time>{props.task.deadline.toLocaleDateString("ru")}</time>
                     </Date>
-                    <Icons>
-                        <PlayIcon style={{ cursor: "pointer" }} />
-                        <TrashIcon style={{ cursor: "pointer" }} />
-                    </Icons>
-                    {/* {isHovered && ()} */}
+                    {isHovered && (
+                        <Icons>
+                            <PlayIcon style={{ cursor: "pointer" }} />
+                            <TrashIcon style={{ cursor: "pointer" }} />
+                        </Icons>
+                    )}
                 </Footer>
             </Wrapper>
             {props.isDragOver && <DndPlaceholder />}

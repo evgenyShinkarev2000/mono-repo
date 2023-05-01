@@ -20,7 +20,7 @@ export function Select(props: Props): JSX.Element {
 
     return (
         <Main ref={mainRef}>
-            <StyledSelect onClick={() => setIsOpen(!isOpen)}>
+            <StyledSelect onClick={() => setIsOpen(!isOpen)} active={isOpen}>
                 {selected ? <SelectText>{selected}</SelectText> : <Placeholder>{props.placeholder}</Placeholder>}
                 <ArrowIcon />
             </StyledSelect>

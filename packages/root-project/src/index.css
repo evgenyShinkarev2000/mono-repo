@@ -9,6 +9,8 @@
 :root {
   --basic-grey: #AFBAC3;
   --basic-white: #FFFFFF;
+  --primary-blue-0: #e7efff;
+  --primary-blue-8: #0340bb;
 }
 
 body {
