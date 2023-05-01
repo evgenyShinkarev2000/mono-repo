@@ -1,4 +1,4 @@
-import { ITask } from "src/types/ITask";
+import { ITask } from "@kanban/types/ITask";
 import { DragEvent, useRef, useState } from "react";
 import styled from "styled-components";
 import { Task } from "../Task/Task";

@@ -1,7 +1,7 @@
 import { DragEventHandler } from "react";
-import { useHover } from "src/hooks/useHover";
-import { CalendarIcon, PersonIcon, PlayIcon, TrashIcon } from "src/ui/icons";
-import { ITask } from "src/types/ITask";
+import { useHover } from "@kanban/hooks/useHover";
+import { CalendarIcon, PersonIcon, PlayIcon, TrashIcon } from "@kanban/ui/icons";
+import { ITask } from "@kanban/types/ITask";
 import { DndPlaceholder } from "../DndPlaceholder";
 import * as S from "./Task.styled";
 

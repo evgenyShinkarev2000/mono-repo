@@ -1,4 +1,5 @@
-import { ITask } from "src/types/ITask";
+import { ITask } from "@kanban/types/ITask";
+
 
 export const mockTasks: ITask[] = [
     {

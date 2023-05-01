@@ -1,9 +1,9 @@
 import { useRef } from "react";
-import { useOnClickOutside } from "src/hooks/useOnClickOutside";
-import { TimerIcon } from "src/ui/icons/Timer";
-import { ITask } from "src/types/ITask";
+import { useOnClickOutside } from "@kanban/hooks/useOnClickOutside";
+import { TimerIcon } from "@kanban/ui/icons/Timer";
+import { ITask } from "@kanban/types/ITask";
 import styled from "styled-components";
-import { PointsIcon } from "src/ui/icons/Points";
+import { PointsIcon } from "@kanban/ui/icons/Points";
 
 type Props = {
     onClose: () => void;

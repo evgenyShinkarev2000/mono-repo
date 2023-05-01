@@ -1,5 +1,5 @@
 import { CSSProperties, MouseEvent, ReactNode } from "react";
-import { useHover } from "src/hooks/useHover";
+import { useHover } from "@kanban/hooks/useHover";
 import styled from "styled-components";
 
 type Props = {

@@ -1,4 +1,4 @@
-import { PlusIcon } from "src/ui/icons";
+import { PlusIcon } from "@kanban/ui/icons";
 import styled from "styled-components";
 
 const DropPlaceholder = styled.div`
