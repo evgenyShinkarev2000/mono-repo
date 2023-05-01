@@ -65,10 +65,6 @@ export function Board(props: Props) {
         props.onTasksChange(tasks);
     }
 
-    function onDragOver(e: DragEvent<HTMLDivElement>, colIndex: number, itemIndex: number) {
-        e.preventDefault();
-    }
-
     function onDrop(e: DragEvent<HTMLDivElement>, colIndex: number, itemIndex: number) {
         e.preventDefault();
         if (!dragTarget.current) {
@@ -126,7 +122,6 @@ export function Board(props: Props) {
                     key={colTitle}
                     title={colTitle}
                     tasks={cols[colTitle]}
-                    onDragOver={(e, itemIndex) => onDragOver(e, colIndex, itemIndex)}
                     onDrop={(e, itemIndex) => onDrop(e, colIndex, itemIndex)}
                     onDragStart={(e, itemIndex) => onDragStart(e, colIndex, itemIndex)}
                     onEmptyColumnDrop={() => onEmptyColumnDrop(colIndex)}

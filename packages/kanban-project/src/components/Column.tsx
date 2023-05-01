@@ -1,5 +1,5 @@
 import { ITask } from "src/types/ITask";
-import { DragEvent, useRef } from "react";
+import { DragEvent, useRef, useState } from "react";
 import styled from "styled-components";
 import { Task } from "./Task";
 
@@ -7,12 +7,8 @@ type ColumnProps = {
     title: string;
     tasks: ITask[];
 
-    // onDragOver: DragEventHandler<HTMLDivElement>;
-    // onDrop: DragEventHandler<HTMLDivElement>;
-    onDragOver: (event: DragEvent<HTMLDivElement>, itemIndex: number) => void;
     onDrop: (event: DragEvent<HTMLDivElement>, itemIndex: number) => void;
     onDragStart: (event: DragEvent<HTMLDivElement>, itemIndex: number) => void;
-
     onEmptyColumnDrop: () => void;
 };
 
@@ -56,6 +52,7 @@ const Tasks = styled.div`
 
 export function Column(props: ColumnProps): JSX.Element {
     const ref = useRef<HTMLDivElement | null>(null);
+    const [draggedOver, setDraggedOver] = useState<number | null>(null);
 
     return (
         <StyledColumn
@@ -80,10 +77,18 @@ export function Column(props: ColumnProps): JSX.Element {
             <Tasks>
                 {props.tasks.map((task, i) => (
                     <Task
+                        isDragOver={i === draggedOver}
                         key={task.title}
                         task={task}
-                        onDragOver={(e) => props.onDragOver(e, i)}
-                        onDrop={(e) => props.onDrop(e, i)}
+                        onDragOver={(e) => {
+                            e.preventDefault();
+                            setDraggedOver(i);
+                        }}
+                        onDragLeave={(e) => setDraggedOver(null)}
+                        onDrop={(e) => {
+                            props.onDrop(e, i);
+                            setDraggedOver(null);
+                        }}
                         onDragStart={(e) => props.onDragStart(e, i)}
                     />
                 ))}
