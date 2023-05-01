@@ -1,5 +1,5 @@
 import { ITask } from "src/types/ITask";
-import { DragEvent } from "react";
+import { DragEvent, useRef } from "react";
 import styled from "styled-components";
 import { Task } from "./Task";
 
@@ -55,8 +55,11 @@ const Tasks = styled.div`
 `;
 
 export function Column(props: ColumnProps): JSX.Element {
+    const ref = useRef<HTMLDivElement | null>(null);
+
     return (
         <StyledColumn
+            ref={ref}
             draggable
             onDragOver={(e: DragEvent) => {
                 e.preventDefault();
@@ -65,6 +68,11 @@ export function Column(props: ColumnProps): JSX.Element {
                 e.preventDefault();
                 if (props.tasks.length === 0) {
                     props.onEmptyColumnDrop();
+                }
+            }}
+            onDragStart={(e) => {
+                if (e.target === ref.current) {
+                    e.preventDefault();
                 }
             }}
         >
