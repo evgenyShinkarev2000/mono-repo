@@ -9,7 +9,7 @@ type Props = {
 };
 
 const Wrapper = styled.div`
-    position: absolute;
+    position: fixed;
     inset: 0;
     z-index: 2;
     background-color: rgba(0, 0, 0, 0.5);
