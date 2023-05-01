@@ -40,7 +40,7 @@ export function Board(props: Props) {
         }
     });
 
-    function onReplaceItem(to: TaskPosition) {
+    function onReplaceItems(to: TaskPosition) {
         const entries = Object.entries(cols) as [ITaskStatus, ITask[]][];
         const deleted = removeDraggedTask(entries);
 
@@ -79,7 +79,7 @@ export function Board(props: Props) {
             console.error("Error");
             return;
         }
-        onReplaceItem({ colIndex, itemIndex });
+        onReplaceItems({ colIndex, itemIndex });
     }
 
     function onDragStart(e: DragEvent<HTMLDivElement>, colIndex: number, itemIndex: number) {
