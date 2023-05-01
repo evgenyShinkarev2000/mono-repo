@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import styled from "styled-components";
 import { Board } from "./components/Board";
 import { KanbanHeader } from "./components/KanbanHeader";
+import { TaskView } from "./components/TaskView/TaskView";
 import { mockTasks } from "./mock/mock";
 import { ITask } from "./types/ITask";
 import { TaskPosition } from "./types/ITaskPosition";
@@ -14,6 +16,7 @@ const Container = styled.div`
 
 export const KanbanPage = () => {
     const [tasks, setTasks] = useState<ITask[]>(mockTasks);
+    const [selectedId, setSelectedId] = useState("");
 
     useEffect(() => {
         // fetch("localhost:3000/tasks")
@@ -26,13 +29,21 @@ export const KanbanPage = () => {
         // fetch("localhost:3000/removeCompletedTasks")
     }
 
+    function onModalOpen(id: string) {
+        setSelectedId(id);
+    }
+
+    const selectedTask = tasks.find((t) => t.title === selectedId);
+
     return (
-        <Container>
-            <KanbanHeader onButtonClick={removeCompletedTasks} />
-            <Board tasks={tasks} onTasksChange={setTasks} />
-        </Container>
+        <>
+            <Container>
+                <KanbanHeader onButtonClick={removeCompletedTasks} />
+                <Board tasks={tasks} onTasksChange={setTasks} onModalOpen={onModalOpen} />
+            </Container>
+            {selectedTask && createPortal(<TaskView task={selectedTask} onClose={() => setSelectedId("")} />, document.body)}
+        </>
     );
 };
 
 // TODO: variant enum refactor
-// TODO: always show cols

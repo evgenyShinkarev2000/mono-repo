@@ -8,6 +8,7 @@
 
 :root {
   --basic-grey: #AFBAC3;
+  --basic-background: #F5F7F9;
   --basic-white: #FFFFFF;
   --primary-blue-0: #e7efff;
   --primary-blue-8: #0340bb;
@@ -15,7 +16,7 @@
 
 body {
   min-height: 100vh;
-  background-color: #F5F7F9;
+  background-color: var(--basic-background);
   color: black;
   font-weight: 500;
   font-family: Roboto;

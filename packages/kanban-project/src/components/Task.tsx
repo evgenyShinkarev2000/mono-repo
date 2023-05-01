@@ -13,6 +13,8 @@ type Props = {
     onDrop: DragEventHandler<HTMLDivElement>;
     onDragStart: DragEventHandler<HTMLDivElement>;
     onDragLeave: DragEventHandler<HTMLDivElement>;
+
+    onClick: () => void;
 };
 
 const StyledTask = styled.div<{ isDragOver: boolean }>`
@@ -93,6 +95,7 @@ export function Task(props: Props): JSX.Element {
 
     return (
         <StyledTask
+            onClick={props.onClick}
             ref={hoverRef}
             isDragOver={props.isDragOver}
             draggable

@@ -7,6 +7,7 @@ import { Column } from "./Column";
 type Props = {
     tasks: ITask[];
     onTasksChange: (tasks: ITask[]) => void;
+    onModalOpen: (id: string) => void;
 };
 
 const Columns = styled.div`
@@ -125,6 +126,7 @@ export function Board(props: Props) {
                     onDrop={(e, itemIndex) => onDrop(e, colIndex, itemIndex)}
                     onDragStart={(e, itemIndex) => onDragStart(e, colIndex, itemIndex)}
                     onEmptyColumnDrop={() => onEmptyColumnDrop(colIndex)}
+                    onModalOpen={props.onModalOpen}
                 />
             ))}
         </Columns>

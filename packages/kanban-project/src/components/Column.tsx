@@ -11,6 +11,7 @@ type ColumnProps = {
     onDrop: (event: DragEvent<HTMLDivElement>, itemIndex: number) => void;
     onDragStart: (event: DragEvent<HTMLDivElement>, itemIndex: number) => void;
     onEmptyColumnDrop: () => void;
+    onModalOpen: (id: string) => void;
 };
 
 const Header = styled.div`
@@ -89,6 +90,7 @@ export function Column(props: ColumnProps): JSX.Element {
                 <Tasks>
                     {props.tasks.map((task, i) => (
                         <Task
+                            onClick={() => props.onModalOpen(task.title)}
                             isDragOver={i === draggedOver}
                             key={task.title}
                             task={task}
