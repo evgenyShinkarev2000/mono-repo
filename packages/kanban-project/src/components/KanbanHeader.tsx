@@ -21,8 +21,8 @@ export function KanbanHeader(props: Props) {
     return (
         <StyledHeader>
             <Selects>
-                <Select placeholder="Select" values={["1", "2"]} />
-                <Select placeholder="Select" values={["3", "4"]} />
+                <Select placeholder="Мои Задачи" values={["1", "2"]} />
+                <Select placeholder="Название Проекта" values={["3", "4"]} />
             </Selects>
             <Button text="Удалить завершенные задачи" variant="primary" onClick={props.onButtonClick} />
         </StyledHeader>

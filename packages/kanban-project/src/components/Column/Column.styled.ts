@@ -1,13 +1,13 @@
 import styled from "styled-components";
 
 export const Header = styled.div`
-    padding: 20px;
+    padding: 0 22px;
     border-radius: 5px;
     font-size: 20px;
-    line-height: 23px;
     text-transform: uppercase;
     color: #ffffff;
     margin-bottom: 32px;
+    line-height: 48px;
 `;
 
 export const StyledColumn = styled.div`

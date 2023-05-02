@@ -20,7 +20,7 @@ export const Wrapper = styled.div<{ isDragOver: boolean }>`
 `;
 
 export const TaskTitle = styled.h3`
-    font-size: 20px;
+    font-size: 18px;
     line-height: 20px;
 `;
 
@@ -28,34 +28,37 @@ export const ProjectTitle = styled.p`
     background: #e7efff;
     border-radius: 5px;
     font-size: 16px;
+    font-size: 14px;
     display: inline-block;
-    padding: 0 4px;
-    line-height: 130%;
+    line-height: 24px;
+    padding: 0 8px;
     color: #2870ff;
 `;
 
 export const Tag = styled.p`
     background: #fef2e0;
     border-radius: 5px;
+    font-size: 14px;
+    line-height: 24px;
     display: inline-block;
-    padding: 0 4px;
-    line-height: 130%;
+    padding: 0 8px;
     color: #ee7900;
 `;
 
 export const Name = styled.div`
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
+    font-size: 14px;
+    line-height: 16px;
 `;
 
 export const Date = styled.div`
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    font-size: 15px;
-    line-height: 130%;
-    padding: 4px 0;
+    font-size: 14px;
+    line-height: 24px;
     display: flex;
     align-items: center;
     color: #313131;

@@ -41,9 +41,7 @@ export function Task(props: Props): JSX.Element {
                 </S.Name>
                 <S.Footer>
                     <S.Date>
-                        <div>
-                            <CalendarIcon />
-                        </div>
+                        <CalendarIcon />
                         <time>{props.task.deadline.toLocaleDateString("ru")}</time>
                     </S.Date>
                     {isHovered && (

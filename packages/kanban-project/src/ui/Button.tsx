@@ -18,6 +18,7 @@ const StyledButton = styled.button<{ variant: Variant }>`
     font-weight: 500;
     font-size: 16px;
     line-height: 32px;
+    font-family: inherit;
     padding: 0 16px;
     cursor: pointer;
     border-radius: 5px;

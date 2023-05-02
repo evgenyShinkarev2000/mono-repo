@@ -2,84 +2,13 @@ import { useRef } from "react";
 import { useOnClickOutside } from "@kanban/hooks/useOnClickOutside";
 import { TimerIcon } from "@kanban/ui/icons/Timer";
 import { ITask } from "@kanban/types/ITask";
-import styled from "styled-components";
 import { PointsIcon } from "@kanban/ui/icons/Points";
+import * as S from "./TaskView.styled";
 
 type Props = {
     onClose: () => void;
     task: ITask;
 };
-
-const Wrapper = styled.div`
-    position: fixed;
-    inset: 0;
-    z-index: 2;
-    background-color: rgba(0, 0, 0, 0.5);
-    padding: 100px 0;
-`;
-
-const Content = styled.div`
-    max-width: 710px;
-    margin: 0 auto;
-    height: 100%;
-    background-color: var(--basic-background);
-    border-radius: 5px;
-    padding: 16px 80px 32px 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-`;
-
-const Title = styled.h3`
-    font-weight: 500;
-    font-size: 20px;
-    color: #000000;
-    margin-bottom: 4px;
-`;
-
-const BaseTask = styled.p`
-    font-weight: 400;
-    font-size: 14px;
-    line-height: 16px;
-    margin-bottom: 8px;
-    color: #000000;
-
-    span {
-        text-decoration: underline;
-    }
-`;
-
-const Status = styled.p`
-    font-weight: 400;
-    font-size: 14px;
-    line-height: 16px;
-    color: rgba(0, 0, 0, 0.8);
-`;
-
-const Subtitle = styled.h4`
-    font-size: 14px;
-    line-height: 16px;
-    color: #000000;
-    margin-bottom: 4px;
-`;
-
-const Field = styled.div`
-    padding: 8px;
-    background: #ffffff;
-    border: 1px solid #afbac3;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    white-space: nowrap;
-    gap: 8px;
-    width: 184px;
-`;
-
-const Inline = styled.div`
-    display: flex;
-    gap: 8px;
-    justify-content: space-between;
-`;
 
 export function TaskView(props: Props) {
     const ref = useRef<HTMLDivElement | null>(null);
@@ -87,42 +16,44 @@ export function TaskView(props: Props) {
     useOnClickOutside(ref, props.onClose);
 
     return (
-        <Wrapper>
-            <Content ref={ref}>
-                <Title>{task.title}</Title>
-                <BaseTask>
-                    Базовая задача: <span>Название задачи родителя</span>
-                </BaseTask>
-                <Status>Статус “{task.status}”</Status>
+        <S.Wrapper>
+            <S.Content ref={ref}>
                 <div>
-                    <Subtitle>Проект</Subtitle>
-                    <Field>
+                    <S.Title>{task.title}</S.Title>
+                    <S.BaseTask>
+                        Базовая задача: <span>Название задачи родителя</span>
+                    </S.BaseTask>
+                    <S.Status>Статус “{task.status}”</S.Status>
+                </div>
+                <div>
+                    <S.Subtitle>Проект</S.Subtitle>
+                    <S.Field>
                         <PointsIcon />
                         <p>{task.project}</p>
-                    </Field>
+                    </S.Field>
                 </div>
-                <Inline>
+                <S.Inline>
                     <div>
-                        <Subtitle>Дедлайн</Subtitle>
-                        <Field>
+                        <S.Subtitle>Дедлайн</S.Subtitle>
+                        <S.Field>
                             <TimerIcon />
                             <p>{task.deadline.toLocaleDateString("ru")}</p>
-                        </Field>
+                        </S.Field>
                     </div>
                     <div>
-                        <Subtitle>Тег команды</Subtitle>
-                        <Field>
+                        <S.Subtitle>Тег команды</S.Subtitle>
+                        <S.Field>
                             <p>{task.tag}</p>
-                        </Field>
+                        </S.Field>
                     </div>
                     <div>
-                        <Subtitle>Планируемые сроки выполнения</Subtitle>
-                        <Field style={{ width: "100%" }}>
+                        <S.Subtitle>Планируемые сроки выполнения</S.Subtitle>
+                        <S.Field style={{ width: "100%" }}>
                             {task.deadline.toLocaleDateString("ru")} - {task.deadline.toLocaleDateString("ru")}
-                        </Field>
+                        </S.Field>
                     </div>
-                </Inline>
-            </Content>
-        </Wrapper>
+                </S.Inline>
+            </S.Content>
+        </S.Wrapper>
     );
 }
