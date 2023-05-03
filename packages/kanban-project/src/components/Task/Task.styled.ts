@@ -1,21 +1,23 @@
 import styled from "styled-components";
 
-export const Task = styled.div<{ isDragOver: boolean }>`
+export const Task = styled.div`
     cursor: grab;
     transition: all 0.3s ease 0s;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
     :hover {
         box-shadow: 0px 0px 10px rgba(40, 112, 255, 0.3);
     }
 `;
 
-export const Wrapper = styled.div<{ isDragOver: boolean }>`
+export const Wrapper = styled.div`
     background-color: #ffffff;
     border-radius: 5px;
     padding: 16px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    pointer-events: ${({ isDragOver }) => (isDragOver ? "none" : "all")};
     gap: 10px;
 `;
 
@@ -73,5 +75,4 @@ export const Footer = styled.div`
 export const Icons = styled.div`
     display: flex;
     gap: 8px;
-    transition: all 0.3s ease 0s;
 `;

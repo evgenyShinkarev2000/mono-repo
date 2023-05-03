@@ -4,6 +4,7 @@ import { SvgWrapper } from "./SvgWrapper";
 export function TrashIcon(props: IconProps) {
     return (
         <SvgWrapper
+            style={props.style}
             onClick={(e) => {
                 e.stopPropagation();
                 if (props.onClick) props.onClick();

@@ -61,7 +61,12 @@ export function Column(props: ColumnProps): JSX.Element {
                                 e.preventDefault();
                                 setDraggedOver(i);
                             }}
-                            onDragLeave={(e) => setDraggedOver(null)}
+                            onDragLeave={(e) => {
+                                if (e.currentTarget.contains(e.relatedTarget as Node)) {
+                                    return;
+                                }
+                                setDraggedOver(null);
+                            }}
                             onDrop={(e) => {
                                 props.onDrop(e, i);
                                 setDraggedOver(null);

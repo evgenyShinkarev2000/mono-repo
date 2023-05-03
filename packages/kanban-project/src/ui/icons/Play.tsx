@@ -9,6 +9,7 @@ type Props = {
 export function PlayIcon(props: Props) {
     return (
         <SvgWrapper
+            style={props.style}
             onClick={(e) => {
                 e.stopPropagation();
                 if (props.onClick) props.onClick();
