@@ -1,6 +1,5 @@
 import { ITask } from "@kanban/types/ITask";
 import { DragEvent, useRef, useState } from "react";
-import styled from "styled-components";
 import { Task } from "../Task/Task";
 import { DndPlaceholder } from "../DndPlaceholder";
 import * as S from "./Column.styled";
@@ -17,7 +16,6 @@ type ColumnProps = {
 
 export function Column(props: ColumnProps): JSX.Element {
     const ref = useRef<HTMLDivElement | null>(null);
-    const [draggedOver, setDraggedOver] = useState<number | null>(null);
     const [showPlaceholder, setShowPlaceholder] = useState(false);
 
     return (
@@ -54,22 +52,11 @@ export function Column(props: ColumnProps): JSX.Element {
                     {props.tasks.map((task, i) => (
                         <Task
                             onClick={() => props.onModalOpen(task.title)}
-                            isDragOver={i === draggedOver}
                             key={task.title}
                             task={task}
-                            onDragOver={(e) => {
-                                e.preventDefault();
-                                setDraggedOver(i);
-                            }}
-                            onDragLeave={(e) => {
-                                if (e.currentTarget.contains(e.relatedTarget as Node)) {
-                                    return;
-                                }
-                                setDraggedOver(null);
-                            }}
-                            onDrop={(e) => {
-                                props.onDrop(e, i);
-                                setDraggedOver(null);
+                            onDrop={(e, position) => {
+                                const index = position === "after" ? i + 1 : i;
+                                props.onDrop(e, index);
                             }}
                             onDragStart={(e) => props.onDragStart(e, i)}
                         />

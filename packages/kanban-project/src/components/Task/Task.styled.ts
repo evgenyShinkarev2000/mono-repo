@@ -3,6 +3,7 @@ import styled from "styled-components";
 export const Task = styled.div`
     cursor: grab;
     transition: all 0.3s ease 0s;
+    border: 1px solid #000;
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -24,6 +25,7 @@ export const Wrapper = styled.div`
 export const TaskTitle = styled.h3`
     font-size: 18px;
     line-height: 20px;
+    pointer-events: none;
 `;
 
 export const ProjectTitle = styled.p`
@@ -35,6 +37,7 @@ export const ProjectTitle = styled.p`
     line-height: 24px;
     padding: 0 8px;
     color: #2870ff;
+    pointer-events: none;
 `;
 
 export const Tag = styled.p`
@@ -45,6 +48,7 @@ export const Tag = styled.p`
     display: inline-block;
     padding: 0 8px;
     color: #ee7900;
+    pointer-events: none;
 `;
 
 export const Name = styled.div`
@@ -53,6 +57,7 @@ export const Name = styled.div`
     gap: 8px;
     font-size: 14px;
     line-height: 16px;
+    pointer-events: none;
 `;
 
 export const Date = styled.div`
@@ -64,6 +69,7 @@ export const Date = styled.div`
     display: flex;
     align-items: center;
     color: #313131;
+    pointer-events: none;
 `;
 
 export const Footer = styled.div`

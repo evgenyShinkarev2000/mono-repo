@@ -1,4 +1,4 @@
-import { DragEventHandler, useEffect, useRef, useState } from "react";
+import { DragEvent, DragEventHandler, useRef, useState } from "react";
 import { useHover } from "@kanban/hooks/useHover";
 import { CalendarIcon, PersonIcon, PlayIcon, TrashIcon } from "@kanban/ui/icons";
 import { ITask } from "@kanban/types/ITask";
@@ -7,19 +7,15 @@ import * as S from "./Task.styled";
 
 type Props = {
     task: ITask;
-    isDragOver: boolean;
 
-    onDragOver: DragEventHandler<HTMLDivElement>;
-    onDrop: DragEventHandler<HTMLDivElement>;
+    onDrop: (event: DragEvent<HTMLDivElement>, position: "before" | "after") => void;
     onDragStart: DragEventHandler<HTMLDivElement>;
-    onDragLeave: DragEventHandler<HTMLDivElement>;
 
     onClick: () => void;
 };
 
-export function Task(props: Props): JSX.Element {
-    // const [hoverRef, isHovered] = useHover<HTMLDivElement>();
-    const taskRef = useRef<HTMLDivElement | null>(null);
+export function Task(props: Props) {
+    const [taskRef, isHovered] = useHover<HTMLDivElement>();
     const wrapperRef = useRef<HTMLDivElement | null>(null);
     const [placeholderPosition, setPlaceholderPosition] = useState<"top" | "bottom" | null>(null);
 
@@ -35,41 +31,41 @@ export function Task(props: Props): JSX.Element {
         <S.Task
             onClick={props.onClick}
             ref={taskRef}
-            draggable
             onDragOver={(e) => {
-                props.onDragOver(e);
+                e.preventDefault();
             }}
             onDrop={(e) => {
                 setPlaceholderPosition(null);
-                props.onDrop(e);
+                props.onDrop(e, placeholderPosition === "bottom" ? "after" : "before");
             }}
             onDragStart={(e) => {
                 props.onDragStart(e);
-                setTimeout(() => {
-                    setPlaceholderPosition("top");
-                }, 0);
             }}
             onDragLeave={(e) => {
-                if (e.relatedTarget !== wrapperRef.current) {
+                if (!taskRef.current?.contains(e.relatedTarget as Node)) {
                     setPlaceholderPosition(null);
-                } else if (e.target === taskRef.current) {
-                    props.onDragLeave(e);
                 }
             }}
         >
             {placeholderPosition === "top" && <DndPlaceholder />}
             <S.Wrapper
+                draggable
                 ref={wrapperRef}
+                onDragStart={(e) => {
+                    setTimeout(() => {
+                        setPlaceholderPosition("top");
+                    }, 0);
+                }}
+                onDragEndCapture={(e) => {
+                    setPlaceholderPosition(null);
+                }}
                 onDragEnter={(e) => {
                     e.stopPropagation();
                     if (placeholderPosition !== null) {
                         toggle();
                     } else if (e.relatedTarget !== null) {
-                        setPlaceholderPosition("bottom");
+                        setPlaceholderPosition("top");
                     }
-                }}
-                onDragLeave={(e) => {
-                    e.stopPropagation();
                 }}
             >
                 <S.TaskTitle>{props.task.title}</S.TaskTitle>
@@ -84,12 +80,12 @@ export function Task(props: Props): JSX.Element {
                         <CalendarIcon />
                         <time>{props.task.deadline.toLocaleDateString("ru")}</time>
                     </S.Date>
-                    {/* {isHovered && (
+                    {isHovered && (
                         <S.Icons>
                             <PlayIcon style={{ cursor: "pointer" }} onClick={() => alert("Типа старт задачи")} />
                             <TrashIcon style={{ cursor: "pointer" }} onClick={() => alert("Типа удалилась")} />
                         </S.Icons>
-                    )} */}
+                    )}
                 </S.Footer>
             </S.Wrapper>
             {placeholderPosition === "bottom" && <DndPlaceholder />}

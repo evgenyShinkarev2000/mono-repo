@@ -23,7 +23,7 @@ function entriesToTasks(entries: [ITaskStatus, ITask[]][]): ITask[] {
     return Object.values(temp).flat(1);
 }
 
-export function Board(props: Props) {
+function getColumns(tasks: ITask[]) {
     const cols: Record<ITaskStatus, ITask[]> = {
         "В работу": [],
         Выполняются: [],
@@ -31,9 +31,8 @@ export function Board(props: Props) {
         Тестирование: [],
         Завершенные: [],
     };
-    const dragTarget = useRef<TaskPosition | null>(null);
 
-    props.tasks.forEach((task) => {
+    tasks.forEach((task) => {
         if (!cols[task.status]) {
             cols[task.status] = [task];
         } else {
@@ -41,23 +40,32 @@ export function Board(props: Props) {
         }
     });
 
+    return cols;
+}
+
+export function Board(props: Props) {
+    const cols = getColumns(props.tasks);
+    const dragTarget = useRef<TaskPosition | null>(null);
+
     function onReplaceItems(to: TaskPosition) {
         const entries = Object.entries(cols) as [ITaskStatus, ITask[]][];
         const deleted = removeDraggedTask(entries);
 
         entries.forEach((col, colIndex) => {
             if (colIndex === to.colIndex) {
-                const currentStatus = col[0];
+                const colTitle = col[0];
+                const colTasks = col[1];
 
-                if (to.itemIndex === col[1].length) {
-                    col[1].push(deleted);
+                if (to.itemIndex >= colTasks.length) {
+                    deleted.status = colTitle;
+                    colTasks.push(deleted);
                     return;
                 }
 
-                col[1].forEach((_, taskIndex) => {
+                colTasks.forEach((_, taskIndex) => {
                     if (taskIndex === to.itemIndex) {
-                        deleted.status = currentStatus;
-                        col[1].splice(taskIndex + 1, 0, deleted);
+                        deleted.status = colTitle;
+                        colTasks.splice(taskIndex, 0, deleted);
                     }
                 });
             }
@@ -72,7 +80,10 @@ export function Board(props: Props) {
             console.error("Error");
             return;
         }
-        if (dragTarget.current?.colIndex === colIndex && dragTarget.current?.itemIndex === itemIndex) {
+        if (
+            (dragTarget.current?.colIndex === colIndex && dragTarget.current?.itemIndex === itemIndex) ||
+            (dragTarget.current?.colIndex === colIndex && dragTarget.current?.itemIndex + 1 === itemIndex)
+        ) {
             return;
         }
         onReplaceItems({ colIndex, itemIndex });
