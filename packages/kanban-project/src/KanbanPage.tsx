@@ -5,8 +5,10 @@ import { Board } from "./components/Board";
 import { KanbanHeader } from "./components/KanbanHeader";
 import { TaskView } from "./components/TaskView/TaskView";
 import { mockTasks } from "./mock/mock";
-import { ITask } from "./types/ITask";
+import { ITask, ITaskStatus } from "./types/ITask";
 import { TaskPosition } from "./types/ITaskPosition";
+import { kanbanApiContainer } from "./store/Api";
+import { TaskShort } from "./data/TaskShort";
 
 const Container = styled.div`
     padding-top: 32px;
@@ -15,7 +17,13 @@ const Container = styled.div`
 `;
 
 export const KanbanPage = () => {
-    const [tasks, setTasks] = useState<ITask[]>(mockTasks);
+    const {data} = kanbanApiContainer.useGetShortTasksQuery(null);
+    const adaptedTask = data?.map(t => taskAdapter(t)) ?? [];
+    // const [tasks, setTasks] = useState<ITask[]>(mockTasks);
+    useEffect(() => {
+        setTasks(adaptedTask);
+    }, [data]);
+    const [tasks, setTasks] = useState<ITask[]>(adaptedTask);
     const [selectedId, setSelectedId] = useState("");
 
     useEffect(() => {
@@ -45,6 +53,17 @@ export const KanbanPage = () => {
         </>
     );
 };
+
+function taskAdapter(taskShort: TaskShort): ITask{
+    return {
+        deadline: new Date(taskShort.deadline),
+        executorName: taskShort.author.surname + " " + taskShort.author.name,
+        project: taskShort.project.name,
+        status: taskShort.status.name as unknown as ITaskStatus,
+        tag: taskShort.tags?.length > 0 ? taskShort.tags[0].label : "",
+        title: taskShort.title,
+    }
+}
 
 // TODO: variant enum refactor
 // TODO: fix Выполняются Выполняется

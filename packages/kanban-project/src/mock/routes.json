@@ -1,4 +1,5 @@
 {
-  "/task/short": "taskShort",
-  "/task/full": "taskFull"
+  "/task/short": "/task/full",
+  "/task/full": "/taskFull",
+  "/employee?projectId=:id": "/employeeProject:id"
 }
