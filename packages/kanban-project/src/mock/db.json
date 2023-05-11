@@ -1,3 +1,153 @@
 {
-  
+  "taskShort": [
+    {
+      "id": 1,
+      "titile": "сделать api",
+      "project": {
+        "id": 1,
+        "name": "Канбан"
+      },
+      "tags": {
+        "id": 1,
+        "name": "Команда канбан"
+      },
+      "contractors": [
+        {
+          "id": 1,
+          "name": "Евгений",
+          "surname": "Шинкарев",
+          "patronymic": "Геннадьевич"
+        }
+      ],
+      "author": {
+        "id": 1,
+        "name": "Евгений",
+        "surname": "Шинкарев",
+        "patronymic": "Геннадьевич"
+      },
+      "deadline": 1684165790
+    }
+  ],
+  "taskFull": [
+    {
+      "id": 1,
+      "titile": "сделать api",
+      "description": "Ебись оно в рот",
+      "project": {
+        "id": 1,
+        "name": "Канбан"
+      },
+      "tags": {
+        "id": 1,
+        "name": "Команда канбан"
+      },
+      "contractor": {
+        "id": 1,
+        "name": "Евгений",
+        "surname": "Шинкарев",
+        "patronymic": "Геннадьевич"
+      },
+      "deadline": 1684165790,
+      "parentTask": null,
+      "plannedDates": {
+        "begin": 1682957630,
+        "end": 1684599230
+      },
+      "checkList": [
+        {
+          "id": 1,
+          "titile": "Пинать хуи",
+          "isCompleted": false
+        },
+        {
+          "id": 2,
+          "title": "Плакать",
+          "isCompleted": false
+        },
+        {
+          "id": 3,
+          "titile": "Ничего не сделать",
+          "isCompleted": false
+        }
+      ],
+      "wastedTimes": [
+        {
+          "time": 18000,
+          "contractor": {
+            "id": 1,
+            "name": "Евгений",
+            "surname": "Шинкарев",
+            "patronymic": "Геннадьевич"
+          }
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "titile": "Создать контроллеры",
+      "description": "Когда этим заниматься",
+      "project": {
+        "id": 1,
+        "name": "Канбан"
+      },
+      "tags": {
+        "id": 1,
+        "name": "Команда канбан"
+      },
+      "contractor": {
+        "id": 2,
+        "name": "Илья",
+        "surname": "Сотников",
+        "patronymic": "Николаевич"
+      },
+      "deadline": 1684165790,
+      "parentTask": null,
+      "plannedDates": {
+        "begin": 1682957630,
+        "end": 1684599230
+      },
+      "checkList": [
+        {
+          "id": 4,
+          "titile": "Сздать Dto",
+          "isCompleted": false
+        },
+        {
+          "id": 5,
+          "title": "создать контролееры",
+          "isCompleted": false
+        },
+        {
+          "id": 6,
+          "titile": "добавить авторизацию",
+          "isCompleted": false
+        }
+      ],
+      "wastedTimes": [
+        {
+          "time": 18000,
+          "contractor": {
+            "id": 2,
+            "name": "Сотников",
+            "surname": "Илья",
+            "patronymic": "Николаевич"
+          }
+        }
+      ]
+    }
+  ],
+  "employee": [
+    {
+      "id": 1,
+      "name": "Евгений",
+      "surname": "Шинкарев",
+      "patronymic": "Геннадьевич",
+      "projects": [
+        {
+          "id": 1,
+          "name": "Канбан"
+        }
+      ]
+    }
+  ]
 }

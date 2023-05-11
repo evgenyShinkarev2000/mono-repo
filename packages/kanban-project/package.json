@@ -4,7 +4,7 @@
   "main": "src/index.ts",
   "license": "MIT",
   "scripts": {
-    "mock-server": "json-server -w src/mock/db.json -p 8050"
+    "mock-server": "json-server -w src/mock/db.json -p 8050 -r src/mock/routes.json"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.2",
