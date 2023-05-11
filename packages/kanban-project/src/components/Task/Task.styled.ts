@@ -3,7 +3,6 @@ import styled from "styled-components";
 export const Task = styled.div`
     cursor: grab;
     transition: all 0.3s ease 0s;
-    border: 1px solid #000;
     display: flex;
     flex-direction: column;
     gap: 20px;
