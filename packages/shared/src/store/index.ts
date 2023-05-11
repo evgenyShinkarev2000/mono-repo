@@ -1,3 +1,4 @@
+import { kanbanApi } from './../../../kanban-project/src/store/Api';
 import { configureStore } from "@reduxjs/toolkit";
 import { kanbanReducer } from '@mono-repo/kanban-project';
 import { rootReducer } from "@mono-repo/root-project";
@@ -11,7 +12,9 @@ export const store = configureStore({
     kanbanReducer,
     gradeReducer,
     gantReducer,
-  }
+    [kanbanApi.reducerPath]: kanbanApi.reducer
+  },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(kanbanApi.middleware),
 })
 
 export type AppDispatch = typeof store.dispatch;
