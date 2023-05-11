@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "main": "src/index.ts",
   "license": "MIT",
+  "scripts": {
+    "mock-server": "json-server -w src/mock/db.json -p 8050"
+  },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.2",
     "@types/node": "^16.18.12",
@@ -10,6 +13,9 @@
     "@types/react-dom": "^18.0.10",
     "@types/react-transition-group": "^4.4.5",
     "@types/styled-components": "^5.1.26",
+    "@typescript-eslint/eslint-plugin": "^5.55.0",
+    "@typescript-eslint/parser": "^5.55.0",
+    "eslint": "^8.36.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^8.0.5",
@@ -22,6 +28,8 @@
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
     "@vitejs/plugin-react": "^3.1.0",
+    "concurrently": "^8.0.1",
+    "json-server": "^0.17.3",
     "typescript": "^5.0.4"
   }
 }
