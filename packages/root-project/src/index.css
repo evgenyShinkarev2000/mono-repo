@@ -11,7 +11,10 @@
   --basic-background: #F5F7F9;
   --basic-white: #FFFFFF;
   --primary-blue-0: #e7efff;
+  --primary-blue-1: #CEDEFF;
   --primary-blue-8: #0340bb;
+  --basic-inactive: #DDE0E2;
+  --basic-dark-grey: #31393C;
 }
 
 body {
