@@ -7,15 +7,18 @@ import { useOnClickOutside } from "@kanban/hooks/useOnClickOutside";
 import { ArrowIcon } from "@kanban/ui/icons/Arrow";
 
 
-type Props = {
+type Props<T> = {
     placeholder?: string;
-    values: string[];
+    items: Array<T>,
+    titleSelector: (item: T) => string,
+    onSelect: (index: number) => void,
+    selectedIndex: number,
+    resetTitle?: string,
 };
 
-export function Select(props: Props): JSX.Element {
+export function Select<T>(props: Props<T>): JSX.Element
+{
     const [isOpen, setIsOpen] = useState(false);
-    const [selected, setSelected] = useState("");
-
     const mainRef = useRef<HTMLDivElement>(null);
     const valuesRef = useRef<HTMLDivElement>(null);
     useOnClickOutside(mainRef, () => setIsOpen(false));
@@ -23,20 +26,25 @@ export function Select(props: Props): JSX.Element {
     return (
         <Main ref={mainRef}>
             <StyledSelect onClick={() => setIsOpen(!isOpen)} active={isOpen}>
-                {selected ? <SelectText>{selected}</SelectText> : <Placeholder>{props.placeholder}</Placeholder>}
+                {props.selectedIndex >= 0 ? <SelectText>{props.titleSelector(props.items[props.selectedIndex])}</SelectText> : <Placeholder>{props.placeholder}</Placeholder>}
                 <ArrowIcon />
             </StyledSelect>
             <CSSTransition timeout={1000} in={isOpen} unmountOnExit nodeRef={valuesRef}>
-                <Values height={props.values.length * 100} ref={valuesRef}>
-                    {props.values.map((x) => (
+                <Values height={(props.items.length + (props.resetTitle ? 1 : 0)) * 100} ref={valuesRef}>
+                    {
+                        props.resetTitle &&
+                        <Value onClick={() => props.onSelect(-1)}>{props.resetTitle}</Value>
+                    }
+                    {props.items.map((item, index) => (
                         <Value
-                            key={x}
-                            onClick={() => {
-                                setSelected(x);
+                            key={index}
+                            onClick={() =>
+                            {
                                 setIsOpen(false);
+                                props.onSelect(index);
                             }}
                         >
-                            {x}
+                            {props.titleSelector(item)}
                         </Value>
                     ))}
                 </Values>
