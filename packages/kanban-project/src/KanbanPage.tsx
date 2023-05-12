@@ -1,12 +1,15 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { Board } from "./components/Board";
 import { KanbanHeader } from "./components/KanbanHeader";
 import { TaskView } from "./components/TaskView/TaskView";
-import { mockTasks } from "./mock/mock";
-import { ITask } from "./types/ITask";
-import { TaskPosition } from "./types/ITaskPosition";
+import { TaskShort } from "./data/TaskShort";
+import { selectFilteredTasks } from "./store/TaskSelector";
+import { ITask, ITaskStatus } from "./types/ITask";
+import { kanbanApi, kanbanApiContainer } from "./store/Api";
+import { useAppDispatch, useAppSelector } from "../../shared/src/store/Hooks";
 
 const Container = styled.div`
     padding-top: 32px;
@@ -14,22 +17,34 @@ const Container = styled.div`
     margin: 0 auto;
 `;
 
-export const KanbanPage = () => {
-    const [tasks, setTasks] = useState<ITask[]>(mockTasks);
+export const KanbanPage = () =>
+{
+    kanbanApiContainer.useGetShortTasksQuery()
+    const data = useAppSelector(selectFilteredTasks);
+    const filteredTasks = useMemo(() => data ?? [], [data]);
+    const adaptedTask = useMemo(() => filteredTasks.map(t => taskAdapter(t)), [filteredTasks]);
+    const [tasks, setTasks] = useState<ITask[]>(adaptedTask);
+    useEffect(() =>
+    {
+        setTasks(adaptedTask);
+    }, [filteredTasks]);
     const [selectedId, setSelectedId] = useState("");
 
-    useEffect(() => {
+    useEffect(() =>
+    {
         // fetch("localhost:3000/tasks")
         //     .then((r) => r.json())
         //     .then(setTasks);
     }, []);
 
-    function removeCompletedTasks() {
+    function removeCompletedTasks()
+    {
         setTasks((prev) => prev.filter((task) => task.status !== "Завершенные"));
         // fetch("localhost:3000/removeCompletedTasks")
     }
 
-    function onModalOpen(id: string) {
+    function onModalOpen(id: string)
+    {
         setSelectedId(id);
     }
 
@@ -45,6 +60,18 @@ export const KanbanPage = () => {
         </>
     );
 };
+
+function taskAdapter(taskShort: TaskShort): ITask
+{
+    return {
+        deadline: new Date(taskShort.deadline),
+        executorName: taskShort.author.surname + " " + taskShort.author.name,
+        project: taskShort.project.name,
+        status: taskShort.status.name as unknown as ITaskStatus,
+        tag: taskShort.tags?.length > 0 ? taskShort.tags[0].label : "",
+        title: taskShort.title,
+    }
+}
 
 // TODO: variant enum refactor
 // TODO: fix Выполняются Выполняется
