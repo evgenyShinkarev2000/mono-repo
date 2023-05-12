@@ -1,3 +1,4 @@
+import { Project } from "@kanban/data/Project";
 import { TaskShort } from "@kanban/data/TaskShort";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
@@ -9,16 +10,20 @@ export const kanbanApi = createApi(
     endpoints: (builder) =>
     {
       return {
-        getShortTasks: builder.query<TaskShort[], unknown>({
+        getShortTasks: builder.query<TaskShort[], void>({
           query: () => "task/short",
         }),
+        getProject: builder.query<Project[], void>({
+          query: () => "project",
+        })
       }
     },
     reducerPath: "kanbanApi"
   }
 );
 
-const {useGetShortTasksQuery} = kanbanApi;
+const { useGetShortTasksQuery, useGetProjectQuery } = kanbanApi;
 export const kanbanApiContainer = {
   useGetShortTasksQuery,
+  useGetProjectQuery
 }
