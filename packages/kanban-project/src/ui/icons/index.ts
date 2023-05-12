@@ -6,3 +6,4 @@ export { PlayIcon } from "./Play";
 export { TrashIcon } from "./Trash";
 export { TimerIcon } from "./Timer";
 export { PointsIcon } from "./Points";
+export { TriangleIcon } from "./Triangle";

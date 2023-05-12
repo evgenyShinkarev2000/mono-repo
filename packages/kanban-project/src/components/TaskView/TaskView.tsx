@@ -4,6 +4,7 @@ import { TimerIcon } from "@kanban/ui/icons/Timer";
 import { ITask } from "@kanban/types/ITask";
 import { PointsIcon } from "@kanban/ui/icons/Points";
 import * as S from "./TaskView.styled";
+import { DatePicker } from "@kanban/ui/DatePicker/DatePicker";
 
 type Props = {
     onClose: () => void;
@@ -26,11 +27,7 @@ export function TaskView(props: Props) {
                     <S.Status>Статус “{task.status}”</S.Status>
                 </div>
                 <div>
-                    <S.Subtitle>Проект</S.Subtitle>
-                    <S.Field>
-                        <PointsIcon />
-                        <p>{task.project}</p>
-                    </S.Field>
+                    <DatePicker value={null} onChange={() => {}} icon={<PointsIcon />} />
                 </div>
                 <S.Inline>
                     <div>
