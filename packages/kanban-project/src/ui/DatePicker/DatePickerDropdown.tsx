@@ -1,4 +1,4 @@
-import { TriangleIcon } from "../icons";
+import { TriangleIcon } from "../icons/Triangle";
 import * as S from "./DatePicker.styled";
 import { fillByDate, getMonth } from "./utils";
 

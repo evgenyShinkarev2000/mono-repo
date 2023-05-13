@@ -7,3 +7,4 @@ export { TrashIcon } from "./Trash";
 export { TimerIcon } from "./Timer";
 export { PointsIcon } from "./Points";
 export { TriangleIcon } from "./Triangle";
+export { BookmarkIcon } from "./Bookmark";

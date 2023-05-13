@@ -1,6 +1,5 @@
 import { ITask } from "@kanban/types/ITask";
 
-
 export const mockTasks: ITask[] = [
     {
         title: "Создать дизайн для нового лендинга",

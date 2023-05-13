@@ -18,6 +18,7 @@ export const Content = styled.div`
     display: flex;
     flex-direction: column;
     gap: 16px;
+    overflow: auto;
 `;
 
 export const Title = styled.h3`
@@ -56,7 +57,7 @@ export const Subtitle = styled.h4`
 `;
 
 export const Field = styled.div`
-    padding: 8px;
+    padding: 0 8px;
     background: #ffffff;
     border: 1px solid #afbac3;
     border-radius: 5px;
