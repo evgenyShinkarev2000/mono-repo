@@ -8,3 +8,5 @@ export { TimerIcon } from "./Timer";
 export { PointsIcon } from "./Points";
 export { TriangleIcon } from "./Triangle";
 export { BookmarkIcon } from "./Bookmark";
+export { PlusInsideBoxIcon } from "./PlusInsideBox";
+export { CheckMarkIcon } from "./CheckMark";

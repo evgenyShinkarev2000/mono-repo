@@ -5,10 +5,12 @@ import { ITask } from "@kanban/types/ITask";
 import { PointsIcon } from "@kanban/ui/icons/Points";
 import * as S from "./TaskView.styled";
 import { DateView } from "@kanban/ui/DatePicker/DateView";
-import { BookmarkIcon, CalendarIcon } from "@kanban/ui/icons";
+import { BookmarkIcon, CalendarIcon, PlusInsideBoxIcon } from "@kanban/ui/icons";
 import { DateRange } from "@kanban/ui/DatePicker/DateRange";
 import { TextArea } from "@kanban/ui/TextArea";
 import { Text } from "@kanban/ui/Text";
+import { CheckboxGroup } from "@kanban/ui/Сheckbox/CheckboxGroup";
+import { Checkbox } from "@kanban/ui/Сheckbox";
 
 type Props = {
     onClose: () => void;
@@ -76,6 +78,30 @@ export function TaskView(props: Props) {
                             <Text type="body-1">Иван Иванович Иванов</Text>
                         </S.Field>
                     </div>
+                </div>
+                <div>
+                    <Text type="title-1" indent={2}>
+                        <div style={{ display: "flex", gap: 8 }}>
+                            <p>Исполнители</p>
+                            <PlusInsideBoxIcon />
+                        </div>
+                    </Text>
+                    <Text type="body-1">Иван Иванович Иванов</Text>
+                    <Text type="body-1">Иван Иванович Иванов</Text>
+                </div>
+                <div>
+                    <Text type="title-1" indent={2}>
+                        <div style={{ display: "flex", gap: 8 }}>
+                            <p>Чек лист</p>
+                            <PlusInsideBoxIcon />
+                        </div>
+                    </Text>
+                    <CheckboxGroup onChange={console.log}>
+                        <Checkbox value="1 пункт" label="1 пункт" />
+                        <Checkbox value="2 пункт" label="2 пункт" />
+                        <Checkbox value="3 пункт" label="3 пункт" />
+                        <Checkbox value="4 пункт" label="4 пункт" />
+                    </CheckboxGroup>
                 </div>
             </S.Content>
         </S.Wrapper>

@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 import { TextType } from "./Text";
 
-export const Text = styled.p<{ type: TextType }>`
+export const Text = styled.div<{ type: TextType }>`
     ${({ type }) => {
         switch (type) {
             case "title-1":
