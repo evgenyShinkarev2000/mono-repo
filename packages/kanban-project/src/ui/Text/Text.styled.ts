@@ -15,6 +15,7 @@ export const Text = styled.div<{ type: TextType }>`
                     font-weight: 500;
                     font-size: 14px;
                     line-height: 32px;
+                    color: var(--basic-dark-grey);
                 `;
             case "body-2":
                 return css`
@@ -93,24 +94,28 @@ export const Text = styled.div<{ type: TextType }>`
                     font-weight: 400;
                     font-size: 14px;
                     line-height: 16px;
+                    color: var(--basic-dark-grey);
                 `;
             case "description-6":
                 return css`
                     font-weight: 400;
                     font-size: 14px;
                     line-height: 32px;
+                    color: var(--basic-dark-grey);
                 `;
             case "description-7":
                 return css`
                     font-weight: 400;
                     font-size: 14px;
                     line-height: 24px;
+                    color: var(--basic-dark-grey);
                 `;
             case "description-8":
                 return css`
                     font-weight: 400;
                     font-size: 14px;
                     line-height: 20px;
+                    color: var(--basic-dark-grey);
                 `;
         }
 

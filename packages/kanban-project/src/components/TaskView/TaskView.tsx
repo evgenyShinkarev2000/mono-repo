@@ -44,7 +44,7 @@ export function TaskView(props: Props) {
                         <S.Status>Статус “{task.status}”</S.Status>
                     </div>
                     <div>
-                        <Text indent={1} type="body-5">
+                        <Text indent={1} type="body-5" >
                             Проект
                         </Text>
                         <S.Field width={184}>

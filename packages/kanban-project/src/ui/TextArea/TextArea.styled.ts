@@ -8,6 +8,7 @@ export const TextArea = styled.textarea`
     border-radius: 5px;
     background-color: var(--basic-white);
     padding: 16px;
+    color: var(--basic-dark-grey);
 
     &:focus {
         outline: 0;

@@ -19,6 +19,11 @@
   --support-red: #EB5757;
 }
 
+.color-basic-dark-grey{
+  color: var(--basic-dark-grey)
+}
+
+
 body {
   min-height: 100vh;
   background-color: var(--basic-background);

@@ -24,6 +24,7 @@ export const Field = styled.div`
     width: 184px;
     user-select: none;
     cursor: pointer;
+    color: var(--basic-dark-grey);
 `;
 
 export const MonthPicker = styled.div`

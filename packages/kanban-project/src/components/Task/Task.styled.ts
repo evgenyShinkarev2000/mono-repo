@@ -57,6 +57,7 @@ export const Name = styled.div`
     font-size: 14px;
     line-height: 16px;
     pointer-events: none;
+    color: var(--basic-dark-grey);
 `;
 
 export const Date = styled.div`
