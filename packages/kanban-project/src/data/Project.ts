@@ -1,5 +1,5 @@
-import { Enity } from "./Entity";
+import { Entity } from "./Entity";
 
-export class Project extends Enity{
-  public name: string;
+export type Project = Entity & {
+  name: string;
 }

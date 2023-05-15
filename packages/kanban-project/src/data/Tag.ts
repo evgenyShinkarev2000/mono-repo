@@ -1,5 +1,5 @@
-import { Enity } from "./Entity";
+import { Entity } from "./Entity";
 
-export class Tag extends Enity{
-  public label: string;
+export type Tag = Entity & {
+  label: string;
 }

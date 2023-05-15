@@ -1,7 +1,7 @@
-import { Enity } from "./Entity";
+import { Entity as Entity } from "./Entity";
 
-export class Person extends Enity{
-  public name: string;
-  public surname: string;
-  public patronymic: string;
+export type Person = Entity & {
+  name: string;
+  surname: string;
+  patronymic: string;
 }

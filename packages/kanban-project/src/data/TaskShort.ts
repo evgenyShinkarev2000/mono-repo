@@ -1,15 +1,15 @@
-import { Enity } from "./Entity";
+import { Entity } from "./Entity";
 import { Person } from "./Person";
 import { Project } from "./Project";
 import { Status } from "./Status";
 import { Tag } from "./Tag";
 
-export class TaskShort extends Enity{
-  public title: string;
-  public status: Status;
-  public project: Project;
-  public tags: Tag[];
-  public contractors: Person[];
-  public author: Person;
-  public deadline: Date;
+export type TaskShort = Entity & {
+  title: string;
+  status: Status;
+  project: Project;
+  tags: Tag[];
+  contractors: Person[];
+  author: Person;
+  deadline: Date;
 }

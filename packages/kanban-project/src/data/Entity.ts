@@ -1,4 +1,3 @@
-export class Enity<T = number>{
-  public id: T 
-
+export type Entity<T = number> = {
+  id: T
 }
