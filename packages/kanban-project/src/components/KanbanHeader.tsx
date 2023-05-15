@@ -62,7 +62,7 @@ export function KanbanHeader(props: Props)
                     resetTitle="Все проекты"
                 />
             </Selects>
-            <Button text="Удалить завершенные задачи" variant="primary" onClick={props.onButtonClick} />
+            <Button variant="primary" onClick={props.onButtonClick}>Удалить завершенные задачи</Button>
         </StyledHeader>
     );
 }
