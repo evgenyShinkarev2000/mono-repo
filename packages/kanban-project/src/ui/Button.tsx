@@ -1,23 +1,16 @@
-import React from "react";
-import styled from "styled-components";
+import { CSSProperties, PropsWithChildren } from "react";
+import styled, { css } from "styled-components";
+import { Text } from "./Text";
 
-export enum VariantEnum {
-    Primary = "primary",
-    Secondary = "secondary",
-}
-
-type Variant = `${VariantEnum}`;
+type Variant = "primary" | "secondary" | "danger";
 
 type Props = {
-    text: string;
     variant: Variant;
     onClick: () => void;
+    style?: CSSProperties;
 };
 
 const StyledButton = styled.button<{ variant: Variant }>`
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 32px;
     font-family: inherit;
     padding: 0 16px;
     cursor: pointer;
@@ -27,22 +20,26 @@ const StyledButton = styled.button<{ variant: Variant }>`
     color: var(--basic-white);
     ${({ variant }) => {
         switch (variant) {
-            case VariantEnum.Primary:
-                return `
-                    background: #004CE3;
+            case "primary":
+                return css`
+                    background-color: #004ce3;
                 `;
-            case VariantEnum.Secondary:
-                return `
-                    background: var(--basic-grey);
+            case "secondary":
+                return css`
+                    background-color: var(--basic-grey);
+                `;
+            case "danger":
+                return css`
+                    background-color: var(--support-red);
                 `;
         }
     }}
 `;
 
-export function Button(props: Props): JSX.Element {
+export function Button(props: PropsWithChildren<Props>): JSX.Element {
     return (
-        <StyledButton variant={props.variant} onClick={props.onClick}>
-            {props.text}
+        <StyledButton variant={props.variant} onClick={props.onClick} style={props.style}>
+            <Text type="body-6">{props.children}</Text>
         </StyledButton>
     );
 }

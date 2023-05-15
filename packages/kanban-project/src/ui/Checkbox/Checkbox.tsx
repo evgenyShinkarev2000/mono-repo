@@ -6,25 +6,30 @@ type Props = {
     label: string;
     value: string;
     checked?: boolean;
+    readonly?: boolean;
     onToggle?: (value: boolean) => void;
 };
 
 export function Checkbox(props: Props) {
     return (
         <div>
-            <S.Label>
+            <S.Label readonly={props.readonly}>
                 <S.Input
                     hidden
                     type="checkbox"
                     checked={props.checked}
-                    onChange={(e) => props.onToggle && props.onToggle(e.target.checked)}
+                    onChange={(e) => {
+                        if (props.onToggle && !props.readonly) {
+                            props.onToggle(e.target.checked);
+                        }
+                    }}
                 />
                 <S.CustomCheckboxWrapper>
                     <S.CustomCheckbox>
                         <CheckMarkIcon />
                     </S.CustomCheckbox>
                 </S.CustomCheckboxWrapper>
-                <Text type="body-1">{props.label}</Text>
+                <Text type="description-8">{props.label}</Text>
             </S.Label>
         </div>
     );

@@ -10,3 +10,4 @@ export { TriangleIcon } from "./Triangle";
 export { BookmarkIcon } from "./Bookmark";
 export { PlusInsideBoxIcon } from "./PlusInsideBox";
 export { CheckMarkIcon } from "./CheckMark";
+export { ClockIcon } from "./Clock";

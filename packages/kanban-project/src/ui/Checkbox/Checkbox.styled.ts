@@ -1,10 +1,10 @@
 import styled from "styled-components";
 
-export const Label = styled.label`
+export const Label = styled.label<{ readonly?: boolean }>`
     display: flex;
     gap: 8px;
     align-items: center;
-    cursor: pointer;
+    cursor: ${({ readonly }) => (readonly ? "auto" : "pointer")};
 `;
 
 export const Input = styled.input`
