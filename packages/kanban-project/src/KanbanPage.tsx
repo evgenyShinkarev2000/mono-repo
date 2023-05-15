@@ -19,7 +19,8 @@ const Container = styled.div`
 
 export const KanbanPage = () =>
 {
-    kanbanApiContainer.useGetShortTasksQuery()
+    kanbanApiContainer.useGetShortTasksQuery();
+    kanbanApi.useGetCurrentUserQuery();
     const data = useAppSelector(selectFilteredTasks);
     const filteredTasks = useMemo(() => data ?? [], [data]);
     const adaptedTask = useMemo(() => filteredTasks.map(t => taskAdapter(t)), [filteredTasks]);

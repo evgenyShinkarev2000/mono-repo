@@ -91,7 +91,7 @@
         "surname": "Сотников",
         "patronymic": "Александрович"
       },
-      "contractor": [
+      "contractors": [
         {
           "id": 2,
           "name": "Илья",
@@ -158,7 +158,7 @@
         "surname": "Осипова",
         "patronymic": "Сергеевна"
       },
-      "contractor": [
+      "contractors": [
         {
           "id": 3,
           "name": "Елизавета",
@@ -237,5 +237,11 @@
       "id": 3,
       "name": "Оценка"
     }
-  ]
+  ],
+  "currentUser": {
+    "id": 1,
+    "name": "Евгений",
+    "surname": "Шинкарев",
+    "patronymic": "Геннадьевич"
+  }
 }

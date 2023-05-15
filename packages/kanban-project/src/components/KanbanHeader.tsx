@@ -1,12 +1,10 @@
-import React, { useMemo, useState } from "react";
-import styled, { useTheme } from "styled-components";
+import { kanbanApiContainer } from "@kanban/store/Api";
+import { setExecutorFilter, setProjectFilter } from "@kanban/store/KanbanSlice";
+import { useMemo, useState } from "react";
+import styled from "styled-components";
+import { useAppDispatch } from "../../../shared/src/store/Hooks";
 import { Button } from "../ui/Button";
 import { Select } from "../ui/Select";
-import { kanbanApi, kanbanApiContainer } from "@kanban/store/Api";
-import { kanbanActionContainer, setProjectFilter } from "@kanban/store/KanbanSlice";
-import { useAppDispatch } from "../../../shared/src/store/Hooks";
-import { useDispatch } from "react-redux";
-import { store } from "../../../shared/src/store";
 
 const StyledHeader = styled.div`
     display: flex;
@@ -25,8 +23,14 @@ type Props = {
 export function KanbanHeader(props: Props)
 {
     const dispatch = useAppDispatch();
+
     const executors = useMemo(() => ["Все задачи", "Мои задачи"], []);
     const [selectedExecutorIndex, setSelectedExecutorIndex] = useState(0);
+    const handleSelectExecutor = (index: number) =>
+    {
+        setSelectedExecutorIndex(index);
+        dispatch(setExecutorFilter(index == 0 ? "all" : "my"));
+    }
 
     const projects = kanbanApiContainer.useGetProjectQuery().data;
     const [selectedProjectIndex, setSelectedProjectIndex] = useState(-1);
@@ -50,7 +54,7 @@ export function KanbanHeader(props: Props)
                     placeholder="Фильтр по исполнителям"
                     items={executors}
                     selectedIndex={selectedExecutorIndex}
-                    onSelect={(index) => setSelectedExecutorIndex(index)}
+                    onSelect={(index) => handleSelectExecutor(index)}
                     titleSelector={i => i as string}
                 />
                 <Select

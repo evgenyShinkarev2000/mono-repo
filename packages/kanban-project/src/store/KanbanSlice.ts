@@ -1,6 +1,6 @@
 import { Person } from "@kanban/data/Person";
 import { Project } from "@kanban/data/Project";
-import { PayloadAction, createSlice } from "@reduxjs/toolkit"
+import { PayloadAction, createSlice, current } from "@reduxjs/toolkit"
 
 const name = "kanban";
 interface KanbanState
@@ -17,6 +17,9 @@ const rootSlice = createSlice({
   reducers:{
     setProjectFilter: (options, action: PayloadAction<Project | undefined>) => {
       options.projectFilter = action.payload;
+    },
+    setExecutorFilter: (options, action: PayloadAction<"all" | "my">) => {
+      options.taskExecutorFilter = action.payload;
     }
   },
   extraReducers: (builder) => {
@@ -25,8 +28,5 @@ const rootSlice = createSlice({
 });
 
 export const kanbanReducer = rootSlice.reducer;
-export const {setProjectFilter} = rootSlice.actions;
-export const kanbanActionContainer = {
-  setProjectFilter
-}
+export const {setProjectFilter, setExecutorFilter} = rootSlice.actions;
 
