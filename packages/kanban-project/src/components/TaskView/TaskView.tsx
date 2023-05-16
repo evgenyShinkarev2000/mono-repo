@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { forwardRef, useRef, useState } from "react";
 import { useOnClickOutside } from "@kanban/hooks/useOnClickOutside";
 import { TimerIcon } from "@kanban/ui/icons/Timer";
 import { ITask } from "@kanban/types/ITask";
@@ -22,17 +22,16 @@ type Props = {
     task: ITask;
 };
 
-export function TaskView(props: Props) {
-    const ref = useRef<HTMLDivElement | null>(null);
+export const TaskView = forwardRef<HTMLDivElement, Props>(function TaskView(props, ref) {
+    const contentRef = useRef<HTMLDivElement | null>(null);
     const { task } = props;
-    useOnClickOutside(ref, props.onClose);
+    useOnClickOutside(contentRef, props.onClose);
 
     const [comment, setComment] = useState("");
-    console.log(comment);
 
     return (
-        <S.Wrapper>
-            <S.Content ref={ref}>
+        <S.Wrapper ref={ref}>
+            <S.Content ref={contentRef}>
                 <S.Body>
                     <div>
                         <Text type="body-8" indent={1} style={{ padding: "8px 0" }}>
@@ -44,7 +43,7 @@ export function TaskView(props: Props) {
                         <S.Status>Статус “{task.status}”</S.Status>
                     </div>
                     <div>
-                        <Text indent={1} type="body-5" >
+                        <Text indent={1} type="body-5">
                             Проект
                         </Text>
                         <S.Field width={184}>
@@ -172,4 +171,4 @@ export function TaskView(props: Props) {
             </S.Content>
         </S.Wrapper>
     );
-}
+});

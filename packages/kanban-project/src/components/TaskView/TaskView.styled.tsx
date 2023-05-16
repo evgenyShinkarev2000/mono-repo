@@ -7,6 +7,22 @@ export const Wrapper = styled.div`
     background-color: rgba(0, 0, 0, 0.5);
     padding: 100px 0;
     overflow: auto;
+
+    transition: all 0.3s ease 0s;
+    opacity: 0;
+
+    &.enter-active {
+        opacity: 1;
+    }
+    &.enter-done {
+        opacity: 1;
+    }
+    &.exit-active {
+        opacity: 0;
+    }
+    &.exit-done {
+        opacity: 0;
+    }
 `;
 
 export const Content = styled.div`

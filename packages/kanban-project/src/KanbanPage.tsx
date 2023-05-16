@@ -1,15 +1,13 @@
-import { useEffect, useMemo, useState } from "react";
-import { createPortal } from "react-dom";
-import { useSelector } from "react-redux";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { Board } from "./components/Board";
 import { KanbanHeader } from "./components/KanbanHeader";
-import { TaskView } from "./components/TaskView/TaskView";
 import { TaskShort } from "./data/TaskShort";
-import { selectFilteredTasks } from "./store/TaskSelector";
 import { ITask, ITaskStatus } from "./types/ITask";
-import { kanbanApi, kanbanApiContainer } from "./store/Api";
-import { useAppDispatch, useAppSelector } from "../../shared/src/store/Hooks";
+import { CSSTransition } from "react-transition-group";
+import { TaskView } from "./components/TaskView/TaskView";
+import { provider } from "./api/provider";
+import { TaskLoader } from "./components/TaskLoader/TaskLoader";
 
 const Container = styled.div`
     padding-top: 32px;
@@ -17,53 +15,78 @@ const Container = styled.div`
     margin: 0 auto;
 `;
 
-export const KanbanPage = () =>
-{
-    kanbanApiContainer.useGetShortTasksQuery();
-    kanbanApi.useGetCurrentUserQuery();
-    const data = useAppSelector(selectFilteredTasks);
-    const filteredTasks = useMemo(() => data ?? [], [data]);
-    const adaptedTask = useMemo(() => filteredTasks.map(t => taskAdapter(t)), [filteredTasks]);
-    const [tasks, setTasks] = useState<ITask[]>(adaptedTask);
-    useEffect(() =>
-    {
-        setTasks(adaptedTask);
-    }, [filteredTasks]);
-    const [selectedId, setSelectedId] = useState("");
+function useTasks() {
+    const [tasks, setTasks] = useState<ITask[] | null>(null);
 
-    useEffect(() =>
-    {
-        // fetch("localhost:3000/tasks")
-        //     .then((r) => r.json())
-        //     .then(setTasks);
+    useEffect(() => {
+        setTimeout(() => {
+            fetch(provider.shortTasks)
+                .then((r) => r.json())
+                .then((data) => data.map(taskAdapter))
+                .then(setTasks);
+        }, 5000);
     }, []);
 
-    function removeCompletedTasks()
-    {
-        setTasks((prev) => prev.filter((task) => task.status !== "Завершенные"));
-        // fetch("localhost:3000/removeCompletedTasks")
+    return [tasks, setTasks] as const;
+}
+
+export const KanbanPage = () => {
+    const [tasks, setTasks] = useTasks();
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const selectedId = useRef("");
+    const taskViewRef = useRef<HTMLDivElement | null>(null);
+
+    if (!tasks) {
+        return <TaskLoader />;
     }
 
-    function onModalOpen(id: string)
-    {
-        setSelectedId(id);
+    function removeCompletedTasks() {
+        setTasks((prev) => {
+            if (!prev) return [];
+            return prev.filter((task) => task.status !== "Завершенные");
+        });
     }
 
-    const selectedTask = tasks.find((t) => t.title === selectedId);
+    const selectedTask = tasks.find((t) => t.title === selectedId.current);
+
+    function renderModal() {
+        if (!selectedTask) return null;
+        return (
+            <CSSTransition
+                timeout={300}
+                in={isModalOpen && selectedTask !== undefined}
+                unmountOnExit
+                onExited={() => (selectedId.current = "")}
+                nodeRef={taskViewRef}
+            >
+                <TaskView ref={taskViewRef} task={selectedTask} onClose={() => setIsModalOpen(false)} />
+            </CSSTransition>
+        );
+    }
 
     return (
         <>
             <Container>
                 <KanbanHeader onButtonClick={removeCompletedTasks} />
-                <Board tasks={tasks} onTasksChange={setTasks} onModalOpen={onModalOpen} />
+                {tasks ? (
+                    <Board
+                        tasks={tasks}
+                        onTasksChange={setTasks}
+                        onModalOpen={(id) => {
+                            selectedId.current = id;
+                            setIsModalOpen(true);
+                        }}
+                    />
+                ) : (
+                    <TaskLoader />
+                )}
+                {renderModal()}
             </Container>
-            {selectedTask && createPortal(<TaskView task={selectedTask} onClose={() => setSelectedId("")} />, document.body)}
         </>
     );
 };
 
-function taskAdapter(taskShort: TaskShort): ITask
-{
+function taskAdapter(taskShort: TaskShort): ITask {
     return {
         deadline: new Date(taskShort.deadline),
         executorName: taskShort.author.surname + " " + taskShort.author.name,
@@ -71,8 +94,7 @@ function taskAdapter(taskShort: TaskShort): ITask
         status: taskShort.status.name as unknown as ITaskStatus,
         tag: taskShort.tags?.length > 0 ? taskShort.tags[0].label : "",
         title: taskShort.title,
-    }
+    };
 }
 
-// TODO: variant enum refactor
 // TODO: fix Выполняются Выполняется
