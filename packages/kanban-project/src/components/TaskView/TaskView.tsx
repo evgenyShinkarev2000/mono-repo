@@ -6,8 +6,6 @@ import { PointsIcon } from "@kanban/ui/icons/Points";
 import * as S from "./TaskView.styled";
 import { DateView } from "@kanban/ui/DatePicker/DateView";
 import { BookmarkIcon, CalendarIcon, ClockIcon, PlayIcon, PlusInsideBoxIcon, TrashIcon } from "@kanban/ui/icons";
-import { DateRange } from "@kanban/ui/DatePicker/DateRange";
-import { TextArea } from "@kanban/ui/TextArea";
 import { Text } from "@kanban/ui/Text";
 import { CheckboxGroup } from "@kanban/ui/Checkbox/CheckboxGroup";
 import { Checkbox } from "@kanban/ui/Checkbox";
@@ -17,6 +15,7 @@ import { TaskViewComments } from "./TaskViewComments";
 import { mockComments } from "@kanban/mock/MockComments";
 import { CSSTransition } from "react-transition-group";
 import { DateRangeView } from "@kanban/ui/DatePicker/DateRangeView";
+import { TextView } from "@kanban/ui/TextArea/TextView";
 
 type Props = {
     onClose: () => void;
@@ -29,7 +28,6 @@ export const TaskView = forwardRef<HTMLDivElement, Props>(function TaskView(prop
     useOnClickOutside(contentRef, props.onClose);
 
     const [comment, setComment] = useState("");
-    const [range, setRange] = useState({ from: new Date(), to: new Date() });
 
     return (
         <S.Wrapper ref={ref}>
@@ -71,10 +69,7 @@ export const TaskView = forwardRef<HTMLDivElement, Props>(function TaskView(prop
                             icon={<CalendarIcon />}
                         />
                     </S.Inline>
-                    <TextArea
-                        onChange={() => {}}
-                        value="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation"
-                    />
+                    <TextView value="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation" />
                     <div style={{ display: "flex", gap: 8 }}>
                         <div>
                             <Text indent={1} type="body-5">
