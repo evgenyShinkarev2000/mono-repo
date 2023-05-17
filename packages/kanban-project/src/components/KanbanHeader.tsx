@@ -20,32 +20,26 @@ type Props = {
     onButtonClick: () => void;
 };
 
-export function KanbanHeader(props: Props)
-{
+export function KanbanHeader(props: Props) {
     const dispatch = useAppDispatch();
 
     const executors = useMemo(() => ["Все задачи", "Мои задачи"], []);
     const [selectedExecutorIndex, setSelectedExecutorIndex] = useState(0);
-    const handleSelectExecutor = (index: number) =>
-    {
+    const handleSelectExecutor = (index: number) => {
         setSelectedExecutorIndex(index);
         dispatch(setExecutorFilter(index == 0 ? "all" : "my"));
-    }
+    };
 
     const projects = kanbanApiContainer.useGetProjectQuery().data;
     const [selectedProjectIndex, setSelectedProjectIndex] = useState(-1);
-    const handleSelectProject = (index: number) =>
-    {
+    const handleSelectProject = (index: number) => {
         setSelectedProjectIndex(index);
-        if (projects && index < projects.length)
-        {
+        if (projects && index < projects.length) {
             dispatch(setProjectFilter(index >= 0 ? projects[index] : undefined));
-        }
-        else
-        {
+        } else {
             throw new Error("unexpected select index");
         }
-    }
+    };
 
     return (
         <StyledHeader>
@@ -55,18 +49,20 @@ export function KanbanHeader(props: Props)
                     items={executors}
                     selectedIndex={selectedExecutorIndex}
                     onSelect={(index) => handleSelectExecutor(index)}
-                    titleSelector={i => i as string}
+                    titleSelector={(i) => i as string}
                 />
                 <Select
                     placeholder="Все проекты"
                     items={projects ?? []}
                     selectedIndex={selectedProjectIndex}
                     onSelect={(index) => handleSelectProject(index)}
-                    titleSelector={project => project.name}
+                    titleSelector={(project) => project.name}
                     resetTitle="Все проекты"
                 />
             </Selects>
-            <Button variant="primary" onClick={props.onButtonClick}>Удалить завершенные задачи</Button>
+            <Button variant="primary" onClick={props.onButtonClick}>
+                Удалить завершенные задачи
+            </Button>
         </StyledHeader>
     );
 }

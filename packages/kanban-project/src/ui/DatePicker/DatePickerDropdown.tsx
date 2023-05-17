@@ -1,18 +1,12 @@
 import { TriangleIcon } from "../icons/Triangle";
 import * as S from "./DatePicker.styled";
+import { DateObject } from "./types";
 import { fillByDate, getMonth } from "./utils";
 
-type DateObject = {
-    day: number;
-    month: number;
-    year: number;
-};
-
 type DropdownProps = {
-    onSelect: (date: Date) => void;
     close: () => void;
     currentDate: DateObject;
-    onDateChange: (date: DateObject | ((prev: DateObject) => DateObject)) => void;
+    onDateChange: (date: DateObject) => void;
 };
 
 export function DatePickerDropdown(props: DropdownProps) {
@@ -26,7 +20,6 @@ export function DatePickerDropdown(props: DropdownProps) {
             month: date.getMonth() + 1,
             year: date.getFullYear(),
         });
-        props.onSelect(date);
         props.close();
     }
 
@@ -39,7 +32,7 @@ export function DatePickerDropdown(props: DropdownProps) {
             });
             return;
         }
-        props.onDateChange(({ month, year, day }) => ({ month: month + 1, year, day }));
+        props.onDateChange({ month: props.currentDate.month + 1, year: props.currentDate.year, day: props.currentDate.day });
     }
 
     function decreaseByMonth() {
@@ -51,7 +44,7 @@ export function DatePickerDropdown(props: DropdownProps) {
             });
             return;
         }
-        props.onDateChange(({ month, year, day }) => ({ month: month - 1, year, day }));
+        props.onDateChange({ month: props.currentDate.month - 1, year: props.currentDate.year, day: props.currentDate.day });
     }
 
     return (

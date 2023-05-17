@@ -16,6 +16,7 @@ import { TextField } from "@kanban/ui/TextField";
 import { TaskViewComments } from "./TaskViewComments";
 import { mockComments } from "@kanban/mock/MockComments";
 import { CSSTransition } from "react-transition-group";
+import { DateRangeView } from "@kanban/ui/DatePicker/DateRangeView";
 
 type Props = {
     onClose: () => void;
@@ -28,6 +29,7 @@ export const TaskView = forwardRef<HTMLDivElement, Props>(function TaskView(prop
     useOnClickOutside(contentRef, props.onClose);
 
     const [comment, setComment] = useState("");
+    const [range, setRange] = useState({ from: new Date(), to: new Date() });
 
     return (
         <S.Wrapper ref={ref}>
@@ -59,19 +61,15 @@ export const TaskView = forwardRef<HTMLDivElement, Props>(function TaskView(prop
                             </Text>
                             <S.Field width={184}>
                                 <BookmarkIcon />
-                                <Text type="body-1" style={{ lineHeight: "32px" }}>
-                                    {task.tag}
-                                </Text>
+                                <Text type="description-6">{task.tag}</Text>
                             </S.Field>
                         </div>
-                        <div>
-                            <DateRange
-                                label="Планируемые сроки выполнения"
-                                from={new Date()}
-                                to={new Date()}
-                                icon={<CalendarIcon />}
-                            />
-                        </div>
+                        <DateRangeView
+                            label="Планируемые сроки выполнения"
+                            from={new Date()}
+                            to={new Date()}
+                            icon={<CalendarIcon />}
+                        />
                     </S.Inline>
                     <TextArea
                         onChange={() => {}}
@@ -158,7 +156,13 @@ export const TaskView = forwardRef<HTMLDivElement, Props>(function TaskView(prop
                     </div>
                 </S.Body>
                 <S.Comments>
-                    <TextField onChange={setComment} value={comment} label="Комментарии" placeholder="Введите комментарий..." />
+                    <TextField
+                        onChange={setComment}
+                        value={comment}
+                        label="Комментарии"
+                        placeholder="Введите комментарий..."
+                        onKeyDown={(e) => e.key === "Enter" && setComment("")}
+                    />
                     <CSSTransition timeout={300} in={Boolean(comment)} unmountOnExit>
                         <S.AnimatedButton>
                             <Button variant="primary" onClick={() => setComment("")}>

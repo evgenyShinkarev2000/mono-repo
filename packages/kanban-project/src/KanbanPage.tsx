@@ -19,12 +19,12 @@ function useTasks() {
     const [tasks, setTasks] = useState<ITask[] | null>(null);
 
     useEffect(() => {
-        setTimeout(() => {
-            fetch(provider.shortTasks)
-                .then((r) => r.json())
-                .then((data) => data.map(taskAdapter))
-                .then(setTasks);
-        }, 5000);
+        // setTimeout(() => {
+        fetch(provider.shortTasks)
+            .then((r) => r.json())
+            .then((data) => data.map(taskAdapter))
+            .then(setTasks);
+        // }, 5000);
     }, []);
 
     return [tasks, setTasks] as const;
@@ -98,3 +98,4 @@ function taskAdapter(taskShort: TaskShort): ITask {
 }
 
 // TODO: fix Выполняются Выполняется
+// TODO: fix начальное открытие модального

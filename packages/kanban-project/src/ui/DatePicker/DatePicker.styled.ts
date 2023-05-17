@@ -13,7 +13,7 @@ export const Subtitle = styled.h4`
 `;
 
 export const Field = styled.div`
-    padding: 8px;
+    padding: 0 8px;
     background: #ffffff;
     border: 1px solid #afbac3;
     border-radius: 5px;
@@ -90,4 +90,25 @@ export const Cell = styled.div<{ disabled?: boolean }>`
                 }
             `;
     }}
+`;
+
+export const Times = styled.div`
+    user-select: none;
+`;
+
+export const Time = styled.time<{ selected: boolean }>`
+    cursor: pointer;
+    transition: all 0.3s ease 0s;
+
+    ${({ selected }) =>
+        selected
+            ? css`
+                  background-color: var(--primary-blue-8);
+                  color: var(--basic-white);
+              `
+            : css`
+                  &:hover {
+                      color: var(--primary-blue-8);
+                  }
+              `}
 `;

@@ -88,3 +88,12 @@ export function fillByDate(currentMonth: number, currentYear: number) {
 
     return filledInEnd;
 }
+
+export function getDate(date: Date | null) {
+    const noNullableDate = date ? date : new Date();
+    return {
+        day: noNullableDate.getDay(),
+        month: noNullableDate.getMonth() + 1,
+        year: noNullableDate.getFullYear(),
+    };
+}
