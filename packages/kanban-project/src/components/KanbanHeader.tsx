@@ -17,7 +17,8 @@ const Selects = styled.div`
 `;
 
 type Props = {
-    onButtonClick: () => void;
+    createTask: () => void;
+    deleteCompletedTasks: () => void;
 };
 
 export function KanbanHeader(props: Props) {
@@ -60,9 +61,14 @@ export function KanbanHeader(props: Props) {
                     resetTitle="Все проекты"
                 />
             </Selects>
-            <Button variant="primary" onClick={props.onButtonClick}>
-                Удалить завершенные задачи
-            </Button>
+            <div style={{ display: "flex", gap: 8 }}>
+                <Button variant="primary" onClick={props.createTask}>
+                    Создать задачу
+                </Button>
+                <Button variant="primary" onClick={props.deleteCompletedTasks}>
+                    Удалить завершенные задачи
+                </Button>
+            </div>
         </StyledHeader>
     );
 }

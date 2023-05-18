@@ -5,7 +5,7 @@ import { ITask } from "@kanban/types/ITask";
 import { PointsIcon } from "@kanban/ui/icons/Points";
 import * as S from "./TaskView.styled";
 import { DateView } from "@kanban/ui/DatePicker/DateView";
-import { BookmarkIcon, CalendarIcon, ClockIcon, PlayIcon, PlusInsideBoxIcon, TrashIcon } from "@kanban/ui/icons";
+import { BookmarkIcon, CalendarIcon, ClockIcon, PlayIcon, TrashIcon } from "@kanban/ui/icons";
 import { Text } from "@kanban/ui/Text";
 import { CheckboxGroup } from "@kanban/ui/Checkbox/CheckboxGroup";
 import { Checkbox } from "@kanban/ui/Checkbox";
@@ -19,6 +19,7 @@ import { TextView } from "@kanban/ui/TextArea/TextView";
 
 type Props = {
     onClose: () => void;
+    onEdit: () => void;
     task: ITask;
 };
 
@@ -89,7 +90,6 @@ export const TaskView = forwardRef<HTMLDivElement, Props>(function TaskView(prop
                     <div>
                         <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
                             <Text type="body-5">Исполнители</Text>
-                            <PlusInsideBoxIcon />
                         </div>
                         <div>
                             <Text type="description-7">Иван Иванович Иванов</Text>
@@ -99,7 +99,6 @@ export const TaskView = forwardRef<HTMLDivElement, Props>(function TaskView(prop
                     <div>
                         <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
                             <Text type="body-5">Чек лист</Text>
-                            <PlusInsideBoxIcon />
                         </div>
                         <CheckboxGroup onChange={console.log} readonly>
                             <Checkbox value="1 пункт" label="1 пункт" />
@@ -138,7 +137,7 @@ export const TaskView = forwardRef<HTMLDivElement, Props>(function TaskView(prop
                     </div>
                     <div style={{ marginBottom: 48 }}>
                         <S.TaskButtons>
-                            <Button onClick={() => {}} variant="primary" style={{ padding: "0 16px" }}>
+                            <Button onClick={props.onEdit} variant="primary" style={{ padding: "0 16px" }}>
                                 Редактировать
                             </Button>
                             <Button onClick={() => {}} variant="danger" style={{ padding: "0 16px" }}>

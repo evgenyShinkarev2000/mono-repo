@@ -8,6 +8,8 @@ import { CSSTransition } from "react-transition-group";
 import { TaskView } from "./components/TaskView/TaskView";
 import { provider } from "./api/provider";
 import { TaskLoader } from "./components/TaskLoader/TaskLoader";
+import { TaskEdit } from "./components/TaskEdit/TaskEdit";
+import { TaskCreate } from "./components/TaskCreate/TaskCreate";
 
 const Container = styled.div`
     padding-top: 32px;
@@ -30,11 +32,14 @@ function useTasks() {
     return [tasks, setTasks] as const;
 }
 
+function useStage() {}
+
 export const KanbanPage = () => {
     const [tasks, setTasks] = useTasks();
-    const [isModalOpen, setIsModalOpen] = useState(false);
     const selectedId = useRef("");
     const taskViewRef = useRef<HTMLDivElement | null>(null);
+
+    const [stage, setStage] = useState<"edit" | "view" | "create" | null>(null);
 
     if (!tasks) {
         return <TaskLoader />;
@@ -50,31 +55,43 @@ export const KanbanPage = () => {
     const selectedTask = tasks.find((t) => t.title === selectedId.current);
 
     function renderModal() {
-        if (!selectedTask) return null;
-        return (
-            <CSSTransition
-                timeout={300}
-                in={isModalOpen && selectedTask !== undefined}
-                unmountOnExit
-                onExited={() => (selectedId.current = "")}
-                nodeRef={taskViewRef}
-            >
-                <TaskView ref={taskViewRef} task={selectedTask} onClose={() => setIsModalOpen(false)} />
-            </CSSTransition>
-        );
+        if (!selectedTask || !stage) return null;
+        if (stage === "view") {
+            return (
+                <TaskView onEdit={() => setStage("edit")} ref={taskViewRef} task={selectedTask} onClose={() => setStage(null)} />
+            );
+        }
+
+        if (stage === "edit") {
+            return (
+                <TaskEdit
+                    onChange={() => {}}
+                    onSave={() => {}}
+                    ref={taskViewRef}
+                    task={selectedTask}
+                    onClose={() => setStage(null)}
+                />
+            );
+        }
+
+        if (stage === "create") {
+            return <TaskCreate ref={taskViewRef} onClose={() => setStage(null)} onCreate={console.log} />;
+        }
+
+        return <mark>Error</mark>;
     }
 
     return (
         <>
             <Container>
-                <KanbanHeader onButtonClick={removeCompletedTasks} />
+                <KanbanHeader deleteCompletedTasks={removeCompletedTasks} createTask={() => setStage("create")} />
                 {tasks ? (
                     <Board
                         tasks={tasks}
                         onTasksChange={setTasks}
                         onModalOpen={(id) => {
                             selectedId.current = id;
-                            setIsModalOpen(true);
+                            setStage("view");
                         }}
                     />
                 ) : (
