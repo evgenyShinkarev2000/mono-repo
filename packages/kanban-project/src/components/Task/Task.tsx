@@ -80,15 +80,43 @@ export function Task(props: Props) {
                         <CalendarIcon />
                         <time>{props.task.deadline.toLocaleDateString("ru")}</time>
                     </S.Date>
-                    {isHovered && (
-                        <S.Icons>
-                            <PlayIcon style={{ cursor: "pointer" }} onClick={() => alert("Типа старт задачи")} />
-                            <TrashIcon style={{ cursor: "pointer" }} onClick={() => alert("Типа удалилась")} />
-                        </S.Icons>
-                    )}
+                    {isHovered && <Icons />}
                 </S.Footer>
             </S.Wrapper>
             {placeholderPosition === "bottom" && <DndPlaceholder />}
         </S.Task>
+    );
+}
+
+function Icons() {
+    return (
+        <S.Icons>
+            <PlayIcon
+                style={{
+                    cursor: "pointer",
+                    borderRadius: 4.5,
+                    outline: "1px solid var(--basic-grey-icon)",
+                    color: "var(--basic-grey-icon)",
+                }}
+                onClick={() => alert("Типа старт задачи")}
+                hoverColors={{
+                    backgroundColor: "var(--primary-blue-8)",
+                    color: "var(--basic-white)",
+                }}
+            />
+            <TrashIcon
+                style={{
+                    cursor: "pointer",
+                    borderRadius: 4.5,
+                    outline: "1px solid var(--basic-grey-icon)",
+                    color: "var(--basic-grey-icon)",
+                }}
+                onClick={() => alert("Типа удалилась")}
+                hoverColors={{
+                    backgroundColor: "var(--primary-blue-8)",
+                    color: "var(--basic-white)",
+                }}
+            />
+        </S.Icons>
     );
 }

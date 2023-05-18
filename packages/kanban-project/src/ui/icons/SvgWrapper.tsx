@@ -1,22 +1,38 @@
 import { CSSProperties, MouseEvent, ReactNode } from "react";
-import { useHover } from "@kanban/hooks/useHover";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
+import { Colors } from "./IconProps";
 
 type Props = {
-    children: ReactNode | ((isHovered: boolean) => ReactNode);
+    children: ReactNode;
     style?: CSSProperties;
     onClick?: (e: MouseEvent) => void;
+    hoverColors?: Colors;
     viewBox?: string | number;
 };
 
-const Wrapper = styled.svg`
+const Wrapper = styled.svg<{ colors?: Colors }>`
+    transition: all 0.3s ease 0s;
+    fill: currentColor;
     display: flex;
     justify-content: center;
     align-items: center;
+
+    ${({ colors }) => {
+        if (colors) {
+            console.log(1);
+            return css`
+                &:hover {
+                    color: ${colors.color} !important;
+                    background-color: ${colors.backgroundColor} !important;
+                    outline: 0 !important;
+                }
+            `;
+        }
+        return "";
+    }}
 `;
 
 export function SvgWrapper(props: Props) {
-    const [hoverRef, isHovered] = useHover<SVGSVGElement>();
     const viewBox = props.viewBox
         ? typeof props.viewBox === "number"
             ? `0 0 ${props.viewBox} ${props.viewBox}`
@@ -28,19 +44,18 @@ export function SvgWrapper(props: Props) {
 
     return (
         <Wrapper
+            colors={props.hoverColors}
             onClick={(e) => {
                 e.stopPropagation();
                 if (props.onClick) props.onClick(e);
             }}
-            ref={hoverRef}
             width={width}
             height={height}
             viewBox={viewBox}
-            fill="none"
             xmlns="http://www.w3.org/2000/svg"
             style={props.style}
         >
-            {typeof props.children === "function" ? props.children(isHovered) : props.children}
+            {props.children}
         </Wrapper>
     );
 }
