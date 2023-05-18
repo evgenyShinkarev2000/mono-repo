@@ -32,8 +32,6 @@ function useTasks() {
     return [tasks, setTasks] as const;
 }
 
-function useStage() {}
-
 export const KanbanPage = () => {
     const [tasks, setTasks] = useTasks();
     const selectedId = useRef("");
@@ -52,33 +50,34 @@ export const KanbanPage = () => {
         });
     }
 
-    const selectedTask = tasks.find((t) => t.title === selectedId.current);
-
     function renderModal() {
-        if (!selectedTask || !stage) return null;
-        if (stage === "view") {
-            return (
-                <TaskView onEdit={() => setStage("edit")} ref={taskViewRef} task={selectedTask} onClose={() => setStage(null)} />
-            );
-        }
+        if (!tasks) return;
+        const selectedTask = tasks.find((t) => t.title === selectedId.current) as ITask;
 
-        if (stage === "edit") {
-            return (
-                <TaskEdit
-                    onChange={() => {}}
-                    onSave={() => {}}
-                    ref={taskViewRef}
-                    task={selectedTask}
-                    onClose={() => setStage(null)}
-                />
-            );
-        }
-
-        if (stage === "create") {
-            return <TaskCreate ref={taskViewRef} onClose={() => setStage(null)} onCreate={console.log} />;
-        }
-
-        return <mark>Error</mark>;
+        return (
+            <>
+                <CSSTransition timeout={300} in={stage === "view" && Boolean(selectedTask)} unmountOnExit mountOnEnter>
+                    <TaskView
+                        onEdit={() => setStage("edit")}
+                        ref={taskViewRef}
+                        task={selectedTask}
+                        onClose={() => setStage(null)}
+                    />
+                </CSSTransition>
+                <CSSTransition timeout={300} in={stage === "edit" && Boolean(selectedTask)} unmountOnExit mountOnEnter>
+                    <TaskEdit
+                        onChange={() => {}}
+                        onSave={() => {}}
+                        ref={taskViewRef}
+                        task={selectedTask}
+                        onClose={() => setStage(null)}
+                    />
+                </CSSTransition>
+                <CSSTransition timeout={300} in={stage === "create" && Boolean(selectedTask)} unmountOnExit mountOnEnter>
+                    <TaskCreate ref={taskViewRef} onClose={() => setStage(null)} onCreate={console.log} />
+                </CSSTransition>
+            </>
+        );
     }
 
     return (
@@ -115,4 +114,3 @@ function taskAdapter(taskShort: TaskShort): ITask {
 }
 
 // TODO: fix Выполняются Выполняется
-// TODO: fix начальное открытие модального
