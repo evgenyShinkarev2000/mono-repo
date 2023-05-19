@@ -1,10 +1,11 @@
 import { kanbanApiContainer } from "@kanban/store/Api";
 import { setExecutorFilter, setProjectFilter } from "@kanban/store/KanbanSlice";
+import { DropdownConverter } from "@kanban/utils/converters/DropdownConverter";
 import { useMemo, useState } from "react";
 import styled from "styled-components";
 import { useAppDispatch } from "../../../shared/src/store/Hooks";
 import { Button } from "../ui/Button";
-import { Select } from "../ui/Select";
+import { Dropdown } from "../ui/Dropdown";
 
 const StyledHeader = styled.div`
     display: flex;
@@ -21,10 +22,12 @@ type Props = {
     deleteCompletedTasks: () => void;
 };
 
+type Project = "Канбан" | "Гант" | "Оценка";
+type Filter = "Все задачи" | "Мои задачи";
+
 export function KanbanHeader(props: Props) {
     const dispatch = useAppDispatch();
 
-    const executors = useMemo(() => ["Все задачи", "Мои задачи"], []);
     const [selectedExecutorIndex, setSelectedExecutorIndex] = useState(0);
     const handleSelectExecutor = (index: number) => {
         setSelectedExecutorIndex(index);
@@ -42,23 +45,29 @@ export function KanbanHeader(props: Props) {
         }
     };
 
+    const [project, setProject] = useState<Project | null>(null);
+    const [filter, setFilter] = useState<Filter | null>(null);
+
     return (
         <StyledHeader>
             <Selects>
-                <Select
+                <Dropdown<Filter, string>
                     placeholder="Фильтр по исполнителям"
-                    items={executors}
-                    selectedIndex={selectedExecutorIndex}
-                    onSelect={(index) => handleSelectExecutor(index)}
-                    titleSelector={(i) => i as string}
+                    data={["Все задачи", "Мои задачи"]}
+                    onSelect={(item) => setFilter(item)}
+                    dataConverter={(item) => <DropdownConverter.Data.Header>{item}</DropdownConverter.Data.Header>}
+                    idAccessor={(item) => item}
+                    selectedConverter={(item) => <DropdownConverter.Selected.Header>{item}</DropdownConverter.Selected.Header>}
+                    selectedId={filter}
                 />
-                <Select
+                <Dropdown<Project, string>
                     placeholder="Все проекты"
-                    items={projects ?? []}
-                    selectedIndex={selectedProjectIndex}
-                    onSelect={(index) => handleSelectProject(index)}
-                    titleSelector={(project) => project.name}
-                    resetTitle="Все проекты"
+                    data={["Гант", "Канбан", "Оценка"]}
+                    onSelect={(item) => setProject(item)}
+                    dataConverter={(item) => <DropdownConverter.Data.Header>{item}</DropdownConverter.Data.Header>}
+                    idAccessor={(item) => item}
+                    selectedConverter={(item) => <DropdownConverter.Selected.Header>{item}</DropdownConverter.Selected.Header>}
+                    selectedId={project}
                 />
             </Selects>
             <div style={{ display: "flex", gap: 8 }}>

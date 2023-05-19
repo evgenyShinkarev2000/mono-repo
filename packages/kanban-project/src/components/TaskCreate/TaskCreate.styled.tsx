@@ -37,7 +37,7 @@ export const Content = styled.div`
 export const Body = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 16px;
 `;
 
 export const Comments = styled.div`
