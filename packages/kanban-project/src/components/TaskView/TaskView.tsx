@@ -25,10 +25,22 @@ type Props = {
 
 export const TaskView = forwardRef<HTMLDivElement, Props>(function TaskView(props, ref) {
     const contentRef = useRef<HTMLDivElement | null>(null);
-    const { task } = props;
     useOnClickOutside(contentRef, props.onClose);
 
     const [comment, setComment] = useState("");
+    const [comments, setComments] = useState(mockComments);
+
+    function onSendComment() {
+        setComment("");
+        setComments((prev) => [
+            {
+                name: "user01",
+                text: comment,
+                time: new Date(),
+            },
+            ...prev,
+        ]);
+    }
 
     return (
         <S.Wrapper ref={ref}>
@@ -36,12 +48,12 @@ export const TaskView = forwardRef<HTMLDivElement, Props>(function TaskView(prop
                 <S.Body>
                     <div>
                         <Text type="body-8" indent={1} style={{ padding: "8px 0" }}>
-                            {task.title}
+                            {props.task.title}
                         </Text>
                         <S.BaseTask>
                             Базовая задача: <span>Название задачи родителя</span>
                         </S.BaseTask>
-                        <S.Status>Статус “{task.status}”</S.Status>
+                        <S.Status>Статус “{props.task.status}”</S.Status>
                     </div>
                     <div>
                         <Text indent={1} type="body-5">
@@ -60,7 +72,7 @@ export const TaskView = forwardRef<HTMLDivElement, Props>(function TaskView(prop
                             </Text>
                             <S.Field width={184}>
                                 <BookmarkIcon />
-                                <Text type="description-6">{task.tag}</Text>
+                                <Text type="description-6">{props.task.tag}</Text>
                             </S.Field>
                         </div>
                         <DateRangeView
@@ -155,16 +167,16 @@ export const TaskView = forwardRef<HTMLDivElement, Props>(function TaskView(prop
                         value={comment}
                         label="Комментарии"
                         placeholder="Введите комментарий..."
-                        onKeyDown={(e) => e.key === "Enter" && setComment("")}
+                        onKeyDown={(e) => e.key === "Enter" && onSendComment()}
                     />
                     <CSSTransition timeout={300} in={Boolean(comment)} unmountOnExit>
                         <S.AnimatedButton>
-                            <Button variant="primary" onClick={() => setComment("")}>
+                            <Button variant="primary" onClick={onSendComment}>
                                 Отправить
                             </Button>
                         </S.AnimatedButton>
                     </CSSTransition>
-                    <TaskViewComments comments={mockComments} />
+                    <TaskViewComments comments={comments} />
                 </S.Comments>
             </S.Content>
         </S.Wrapper>

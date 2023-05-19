@@ -37,7 +37,7 @@ export const TaskCreate = forwardRef<HTMLDivElement, Props>(function TaskView(pr
                     </div>
                     <div>
                         <Dropdown<Project, string>
-                            placeholder="123"
+                            placeholder="Проект"
                             data={["Канбан", "Гант", "Оценка"]}
                             onSelect={(item) => setProject(item)}
                             dataConverter={(item) => <DropdownConverter.Data.Header>{item}</DropdownConverter.Data.Header>}
