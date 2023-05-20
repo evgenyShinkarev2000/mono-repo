@@ -115,3 +115,4 @@ function taskAdapter(taskShort: TaskShort): ITask {
 
 // TODO: fix Выполняются Выполняется
 // TODO: алерт при удалении завершенных
+// TODO: dropdown arrow don't close dropdown

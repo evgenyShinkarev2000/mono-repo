@@ -48,7 +48,9 @@ export function DatePicker(props: Props) {
                 </Text>
                 <S.Field onClick={() => setOpen(!open)}>
                     {props.icon}
-                    <p style={{ flexGrow: 1 }}>{getViewDate()}</p>
+                    <Text style={{ flexGrow: 1 }} type="description-6">
+                        {getViewDate()}
+                    </Text>
                     <ArrowIcon style={{ transitionDuration: ".3s", transform: `rotate3d(1, 0, 0, ${open ? 180 : 0}deg)` }} />
                 </S.Field>
             </div>

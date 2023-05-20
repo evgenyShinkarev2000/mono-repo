@@ -4,6 +4,10 @@ const SelectText = styled.div`
     color: #565656;
 `;
 
+const SelectedCreteTask = styled.div`
+    color: #565656;
+`;
+
 const Value = styled.div`
     padding: 8px 16px;
     cursor: pointer;
@@ -18,8 +22,10 @@ const Value = styled.div`
 export const DropdownConverter = {
     Selected: {
         Header: SelectText,
+        CreateTask: SelectedCreteTask,
     },
     Data: {
         Header: Value,
+        CreateTask: Value,
     },
 };

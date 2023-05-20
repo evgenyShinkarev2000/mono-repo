@@ -18,9 +18,10 @@ export const Values = styled.div<{ height: number }>`
     background-color: #ffffff;
     border-radius: 5px;
     opacity: 0;
-    height: calc(${({ height }) => height}% + 4px);
+    height: calc(${({ height }) => height}% + 12px);
     overflow: hidden;
     transition: all 0.3s ease 0s;
+    z-index: 1;
 
     &.enter-active {
         opacity: 1;
@@ -46,7 +47,7 @@ export const StyledSelect = styled.div<{ active: boolean }>`
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
-    padding: 8px 16px;
+    padding: 0px 16px;
     position: relative;
     z-index: 1;
     transition: all 0.3s ease 0s;
@@ -62,4 +63,10 @@ export const StyledSelect = styled.div<{ active: boolean }>`
     background-color: #ffffff;
     border: 1px solid var(--basic-grey);
     border-radius: 5px;
+`;
+
+export const IconWrapper = styled.div`
+    display: flex;
+    gap: 8px;
+    align-items: center;
 `;

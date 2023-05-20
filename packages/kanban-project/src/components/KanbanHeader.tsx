@@ -1,5 +1,6 @@
 import { kanbanApiContainer } from "@kanban/store/Api";
 import { setExecutorFilter, setProjectFilter } from "@kanban/store/KanbanSlice";
+import { Text } from "@kanban/ui/Text";
 import { DropdownConverter } from "@kanban/utils/converters/DropdownConverter";
 import { useMemo, useState } from "react";
 import styled from "styled-components";
@@ -53,6 +54,7 @@ export function KanbanHeader(props: Props) {
             <Selects>
                 <Dropdown<Filter, string>
                     placeholder="Фильтр по исполнителям"
+                    placeholderConverter={(p) => <Text type="description-4">{p}</Text>}
                     data={["Все задачи", "Мои задачи"]}
                     onSelect={(item) => setFilter(item)}
                     dataConverter={(item) => <DropdownConverter.Data.Header>{item}</DropdownConverter.Data.Header>}
@@ -62,6 +64,7 @@ export function KanbanHeader(props: Props) {
                 />
                 <Dropdown<Project, string>
                     placeholder="Все проекты"
+                    placeholderConverter={(p) => <Text type="description-4">{p}</Text>}
                     data={["Гант", "Канбан", "Оценка"]}
                     onSelect={(item) => setProject(item)}
                     dataConverter={(item) => <DropdownConverter.Data.Header>{item}</DropdownConverter.Data.Header>}

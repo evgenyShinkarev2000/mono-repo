@@ -19,7 +19,6 @@ const Wrapper = styled.svg<{ colors?: Colors }>`
 
     ${({ colors }) => {
         if (colors) {
-            console.log(1);
             return css`
                 &:hover {
                     color: ${colors.color} !important;
