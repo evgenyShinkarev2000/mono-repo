@@ -1,6 +1,7 @@
 import { Text } from "@kanban/ui/Text";
 import { CheckMarkIcon } from "../icons";
 import * as S from "./Checkbox.styled";
+import { CloseItem } from "../icons/CloseItem";
 
 type Props = {
     label: string;
@@ -29,7 +30,10 @@ export function Checkbox(props: Props) {
                         <CheckMarkIcon />
                     </S.CustomCheckbox>
                 </S.CustomCheckboxWrapper>
+                <div style={{backgroundColor: "white", padding: "4px 8px", border: "1px solid var(--basic-grey)", borderRadius: "4px"}}>
                 <Text type="description-8">{props.label}</Text>
+                </div>
+                <CloseItem></CloseItem>
             </S.Label>
         </div>
     );
