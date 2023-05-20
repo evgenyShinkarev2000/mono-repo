@@ -4,10 +4,6 @@ const SelectText = styled.div`
     color: #565656;
 `;
 
-const SelectedCreteTask = styled.div`
-    color: #565656;
-`;
-
 const Value = styled.div`
     padding: 8px 16px;
     cursor: pointer;
@@ -19,13 +15,27 @@ const Value = styled.div`
     }
 `;
 
+const createTaskBase = styled.div`
+cursor: pointer;
+color: #565656;
+padding-block: 6.5px;
+`
+
+const selectedCreteTask = styled(createTaskBase)`
+
+`;
+
+const createTaskValue = styled(createTaskBase)`
+padding-inline: 16px;
+`;
+
 export const DropdownConverter = {
     Selected: {
         Header: SelectText,
-        CreateTask: SelectedCreteTask,
+        CreateTask: selectedCreteTask,
     },
     Data: {
         Header: Value,
-        CreateTask: Value,
+        CreateTask: createTaskValue,
     },
 };
