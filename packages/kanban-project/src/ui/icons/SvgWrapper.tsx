@@ -25,6 +25,9 @@ const Wrapper = styled.svg<{ colors?: Colors }>`
                     background-color: ${colors.backgroundColor} !important;
                     outline: 0 !important;
                 }
+                &:hover path{
+                    fill: ${colors.color}
+                }
             `;
         }
         return "";
