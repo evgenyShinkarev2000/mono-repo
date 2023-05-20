@@ -73,7 +73,7 @@ export const KanbanPage = () => {
                         onClose={() => setStage(null)}
                     />
                 </CSSTransition>
-                <CSSTransition timeout={300} in={stage === "create" && Boolean(selectedTask)} unmountOnExit mountOnEnter>
+                <CSSTransition timeout={300} in={stage === "create"} unmountOnExit mountOnEnter>
                     <TaskCreate ref={taskViewRef} onClose={() => setStage(null)} onCreate={console.log} />
                 </CSSTransition>
             </>
@@ -114,3 +114,4 @@ function taskAdapter(taskShort: TaskShort): ITask {
 }
 
 // TODO: fix Выполняются Выполняется
+// TODO: алерт при удалении завершенных
