@@ -48,6 +48,7 @@ export const Dropdown = styled.div`
     display: flex;
     flex-direction: column;
     gap: 12px;
+    z-index: 2;
 `;
 
 export const DropdownDate = styled.div`
