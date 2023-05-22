@@ -1,19 +1,19 @@
-import React, {Component, useEffect} from 'react';
 import axios from 'axios';
-import './Gantt.css'
-import {gantt} from 'dhtmlx-gantt';
+import { gantt } from 'dhtmlx-gantt';
 import 'dhtmlx-gantt/codebase/dhtmlxgantt.css';
-import s from "../Main/Main.module.css";
-import {ReactComponent as Exit} from "../../Assets/img/exitmodal.svg"
-import {ReactComponent as Play} from "../../Assets/img/playWhite.svg"
-import {ReactComponent as Stop} from "../../Assets/img/stop.svg"
-import {ReactComponent as TrashWhite} from "../../Assets/img/trashWhite.svg"
-import {ReactComponent as Add} from "../../Assets/img/addButton.svg"
-import {ReactComponent as Del} from "../../Assets/img/deleteButton.svg"
-import {ReactComponent as Clock} from "../../Assets/img/clock.svg"
-import {toast} from 'react-toastify';
+import React, { Component } from 'react';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {onKanbanViewChange} from './onKanban';
+import { ReactComponent as Add } from "../../Assets/img/addButton.svg";
+import { ReactComponent as Clock } from "../../Assets/img/clock.svg";
+import { ReactComponent as Del } from "../../Assets/img/deleteButton.svg";
+import { ReactComponent as Exit } from "../../Assets/img/exitmodal.svg";
+import { ReactComponent as Play } from "../../Assets/img/playWhite.svg";
+import { ReactComponent as Stop } from "../../Assets/img/stop.svg";
+import { ReactComponent as TrashWhite } from "../../Assets/img/trashWhite.svg";
+import s from "../Main/Main.module.css";
+import './Gantt.css';
+import { onKanbanViewChange } from './onKanban';
 
 window.onKanbanViewChange = onKanbanViewChange;
 let taskId = null;
@@ -703,7 +703,7 @@ export default class Gantt extends Component {
                                         <button onClick={this.handleAdd}><Add/></button>
                                     </div>
                                     {this.state.data.map((performer, index) => (
-                                        <div>
+                                        <div key={-index}>
                                             <select key={index}>
                                                 <option>{performer}</option>
                                             </select>

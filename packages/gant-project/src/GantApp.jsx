@@ -4,7 +4,7 @@ import Main from './Components/Main/Main'
 import {ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-function App() {
+export function GantApp() {
 
 
     return (
@@ -15,5 +15,3 @@ function App() {
         </div>
     )
 }
-
-export default App

@@ -1,1 +1,1 @@
-export {App} from "./App";
+export { GantApp } from './GantApp.jsx';
