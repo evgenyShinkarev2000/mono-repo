@@ -3,7 +3,6 @@ import { configureStore } from "@reduxjs/toolkit";
 import { kanbanReducer } from '@mono-repo/kanban-project';
 import { rootReducer } from "@mono-repo/root-project";
 import { gradeReducer } from "@mono-repo/grade-project";
-import { gantReducer } from "@mono-repo/gant-project";
 
 
 export const store = configureStore({
@@ -11,7 +10,6 @@ export const store = configureStore({
     rootReducer,
     kanbanReducer,
     gradeReducer,
-    gantReducer,
     [kanbanApi.reducerPath]: kanbanApi.reducer
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(kanbanApi.middleware),
