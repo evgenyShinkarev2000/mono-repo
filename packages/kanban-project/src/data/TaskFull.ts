@@ -1,4 +1,4 @@
-import { CheckListItem } from "./CheckListItem";
+import { Stage } from "./Stage";
 import { Person } from "./Person";
 import { TaskShort } from "./TaskShort";
 
@@ -9,6 +9,6 @@ export type TaskFull = TaskShort & {
     begin: Date,
     end: Date,
   },
-  checkList: CheckListItem[],
+  checkList: Stage[],
   wastedTimes: Array<{time: number, contractor: Person}>,
 }

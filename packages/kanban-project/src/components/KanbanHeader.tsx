@@ -35,7 +35,7 @@ export function KanbanHeader(props: Props) {
         dispatch(setExecutorFilter(index == 0 ? "all" : "my"));
     };
 
-    const projects = kanbanApiContainer.useGetProjectQuery().data;
+    const projects = kanbanApiContainer.useGetProjectsQuery().data;
     const [selectedProjectIndex, setSelectedProjectIndex] = useState(-1);
     const handleSelectProject = (index: number) => {
         setSelectedProjectIndex(index);

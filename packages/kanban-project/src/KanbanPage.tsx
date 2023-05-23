@@ -1,15 +1,19 @@
 import { useEffect, useRef, useState } from "react";
+import { CSSTransition } from "react-transition-group";
 import styled from "styled-components";
+import { useAppSelector } from "../../shared/src/store/Hooks";
+import { provider } from "./api/provider";
 import { Board } from "./components/Board";
 import { KanbanHeader } from "./components/KanbanHeader";
-import { TaskShort } from "./data/TaskShort";
-import { ITask, ITaskStatus } from "./types/ITask";
-import { CSSTransition } from "react-transition-group";
-import { TaskView } from "./components/TaskView/TaskView";
-import { provider } from "./api/provider";
-import { TaskLoader } from "./components/TaskLoader/TaskLoader";
-import { TaskEdit } from "./components/TaskEdit/TaskEdit";
 import { TaskCreate } from "./components/TaskCreate/TaskCreate";
+import { TaskEdit } from "./components/TaskEdit/TaskEdit";
+import { TaskLoader } from "./components/TaskLoader/TaskLoader";
+import { TaskView } from "./components/TaskView/TaskView";
+import { TaskShort } from "./data/TaskShort";
+import { kanbanApiContainer } from "./store/Api";
+import { selectShortTasks } from "./store/TaskShortSelector";
+import { ITask, ITaskStatus } from "./types/ITask";
+import { Status } from "./data/Status";
 
 const Container = styled.div`
     padding-top: 32px;
@@ -17,10 +21,12 @@ const Container = styled.div`
     margin: 0 auto;
 `;
 
-function useTasks() {
+function useTasks()
+{
     const [tasks, setTasks] = useState<ITask[] | null>(null);
 
-    useEffect(() => {
+    useEffect(() =>
+    {
         // setTimeout(() => {
         fetch(provider.shortTasks)
             .then((r) => r.json())
@@ -32,25 +38,49 @@ function useTasks() {
     return [tasks, setTasks] as const;
 }
 
-export const KanbanPage = () => {
-    const [tasks, setTasks] = useTasks();
+const useShortTasks = () =>
+{
+    kanbanApiContainer.useGetShortTasksSerializableQuery();
+
+    return useAppSelector(selectShortTasks);
+}
+
+const usePatchStatus = (taskId: number, newStatus: Status) =>
+{
+    const [getFullTaskSerializable, data] = kanbanApiContainer.useGetFullTaskSerializableMutation();
+    //TODO put fullTask
+
+}
+
+export const KanbanPage = () =>
+{
+    useShortTasks();
+    kanbanApiContainer.useGetProjectsQuery();
+    const tasks = useShortTasks().data?.map(t => taskAdapter(t));
+    const setTasks = (...args: any[]) => { }
     const selectedId = useRef("");
     const taskViewRef = useRef<HTMLDivElement | null>(null);
 
     const [stage, setStage] = useState<"edit" | "view" | "create" | null>(null);
 
-    if (!tasks) {
+    if (!tasks)
+    {
         return <TaskLoader />;
     }
 
-    function removeCompletedTasks() {
-        setTasks((prev) => {
+    function removeCompletedTasks()
+    {
+        //@ts-ignore
+        setTasks((prev) =>
+        {
             if (!prev) return [];
+            //@ts-ignore
             return prev.filter((task) => task.status !== "Завершенные");
         });
     }
 
-    function renderModal() {
+    function renderModal()
+    {
         if (!tasks) return;
         const selectedTask = tasks.find((t) => t.title === selectedId.current) as ITask;
 
@@ -66,8 +96,8 @@ export const KanbanPage = () => {
                 </CSSTransition>
                 <CSSTransition timeout={300} in={stage === "edit" && Boolean(selectedTask)} unmountOnExit mountOnEnter>
                     <TaskEdit
-                        onChange={() => {}}
-                        onSave={() => {}}
+                        onChange={() => { }}
+                        onSave={() => { }}
                         ref={taskViewRef}
                         task={selectedTask}
                         onClose={() => setStage(null)}
@@ -88,7 +118,8 @@ export const KanbanPage = () => {
                     <Board
                         tasks={tasks}
                         onTasksChange={setTasks}
-                        onModalOpen={(id) => {
+                        onModalOpen={(id) =>
+                        {
                             selectedId.current = id;
                             setStage("view");
                         }}
@@ -102,13 +133,14 @@ export const KanbanPage = () => {
     );
 };
 
-function taskAdapter(taskShort: TaskShort): ITask {
+function taskAdapter(taskShort: TaskShort): ITask
+{
     return {
         deadline: new Date(taskShort.deadline),
         executorName: taskShort.author.surname + " " + taskShort.author.name,
         project: taskShort.project.name,
-        status: taskShort.status.name as unknown as ITaskStatus,
-        tag: taskShort.tags?.length > 0 ? taskShort.tags[0].label : "",
+        status: taskShort.status?.name as unknown as ITaskStatus,
+        tag: taskShort.tag,
         title: taskShort.title,
     };
 }

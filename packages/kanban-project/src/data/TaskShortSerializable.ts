@@ -1,14 +1,13 @@
-import { Entity } from "./Entity";
 import { Person } from "./Person";
 import { Project } from "./Project";
 import { Status } from "./Status";
 
-export type TaskShort = Entity & {
+export type TaskSHortSerializable = {
   title: string;
   status: Status;
   project: Project;
   tag: string;
   contractors: Person[];
   author: Person;
-  deadline: Date;
+  deadline: number;
 }

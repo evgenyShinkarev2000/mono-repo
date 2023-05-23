@@ -1,18 +1,18 @@
-import { createSelector } from '@reduxjs/toolkit';
-import { kanbanApi } from "./Api";
+import { Person } from "@kanban/data/Person";
+import { Project } from "@kanban/data/Project";
+import { TaskShort } from "@kanban/data/TaskShort";
+import { createSelector } from "@reduxjs/toolkit";
 import { RootState } from '../../../shared/src/store';
-import { Project } from '@kanban/data/Project';
-import { Person } from '@kanban/data/Person';
-import { TaskShort } from '@kanban/data/TaskShort';
+import { kanbanApi } from "./Api";
 
-const selectTasks = kanbanApi.endpoints.getShortTasks.select();
 const selectProjectFilter = (store: RootState) => store.kanbanReducer.projectFilter;
 const selectExecutorFilter = (store: RootState) => store.kanbanReducer.taskExecutorFilter;
 const selectCurrentUser = kanbanApi.endpoints.getCurrentUser.select();
+const selectSerializableTasks = kanbanApi.endpoints.getShortTasksSerializable.select();
 const emptyTasks: any[] = [];
 
 export const selectFilteredTasks = createSelector(
-  selectTasks,
+  selectSerializableTasks,
   selectProjectFilter,
   selectExecutorFilter,
   selectCurrentUser,
