@@ -1,7 +1,7 @@
 {
-  "/task/short": "/task/full",
-  "/task/full": "/taskFull",
+  "/tasks": "/taskFull",
+  "/tasks/:id": "/taskFull/:id",
   "/employee?projectId=:id": "/employeeProject:id",
-  "/availableProject": "/project",
+  "/projects": "/project",
   "/user/current": "/currentUser"
 }

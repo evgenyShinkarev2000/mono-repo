@@ -65,7 +65,8 @@
             "patronymic": "Геннадьевич"
           }
         }
-      ]
+      ],
+      "comments": []
     },
     {
       "id": 2,
@@ -132,7 +133,17 @@
             "patronymic": "Александрович"
           }
         }
-      ]
+      ],
+      "comments": [{
+        "author": {
+          "id": 3,
+          "name": "Елизавета",
+          "surname": "Осипова",
+          "patronymic": "Сергеевна"
+        },
+        "content": "Текст комментария",
+        "time": null
+      }]
     },
     {
       "id": 3,
@@ -199,7 +210,8 @@
             "patronymic": "Сергеевна"
           }
         }
-      ]
+      ],
+      "comments": []
     }
   ],
   "employeeProject1": [
