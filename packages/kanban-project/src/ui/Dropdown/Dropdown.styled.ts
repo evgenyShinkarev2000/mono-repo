@@ -21,7 +21,7 @@ export const Values = styled.div<{ height: number }>`
     height: calc(${({ height }) => height}% + 12px);
     overflow: hidden;
     transition: all 0.3s ease 0s;
-    z-index: 1;
+    z-index: 2;
 
     &.enter-active {
         opacity: 1;

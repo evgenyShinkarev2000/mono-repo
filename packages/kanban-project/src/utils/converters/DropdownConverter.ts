@@ -16,17 +16,19 @@ const Value = styled.div`
 `;
 
 const createTaskBase = styled.div`
-cursor: pointer;
-color: #565656;
-padding-block: 6.5px;
-`
-
-const selectedCreteTask = styled(createTaskBase)`
-
+    cursor: pointer;
+    color: #565656;
+    padding-block: 6.5px;
 `;
 
+const selectedCreteTask = styled(createTaskBase)``;
+
 const createTaskValue = styled(createTaskBase)`
-padding-inline: 16px;
+    padding-inline: 16px;
+
+    :hover {
+        background: var(--primary-blue-0);
+    }
 `;
 
 export const DropdownConverter = {

@@ -10,10 +10,7 @@ import { BookmarkIcon, CalendarIcon, ClockIcon, PlusInsideBoxIcon, PointsIcon } 
 import { DatePicker } from "@kanban/ui/DatePicker/DatePicker";
 import { DateRange } from "@kanban/ui/DatePicker/DateRange";
 import { DateRangeObject } from "@kanban/ui/DatePicker/types";
-import { TextView } from "@kanban/ui/TextArea/TextView";
 import { CloseItem } from "@kanban/ui/icons/CloseItem";
-import { CheckboxGroup } from "@kanban/ui/Checkbox/CheckboxGroup";
-import { Checkbox } from "@kanban/ui/Checkbox";
 import { Button } from "@kanban/ui/Button";
 import { TextArea } from "@kanban/ui/TextArea";
 
@@ -36,6 +33,7 @@ export const TaskCreate = forwardRef<HTMLDivElement, Props>(function TaskView(pr
     const [plannedDeadline, setPlannedDeadline] = useState<DateRangeObject>({ from: new Date(), to: new Date() });
     const [description, setDescription] = useState("");
     const [checklist, setChecklist] = useState<string[]>(["таск 1", "таск 2"]);
+    const [executors, setExecutors] = useState<string[]>([]);
 
     return (
         <S.Wrapper ref={ref}>
@@ -133,20 +131,45 @@ export const TaskCreate = forwardRef<HTMLDivElement, Props>(function TaskView(pr
                         </div>
                     </S.Inline>
                     <div>
-                        <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
-                            <Text type="body-5">Исполнители</Text>
-                            <PlusInsideBoxIcon />
-                        </div>
-                        <div>
-                            {["Иван Иванович Иванов", "шариков полиграф полиграфович"].map((v, i) => (
-                                <S.Inline
-                                    style={{ display: "flex", gap: "8px", alignItems: "center", justifyContent: "flex-start" }}
-                                    key={i}
-                                >
-                                    <Text type="description-7">{v}</Text>
-                                    <CloseItem />
-                                </S.Inline>
-                            ))}
+                        <div style={{ display: "flex", gap: 8, marginBottom: 8, flexDirection: "column" }}>
+                            <div style={{ display: "flex", gap: 8 }}>
+                                <Text type="body-5">Исполнители</Text>
+                                <PlusInsideBoxIcon
+                                    onClick={() => setExecutors((prev) => [...prev, ""])}
+                                    style={{ cursor: "pointer" }}
+                                />
+                            </div>
+                            <div style={{ display: "flex", gap: 8, flexDirection: "column" }}>
+                                {executors.map((x, i) => (
+                                    <div key={i} style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                                        <Dropdown
+                                            data={["Иван", "Ксения", "Максим"]}
+                                            dataConverter={(x) => (
+                                                <DropdownConverter.Data.CreateTask>{x}</DropdownConverter.Data.CreateTask>
+                                            )}
+                                            selectedConverter={(x) => (
+                                                <DropdownConverter.Selected.CreateTask>{x}</DropdownConverter.Selected.CreateTask>
+                                            )}
+                                            idAccessor={(x) => x}
+                                            onSelect={(x) => {
+                                                const updated = [...executors];
+                                                updated[i] = x;
+                                                setExecutors(updated);
+                                            }}
+                                            placeholder="Исполнитель"
+                                            placeholderConverter={(x) => <Text type="description-4">{x}</Text>}
+                                            selectedId={x}
+                                        />
+                                        <CloseItem
+                                            onClick={() => {
+                                                const updated = [...executors];
+                                                updated.splice(i, 1);
+                                                setExecutors(updated);
+                                            }}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
                     <div>
@@ -187,7 +210,7 @@ export const TaskCreate = forwardRef<HTMLDivElement, Props>(function TaskView(pr
                                 Сохранить
                             </Button>
 
-                            <Button onClick={() => {}} variant="secondary" style={{ padding: "0 16px" }}>
+                            <Button onClick={props.onClose} variant="secondary" style={{ padding: "0 16px" }}>
                                 Отмена
                             </Button>
                         </S.TaskButtons>
