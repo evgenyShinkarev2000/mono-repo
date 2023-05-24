@@ -33,6 +33,7 @@ export const KanbanPage = () =>
 {
     const tasks = useShortTasks().data!;
     const [removeTaskFromKanban] = kanbanApiContainer.useRemoveTaskFromKanbanMutation();
+    const [patchStatus] = kanbanApiContainer.usePatchTaskStatusMutation();
     const selectedId = useRef("");
     const taskViewRef = useRef<HTMLDivElement | null>(null);
 
@@ -41,6 +42,11 @@ export const KanbanPage = () =>
     if (!tasks)
     {
         return <TaskLoader />;
+    }
+
+    const handleStatusChange = (task: TaskShort, statusId: number) => {
+
+        patchStatus({taskId: task.id, newStatusId: statusId});
     }
 
     function removeCompletedTasks()
@@ -88,7 +94,7 @@ export const KanbanPage = () =>
                 {tasks ? (
                     <Board
                         tasks={tasks}
-                        onTasksChange={removeCompletedTasks}
+                        onStatusChange={handleStatusChange}
                         onModalOpen={(id) =>
                         {
                             selectedId.current = id;
