@@ -1,19 +1,19 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 import styled from "styled-components";
 import { useAppSelector } from "../../shared/src/store/Hooks";
-import { provider } from "./api/provider";
 import { Board } from "./components/Board";
 import { KanbanHeader } from "./components/KanbanHeader";
 import { TaskCreate } from "./components/TaskCreate/TaskCreate";
 import { TaskEdit } from "./components/TaskEdit/TaskEdit";
 import { TaskLoader } from "./components/TaskLoader/TaskLoader";
 import { TaskView } from "./components/TaskView/TaskView";
+import { BaseStatuses } from "./data/Status";
 import { TaskShort } from "./data/TaskShort";
-import { kanbanApiContainer } from "./store/Api";
+import { kanbanApi, kanbanApiContainer } from "./store/Api";
 import { selectShortTasks } from "./store/TaskShortSelector";
-import { ITask, ITaskStatus } from "./types/ITask";
-import { BaseStatuses, Status } from "./data/Status";
+import { useFullTask } from "./store/TaskFullTransform";
+import { TaskFull } from "./data/TaskFull";
 
 const Container = styled.div`
     padding-top: 32px;
@@ -28,13 +28,13 @@ const useShortTasks = () =>
     return useAppSelector(selectShortTasks);
 }
 
-
 export const KanbanPage = () =>
 {
     const tasks = useShortTasks().data!;
     const [removeTaskFromKanban] = kanbanApiContainer.useRemoveTaskFromKanbanMutation();
     const [patchStatus] = kanbanApiContainer.usePatchTaskStatusMutation();
-    const selectedId = useRef("");
+    // const [getFullTask, fullTaskResponse] = kanbanApi.endpoints.getFullTaskSerializable.useLazyQuery();
+    const [getFullTask, fullTaskResponse] = useFullTask();
     const taskViewRef = useRef<HTMLDivElement | null>(null);
 
     const [stage, setStage] = useState<"edit" | "view" | "create" | null>(null);
@@ -44,39 +44,44 @@ export const KanbanPage = () =>
         return <TaskLoader />;
     }
 
-    const handleStatusChange = (task: TaskShort, statusId: number) => {
-
-        patchStatus({taskId: task.id, newStatusId: statusId});
+    const handleStatusChange = (task: TaskShort, statusId: number) =>
+    {
+        patchStatus({ taskId: task.id, newStatusId: statusId });
     }
 
     function removeCompletedTasks()
     {
-        for(const task of tasks.filter(t => t.status.id == BaseStatuses.Compleated.id )){
+        for (const task of tasks.filter(t => t.status.id == BaseStatuses.Compleated.id))
+        {
             removeTaskFromKanban(task.id);
         }
     }
 
     function renderModal()
     {
-        if (!tasks) return;
-        const selectedTask = tasks.find((t) => t.title === selectedId.current) as TaskShort;
+        if (!fullTaskResponse.data || tasks?.length <= 0 || !stage){
+            return;
+        }
+
+        const fullTask = fullTaskResponse.data as TaskFull;
+        debugger;
 
         return (
             <>
-                <CSSTransition timeout={300} in={stage === "view" && Boolean(selectedTask)} unmountOnExit mountOnEnter>
+                {/* <CSSTransition timeout={300} in={stage === "view" && !!fullTask} unmountOnExit mountOnEnter> */}
                     <TaskView
                         onEdit={() => setStage("edit")}
                         ref={taskViewRef}
-                        task={selectedTask}
+                        task={fullTask}
                         onClose={() => setStage(null)}
                     />
-                </CSSTransition>
-                <CSSTransition timeout={300} in={stage === "edit" && Boolean(selectedTask)} unmountOnExit mountOnEnter>
+                {/* </CSSTransition> */}
+                <CSSTransition timeout={300} in={stage === "edit" && Boolean(fullTask)} unmountOnExit mountOnEnter>
                     <TaskEdit
                         onChange={() => { }}
                         onSave={() => { }}
                         ref={taskViewRef}
-                        task={selectedTask}
+                        task={fullTask}
                         onClose={() => setStage(null)}
                     />
                 </CSSTransition>
@@ -97,7 +102,7 @@ export const KanbanPage = () =>
                         onStatusChange={handleStatusChange}
                         onModalOpen={(id) =>
                         {
-                            selectedId.current = id;
+                            getFullTask(id, false);
                             setStage("view");
                         }}
                     />
@@ -109,18 +114,6 @@ export const KanbanPage = () =>
         </>
     );
 };
-
-function taskAdapter(taskShort: TaskShort): ITask
-{
-    return {
-        deadline: new Date(taskShort.deadline),
-        executorName: taskShort.author.surname + " " + taskShort.author.name,
-        project: taskShort.project.name,
-        status: taskShort.status?.name as unknown as ITaskStatus,
-        tag: taskShort.tag,
-        title: taskShort.title,
-    };
-}
 
 // TODO: fix Выполняются Выполняется
 // TODO: алерт при удалении завершенных

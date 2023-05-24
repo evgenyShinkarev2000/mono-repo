@@ -12,7 +12,7 @@ type ColumnProps = {
     onDrop: (event: DragEvent<HTMLDivElement>, itemIndex: number) => void;
     onDragStart: (event: DragEvent<HTMLDivElement>, itemIndex: number, task: TaskShort) => void;
     onEmptyColumnDrop: (statusId: number) => void;
-    onModalOpen: (id: string) => void;
+    onModalOpen: (taskId: number) => void;
 };
 
 export function Column(props: ColumnProps): JSX.Element
@@ -60,7 +60,7 @@ export function Column(props: ColumnProps): JSX.Element
                 <S.Tasks>
                     {props.tasks.map((task, i) => (
                         <Task
-                            onClick={() => props.onModalOpen(task.title)}
+                            onClick={() => props.onModalOpen(task.id)}
                             key={task.id}
                             task={task}
                             onDrop={(e, position) =>

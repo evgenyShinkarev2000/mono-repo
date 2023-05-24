@@ -1,6 +1,6 @@
 import { Stage } from "./Stage";
 import { Person } from "./Person";
-import { TaskSHortSerializable as TaskShortSerializable } from "./TaskShortSerializable";
+import { TaskShortSerializable as TaskShortSerializable } from "./TaskShortSerializable";
 
 export type TaskFullSerializable = TaskShortSerializable & {
   description: string,

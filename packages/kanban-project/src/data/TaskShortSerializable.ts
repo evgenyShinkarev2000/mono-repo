@@ -2,7 +2,8 @@ import { Person } from "./Person";
 import { Project } from "./Project";
 import { Status } from "./Status";
 
-export type TaskSHortSerializable = {
+export type TaskShortSerializable = {
+  id: number,
   title: string;
   status: Status;
   project: Project;

@@ -1,15 +1,13 @@
-import { ITask, ITaskStatus } from "@kanban/types/ITask";
-import { TaskPosition } from "@kanban/types/ITaskPosition";
+import { BaseStatuses, Status } from "@kanban/data/Status";
+import { TaskShort } from "@kanban/data/TaskShort";
 import { useRef } from "react";
 import styled from "styled-components";
 import { Column } from "./Column/Column";
-import { TaskShort } from "@kanban/data/TaskShort";
-import { BaseStatuses, Status } from "@kanban/data/Status";
 
 type Props = {
     tasks: TaskShort[];
     onStatusChange: (task: TaskShort, statusId: number) => void;
-    onModalOpen: (id: string) => void;
+    onModalOpen: (taskId: number) => void;
 };
 
 const Columns = styled.div`

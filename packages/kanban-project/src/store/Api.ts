@@ -3,7 +3,7 @@ import { Project } from "@kanban/data/Project";
 import { Status } from "@kanban/data/Status";
 import { TaskFull } from "@kanban/data/TaskFull";
 import { TaskFullSerializable } from '@kanban/data/TaskFullSerializable';
-import { TaskSHortSerializable } from "@kanban/data/TaskShortSerializable";
+import { TaskShortSerializable } from "@kanban/data/TaskShortSerializable";
 import { ProjectGetResponse } from "@kanban/dto/ProjectGetResponse";
 import { TaskFullGetResponse } from "@kanban/dto/TaskFullGetResponse";
 import { TaskPutRequest } from "@kanban/dto/TaskPutRequest";
@@ -20,7 +20,7 @@ export const kanbanApi = createApi(
     endpoints: (builder) =>
     {
       return {
-        getShortTasksSerializable: builder.query<TaskSHortSerializable[], void>({
+        getShortTasksSerializable: builder.query<TaskShortSerializable[], void>({
           query: () => "/tasks",
           providesTags: ["tasks"],
           transformResponse: (baseQuery: TaskShortGetResponse[]) =>
@@ -48,7 +48,7 @@ export const kanbanApi = createApi(
             }));
           }
         }),
-        getFullTaskSerializable: builder.mutation<TaskFullSerializable, number>({
+        getFullTaskSerializable: builder.query<TaskFullSerializable, number>({
           query: (taskId: number) => `tasks/${taskId}`,
           transformResponse: (dto: TaskFullGetResponse) =>
           {
@@ -66,7 +66,7 @@ export const kanbanApi = createApi(
               description: dto.description,
               parentTask: {
                 id: dto.parent_id
-              } as unknown as TaskSHortSerializable,
+              } as unknown as TaskShortSerializable,
               plannedDates: {
                 begin: SqlDateConverter.toJs(dto.planned_start_date).getMilliseconds(),
                 end: SqlDateConverter.toJs(dto.planned_final_date).getMilliseconds(),
@@ -148,7 +148,7 @@ const {
   useGetShortTasksSerializableQuery,
   useGetProjectsQuery,
   useGetCurrentUserQuery,
-  useGetFullTaskSerializableMutation,
+  useGetFullTaskSerializableQuery,
   usePatchTaskStatusMutation,
   useRemoveTaskFromKanbanMutation,
 } = kanbanApi;
@@ -158,6 +158,6 @@ export const kanbanApiContainer = {
   useGetShortTasksSerializableQuery,
   useGetProjectsQuery,
   useGetCurrentUserQuery,
-  useGetFullTaskSerializableMutation,
+  useGetFullTaskSerializableQuery,
   useRemoveTaskFromKanbanMutation,
 }
