@@ -35,6 +35,7 @@ export const TaskCreate = forwardRef<HTMLDivElement, Props>(function TaskView(pr
     const [deadline, setDeadline] = useState<Date | null>(null);
     const [plannedDeadline, setPlannedDeadline] = useState<DateRangeObject>({ from: new Date(), to: new Date() });
     const [description, setDescription] = useState("");
+    const [checklist, setChecklist] = useState<string[]>(["таск 1", "таск 2"]);
 
     return (
         <S.Wrapper ref={ref}>
@@ -151,14 +152,34 @@ export const TaskCreate = forwardRef<HTMLDivElement, Props>(function TaskView(pr
                     <div>
                         <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
                             <Text type="body-5">Чек лист</Text>
-                            <PlusInsideBoxIcon />
+                            <PlusInsideBoxIcon
+                                onClick={() => setChecklist((prev) => [...prev, ""])}
+                                style={{ cursor: "pointer" }}
+                            />
                         </div>
-                        <CheckboxGroup onChange={console.log} readonly>
-                            <Checkbox value="1 пункт" label="1 пункт" />
-                            <Checkbox value="2 пункт" label="2 пункт" />
-                            <Checkbox value="3 пункт" label="3 пункт" />
-                            <Checkbox value="4 пункт" label="4 пункт" />
-                        </CheckboxGroup>
+                        <div style={{ display: "flex", gap: 8, flexDirection: "column" }}>
+                            {checklist.map((x, i) => (
+                                <div style={{ display: "flex", gap: 8, alignItems: "center" }} key={i}>
+                                    <input
+                                        style={{ padding: 5, width: 200 }}
+                                        value={x}
+                                        onChange={(e) => {
+                                            const text = e.target.value;
+                                            const updated = [...checklist];
+                                            updated.splice(i, 1, text);
+                                            setChecklist(updated);
+                                        }}
+                                    />
+                                    <CloseItem
+                                        onClick={() => {
+                                            const updated = [...checklist];
+                                            updated.splice(i, 1);
+                                            setChecklist(updated);
+                                        }}
+                                    />
+                                </div>
+                            ))}
+                        </div>
                     </div>
                     <div>
                         <S.TaskButtons>
