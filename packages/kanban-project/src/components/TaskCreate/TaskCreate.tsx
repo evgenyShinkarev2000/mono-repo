@@ -15,6 +15,7 @@ import { CloseItem } from "@kanban/ui/icons/CloseItem";
 import { CheckboxGroup } from "@kanban/ui/Checkbox/CheckboxGroup";
 import { Checkbox } from "@kanban/ui/Checkbox";
 import { Button } from "@kanban/ui/Button";
+import { TextArea } from "@kanban/ui/TextArea";
 
 type Props = {
     onClose: () => void;
@@ -24,8 +25,7 @@ type Props = {
 type Project = "Канбан" | "Гант" | "Оценка";
 type Tag = "селфи" | "лето" | "отдых";
 
-export const TaskCreate = forwardRef<HTMLDivElement, Props>(function TaskView(props, ref)
-{
+export const TaskCreate = forwardRef<HTMLDivElement, Props>(function TaskView(props, ref) {
     const contentRef = useRef<HTMLDivElement | null>(null);
     useOnClickOutside(contentRef, props.onClose);
 
@@ -34,6 +34,7 @@ export const TaskCreate = forwardRef<HTMLDivElement, Props>(function TaskView(pr
     const [tag, setTag] = useState<Tag | null>(null);
     const [deadline, setDeadline] = useState<Date | null>(null);
     const [plannedDeadline, setPlannedDeadline] = useState<DateRangeObject>({ from: new Date(), to: new Date() });
+    const [description, setDescription] = useState("");
 
     return (
         <S.Wrapper ref={ref}>
@@ -97,16 +98,17 @@ export const TaskCreate = forwardRef<HTMLDivElement, Props>(function TaskView(pr
                             />
                         </S.Inline>
                     </div>
-                    <TextView value="Описание"></TextView>
+                    <TextArea onChange={setDescription} value={description} placeholder="Описание" />
                     <S.Inline>
                         <div style={{ display: "flex", gap: 8 }}>
                             <div style={{ display: "grid" }}>
-
                                 <Text indent={1} type="body-5">
                                     Постановщик
                                 </Text>
 
-                                <Text type="description-7" style={{ display: "flex", justifySelf: "stretch" }}>Иван Иванович Иванов</Text>
+                                <Text type="description-7" style={{ display: "flex", justifySelf: "stretch" }}>
+                                    Иван Иванович Иванов
+                                </Text>
                             </div>
                             <div>
                                 <Text indent={1} type="body-5">
@@ -114,11 +116,15 @@ export const TaskCreate = forwardRef<HTMLDivElement, Props>(function TaskView(pr
                                 </Text>
                                 <Dropdown
                                     data={["типо", "метод", "получения", "данных"]}
-                                    dataConverter={(item) => <DropdownConverter.Data.CreateTask>{item}</DropdownConverter.Data.CreateTask>}
+                                    dataConverter={(item) => (
+                                        <DropdownConverter.Data.CreateTask>{item}</DropdownConverter.Data.CreateTask>
+                                    )}
                                     selectedId={"Не выбран"}
-                                    selectedConverter={(item) => <DropdownConverter.Selected.CreateTask>{item}</DropdownConverter.Selected.CreateTask>}
+                                    selectedConverter={(item) => (
+                                        <DropdownConverter.Selected.CreateTask>{item}</DropdownConverter.Selected.CreateTask>
+                                    )}
                                     idAccessor={(item) => item}
-                                    onSelect={() => { }}
+                                    onSelect={() => {}}
                                     placeholder="Не выбран"
                                     placeholderConverter={(item) => <Text type="description-4">{item}</Text>}
                                 />
@@ -131,12 +137,15 @@ export const TaskCreate = forwardRef<HTMLDivElement, Props>(function TaskView(pr
                             <PlusInsideBoxIcon />
                         </div>
                         <div>
-                            {["Иван Иванович Иванов", "шариков полиграф полиграфович"].map((v, i) =>
-                                <S.Inline style={{ display: "flex", gap: "8px", alignItems: "center", justifyContent: "flex-start" }} key={i}>
+                            {["Иван Иванович Иванов", "шариков полиграф полиграфович"].map((v, i) => (
+                                <S.Inline
+                                    style={{ display: "flex", gap: "8px", alignItems: "center", justifyContent: "flex-start" }}
+                                    key={i}
+                                >
                                     <Text type="description-7">{v}</Text>
                                     <CloseItem />
                                 </S.Inline>
-                            )}
+                            ))}
                         </div>
                     </div>
                     <div>
