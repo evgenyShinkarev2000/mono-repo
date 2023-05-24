@@ -9,7 +9,7 @@ export const Wrapper = styled.div`
     overflow: auto;
 
     transition: all 0.3s ease 0s;
-    opacity: 0;
+    opacity: 1;
 
     &.enter-active {
         opacity: 1;

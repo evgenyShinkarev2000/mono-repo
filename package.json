@@ -10,7 +10,8 @@
     "build": "yarn --cwd ./packages/root-project build",
     "preview": "yarn --cwd ./packages/root-project preview",
     "lint": "yarn eslint ./",
-    "dev-mock-kanban": "concurrently \"yarn dev\" \"yarn --cwd ./packages/kanban-project mock-server\""
+    "dev-mock-kanban": "concurrently \"yarn dev\" \"yarn --cwd ./packages/kanban-project mock-server\"",
+    "preview-mock-kanban": "concurrently \"yarn preview\" \"yarn --cwd ./packages/kanban-project mock-server\""
   },
   "devDependencies": {
     "eslint": "^8.36.0",

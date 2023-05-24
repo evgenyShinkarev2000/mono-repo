@@ -1,8 +1,10 @@
+import { Project } from "@kanban/data/Project";
 import { kanbanApiContainer } from "@kanban/store/Api";
 import { setExecutorFilter, setProjectFilter } from "@kanban/store/KanbanSlice";
+import { ExecutorFilter } from "@kanban/types/ExecutorFilter";
 import { Text } from "@kanban/ui/Text";
 import { DropdownConverter } from "@kanban/utils/converters/DropdownConverter";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import { useAppDispatch } from "../../../shared/src/store/Hooks";
 import { Button } from "../ui/Button";
@@ -23,54 +25,47 @@ type Props = {
     deleteCompletedTasks: () => void;
 };
 
-type Project = "Канбан" | "Гант" | "Оценка";
-type Filter = "Все задачи" | "Мои задачи";
 
 export function KanbanHeader(props: Props) {
     const dispatch = useAppDispatch();
-
-    const [selectedExecutorIndex, setSelectedExecutorIndex] = useState(0);
-    const handleSelectExecutor = (index: number) => {
-        setSelectedExecutorIndex(index);
-        dispatch(setExecutorFilter(index == 0 ? "all" : "my"));
-    };
-
-    const projects = kanbanApiContainer.useGetProjectQuery().data;
-    const [selectedProjectIndex, setSelectedProjectIndex] = useState(-1);
-    const handleSelectProject = (index: number) => {
-        setSelectedProjectIndex(index);
-        if (projects && index < projects.length) {
-            dispatch(setProjectFilter(index >= 0 ? projects[index] : undefined));
-        } else {
-            throw new Error("unexpected select index");
-        }
-    };
+    const projects = kanbanApiContainer.useGetProjectsQuery().data ?? [];
 
     const [project, setProject] = useState<Project | null>(null);
-    const [filter, setFilter] = useState<Filter | null>(null);
+    const [executor, setExecutor] = useState<ExecutorFilter | null>(null);
+
+    const handleSelectExecutor = (filter: ExecutorFilter) => {
+        setExecutor(filter);
+        dispatch(setExecutorFilter(filter));
+    };
+
+    
+    const handleSelectProject = (project: Project) => {
+        setProject(project);
+        dispatch(setProjectFilter(project));
+    };
 
     return (
         <StyledHeader>
             <Selects>
-                <Dropdown<Filter, string>
+                <Dropdown<ExecutorFilter, string>
                     placeholder="Фильтр по исполнителям"
                     placeholderConverter={(p) => <Text type="description-4">{p}</Text>}
                     data={["Все задачи", "Мои задачи"]}
-                    onSelect={(item) => setFilter(item)}
+                    onSelect={(item) => handleSelectExecutor(item)}
                     dataConverter={(item) => <DropdownConverter.Data.Header>{item}</DropdownConverter.Data.Header>}
                     idAccessor={(item) => item}
                     selectedConverter={(item) => <DropdownConverter.Selected.Header>{item}</DropdownConverter.Selected.Header>}
-                    selectedId={filter}
+                    selectedId={executor}
                 />
                 <Dropdown<Project, string>
                     placeholder="Все проекты"
                     placeholderConverter={(p) => <Text type="description-4">{p}</Text>}
-                    data={["Гант", "Канбан", "Оценка"]}
-                    onSelect={(item) => setProject(item)}
-                    dataConverter={(item) => <DropdownConverter.Data.Header>{item}</DropdownConverter.Data.Header>}
-                    idAccessor={(item) => item}
-                    selectedConverter={(item) => <DropdownConverter.Selected.Header>{item}</DropdownConverter.Selected.Header>}
-                    selectedId={project}
+                    data={projects}
+                    onSelect={(item) => handleSelectProject(item)}
+                    dataConverter={(item) => <DropdownConverter.Data.Header>{item.name}</DropdownConverter.Data.Header>}
+                    idAccessor={(item) => item.id.toString()}
+                    selectedConverter={(item) => <DropdownConverter.Selected.Header>{item.name}</DropdownConverter.Selected.Header>}
+                    selectedId={`${project?.id ?? 0}`}
                 />
             </Selects>
             <div style={{ display: "flex", gap: 8 }}>

@@ -1,6 +1,7 @@
-import { CheckListItem } from "./CheckListItem";
+import { Stage } from "./Stage";
 import { Person } from "./Person";
 import { TaskShort } from "./TaskShort";
+import { Commentary } from "./Commentary";
 
 export type TaskFull = TaskShort & {
   description: string,
@@ -9,6 +10,7 @@ export type TaskFull = TaskShort & {
     begin: Date,
     end: Date,
   },
-  checkList: CheckListItem[],
+  checkList: Stage[],
   wastedTimes: Array<{time: number, contractor: Person}>,
+  comments: Commentary[],
 }

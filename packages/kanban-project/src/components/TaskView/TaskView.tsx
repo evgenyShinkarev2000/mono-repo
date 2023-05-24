@@ -16,11 +16,13 @@ import { mockComments } from "@kanban/mock/MockComments";
 import { CSSTransition } from "react-transition-group";
 import { DateRangeView } from "@kanban/ui/DatePicker/DateRangeView";
 import { TextView } from "@kanban/ui/TextArea/TextView";
+import { TaskFull } from "@kanban/data/TaskFull";
 
 type Props = {
     onClose: () => void;
     onEdit: () => void;
-    task: ITask;
+    task: TaskFull;
+
 };
 
 export const TaskView = forwardRef<HTMLDivElement, Props>(function TaskView(props, ref) {
@@ -53,7 +55,7 @@ export const TaskView = forwardRef<HTMLDivElement, Props>(function TaskView(prop
                         <S.BaseTask>
                             Базовая задача: <span>Название задачи родителя</span>
                         </S.BaseTask>
-                        <S.Status>Статус “{props.task.status}”</S.Status>
+                        <S.Status>Статус “{props.task.status.name}”</S.Status>
                     </div>
                     <div>
                         <Text indent={1} type="body-5">
@@ -61,7 +63,7 @@ export const TaskView = forwardRef<HTMLDivElement, Props>(function TaskView(prop
                         </Text>
                         <S.Field width={184}>
                             <PointsIcon />
-                            <Text type="description-6">Название проекта</Text>
+                            <Text type="description-6">{props.task.project.name}</Text>
                         </S.Field>
                     </div>
                     <S.Inline>
@@ -88,14 +90,14 @@ export const TaskView = forwardRef<HTMLDivElement, Props>(function TaskView(prop
                             <Text indent={1} type="body-5">
                                 Постановщик
                             </Text>
-                            <Text type="description-7">Иван Иванович Иванов</Text>
+                            <Text type="description-7">{`${props.task.author.name} ${props.task.author.surname}`}</Text>
                         </div>
                         <div>
                             <Text indent={1} type="body-5">
                                 Ответственный
                             </Text>
                             <S.Field>
-                                <Text type="description-7">Иван Иванович Иванов</Text>
+                                <Text type="description-7">{`${props.task.author.name} ${props.task.author.surname}`}</Text>
                             </S.Field>
                         </div>
                     </div>
@@ -104,8 +106,7 @@ export const TaskView = forwardRef<HTMLDivElement, Props>(function TaskView(prop
                             <Text type="body-5">Исполнители</Text>
                         </div>
                         <div>
-                            <Text type="description-7">Иван Иванович Иванов</Text>
-                            <Text type="description-7">Иван Иванович Иванов</Text>
+                        <Text type="description-7">{`${props.task.author.name} ${props.task.author.surname}`}</Text>
                         </div>
                     </div>
                     <div>
@@ -176,7 +177,7 @@ export const TaskView = forwardRef<HTMLDivElement, Props>(function TaskView(prop
                             </Button>
                         </S.AnimatedButton>
                     </CSSTransition>
-                    <TaskViewComments comments={comments} />
+                    <TaskViewComments comments={props.task.comments} />
                 </S.Comments>
             </S.Content>
         </S.Wrapper>

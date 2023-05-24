@@ -1,15 +1,20 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
+import { CSSTransition } from "react-transition-group";
 import styled from "styled-components";
+import { useAppSelector } from "../../shared/src/store/Hooks";
 import { Board } from "./components/Board";
 import { KanbanHeader } from "./components/KanbanHeader";
-import { TaskShort } from "./data/TaskShort";
-import { ITask, ITaskStatus } from "./types/ITask";
-import { CSSTransition } from "react-transition-group";
-import { TaskView } from "./components/TaskView/TaskView";
-import { provider } from "./api/provider";
-import { TaskLoader } from "./components/TaskLoader/TaskLoader";
-import { TaskEdit } from "./components/TaskEdit/TaskEdit";
 import { TaskCreate } from "./components/TaskCreate/TaskCreate";
+import { TaskEdit } from "./components/TaskEdit/TaskEdit";
+import { TaskLoader } from "./components/TaskLoader/TaskLoader";
+import { TaskView } from "./components/TaskView/TaskView";
+import { BaseStatuses } from "./data/Status";
+import { TaskShort } from "./data/TaskShort";
+import { kanbanApi, kanbanApiContainer } from "./store/Api";
+import { selectShortTasks } from "./store/TaskShortSelector";
+import { useFullTask } from "./store/TaskFullTransform";
+import { TaskFull } from "./data/TaskFull";
+import { selectFilteredShortTasks } from "./store/FilteredTaskSelector";
 
 const Container = styled.div`
     padding-top: 32px;
@@ -17,59 +22,69 @@ const Container = styled.div`
     margin: 0 auto;
 `;
 
-function useTasks() {
-    const [tasks, setTasks] = useState<ITask[] | null>(null);
+const useShortTasks = () =>
+{
+    kanbanApiContainer.useGetShortTasksSerializableQuery();
 
-    useEffect(() => {
-        // setTimeout(() => {
-        fetch(provider.shortTasks)
-            .then((r) => r.json())
-            .then((data) => data.map(taskAdapter))
-            .then(setTasks);
-        // }, 5000);
-    }, []);
-
-    return [tasks, setTasks] as const;
+    return useAppSelector(selectShortTasks);
 }
 
-export const KanbanPage = () => {
-    const [tasks, setTasks] = useTasks();
-    const selectedId = useRef("");
+const useFilteredShortTasks = () => {
+    kanbanApiContainer.useGetShortTasksSerializableQuery();
+
+    return useAppSelector(selectFilteredShortTasks);
+}
+
+export const KanbanPage = () =>
+{
+    // const tasks = useShortTasks().data!;
+    const tasks = useFilteredShortTasks().data!;
+    const [removeTaskFromKanban] = kanbanApiContainer.useRemoveTaskFromKanbanMutation();
+    const [patchStatus] = kanbanApiContainer.usePatchTaskStatusMutation();
+    const [getFullTask, fullTaskResponse] = useFullTask();
     const taskViewRef = useRef<HTMLDivElement | null>(null);
 
     const [stage, setStage] = useState<"edit" | "view" | "create" | null>(null);
 
-    if (!tasks) {
+    if (!tasks)
+    {
         return <TaskLoader />;
     }
 
-    function removeCompletedTasks() {
-        setTasks((prev) => {
-            if (!prev) return [];
-            return prev.filter((task) => task.status !== "Завершенные");
-        });
+    const handleStatusChange = (task: TaskShort, statusId: number) =>
+    {
+        patchStatus({ taskId: task.id, newStatusId: statusId });
     }
 
-    function renderModal() {
-        if (!tasks) return;
-        const selectedTask = tasks.find((t) => t.title === selectedId.current) as ITask;
+    function removeCompletedTasks()
+    {
+        for (const task of tasks.filter(t => t.status.id == BaseStatuses.Compleated.id))
+        {
+            removeTaskFromKanban(task.id);
+        }
+    }
+
+    function renderModal()
+    {
+        const canRender = !!fullTaskResponse.data && tasks?.length > 0 && !!stage;
+        const fullTask = fullTaskResponse.data as TaskFull;
 
         return (
             <>
-                <CSSTransition timeout={300} in={stage === "view" && Boolean(selectedTask)} unmountOnExit mountOnEnter>
+                <CSSTransition timeout={300} in={stage === "view" && canRender} unmountOnExit mountOnEnter>
                     <TaskView
                         onEdit={() => setStage("edit")}
                         ref={taskViewRef}
-                        task={selectedTask}
+                        task={fullTask}
                         onClose={() => setStage(null)}
                     />
                 </CSSTransition>
-                <CSSTransition timeout={300} in={stage === "edit" && Boolean(selectedTask)} unmountOnExit mountOnEnter>
+                <CSSTransition timeout={300} in={stage === "edit" && canRender} unmountOnExit mountOnEnter>
                     <TaskEdit
-                        onChange={() => {}}
-                        onSave={() => {}}
+                        onChange={() => { }}
+                        onSave={() => { }}
                         ref={taskViewRef}
-                        task={selectedTask}
+                        task={fullTask}
                         onClose={() => setStage(null)}
                     />
                 </CSSTransition>
@@ -87,9 +102,10 @@ export const KanbanPage = () => {
                 {tasks ? (
                     <Board
                         tasks={tasks}
-                        onTasksChange={setTasks}
-                        onModalOpen={(id) => {
-                            selectedId.current = id;
+                        onStatusChange={handleStatusChange}
+                        onModalOpen={(id) =>
+                        {
+                            getFullTask(id, false);
                             setStage("view");
                         }}
                     />
@@ -101,17 +117,6 @@ export const KanbanPage = () => {
         </>
     );
 };
-
-function taskAdapter(taskShort: TaskShort): ITask {
-    return {
-        deadline: new Date(taskShort.deadline),
-        executorName: taskShort.author.surname + " " + taskShort.author.name,
-        project: taskShort.project.name,
-        status: taskShort.status.name as unknown as ITaskStatus,
-        tag: taskShort.tags?.length > 0 ? taskShort.tags[0].label : "",
-        title: taskShort.title,
-    };
-}
 
 // TODO: fix Выполняются Выполняется
 // TODO: алерт при удалении завершенных

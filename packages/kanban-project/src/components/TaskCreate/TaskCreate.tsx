@@ -12,11 +12,12 @@ import { DateRange } from "@kanban/ui/DatePicker/DateRange";
 import { DateRangeObject } from "@kanban/ui/DatePicker/types";
 import { CloseItem } from "@kanban/ui/icons/CloseItem";
 import { Button } from "@kanban/ui/Button";
+import { TaskFull } from "@kanban/data/TaskFull";
 import { TextArea } from "@kanban/ui/TextArea";
 
 type Props = {
     onClose: () => void;
-    onCreate: (task: ITask) => void;
+    onCreate: (task: TaskFull) => void;
 };
 
 type Project = "Канбан" | "Гант" | "Оценка";
