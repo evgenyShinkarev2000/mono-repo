@@ -59,24 +59,21 @@ export const KanbanPage = () =>
 
     function renderModal()
     {
-        if (!fullTaskResponse.data || tasks?.length <= 0 || !stage){
-            return;
-        }
-
+        const canRender = !!fullTaskResponse.data && tasks?.length > 0 && !!stage;
         const fullTask = fullTaskResponse.data as TaskFull;
         debugger;
 
         return (
             <>
-                {/* <CSSTransition timeout={300} in={stage === "view" && !!fullTask} unmountOnExit mountOnEnter> */}
+                <CSSTransition timeout={300} in={stage === "view" && canRender} unmountOnExit mountOnEnter>
                     <TaskView
                         onEdit={() => setStage("edit")}
                         ref={taskViewRef}
                         task={fullTask}
                         onClose={() => setStage(null)}
                     />
-                {/* </CSSTransition> */}
-                <CSSTransition timeout={300} in={stage === "edit" && Boolean(fullTask)} unmountOnExit mountOnEnter>
+                </CSSTransition>
+                <CSSTransition timeout={300} in={stage === "edit" && canRender} unmountOnExit mountOnEnter>
                     <TaskEdit
                         onChange={() => { }}
                         onSave={() => { }}
