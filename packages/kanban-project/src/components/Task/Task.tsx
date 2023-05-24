@@ -1,12 +1,12 @@
-import { DragEvent, DragEventHandler, useRef, useState } from "react";
+import { TaskShort } from "@kanban/data/TaskShort";
 import { useHover } from "@kanban/hooks/useHover";
 import { CalendarIcon, PersonIcon, PlayIcon, TrashIcon } from "@kanban/ui/icons";
-import { ITask } from "@kanban/types/ITask";
+import { DragEvent, DragEventHandler, useRef, useState } from "react";
 import { DndPlaceholder } from "../DndPlaceholder";
 import * as S from "./Task.styled";
 
 type Props = {
-    task: ITask;
+    task: TaskShort;
 
     onDrop: (event: DragEvent<HTMLDivElement>, position: "before" | "after") => void;
     onDragStart: DragEventHandler<HTMLDivElement>;
@@ -69,11 +69,11 @@ export function Task(props: Props) {
                 }}
             >
                 <S.TaskTitle>{props.task.title}</S.TaskTitle>
-                <S.ProjectTitle>{props.task.project}</S.ProjectTitle>
+                <S.ProjectTitle>{props.task.project.name}</S.ProjectTitle>
                 <S.Tag>#{props.task.tag}</S.Tag>
                 <S.Name>
                     <PersonIcon />
-                    <p>{props.task.executorName}</p>
+                    <p>{`${props.task.author.name} ${props.task.author.surname}`}</p>
                 </S.Name>
                 <S.Footer>
                     <S.Date>

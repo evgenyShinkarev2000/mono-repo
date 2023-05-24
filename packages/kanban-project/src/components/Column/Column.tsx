@@ -3,10 +3,11 @@ import { DragEvent, useRef, useState } from "react";
 import { Task } from "../Task/Task";
 import { DndPlaceholder } from "../DndPlaceholder";
 import * as S from "./Column.styled";
+import { TaskShort } from "@kanban/data/TaskShort";
 
 type ColumnProps = {
     title: string;
-    tasks: ITask[];
+    tasks: TaskShort[];
 
     onDrop: (event: DragEvent<HTMLDivElement>, itemIndex: number) => void;
     onDragStart: (event: DragEvent<HTMLDivElement>, itemIndex: number) => void;

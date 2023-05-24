@@ -88,7 +88,7 @@ export const KanbanPage = () =>
                 {tasks ? (
                     <Board
                         tasks={tasks}
-                        onTasksChange={setTasks}
+                        onTasksChange={removeCompletedTasks}
                         onModalOpen={(id) =>
                         {
                             selectedId.current = id;

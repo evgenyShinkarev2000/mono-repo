@@ -8,7 +8,7 @@ import { BaseStatuses, Status } from "@kanban/data/Status";
 
 type Props = {
     tasks: TaskShort[];
-    onTasksChange: (tasks: TaskShort) => void;
+    onTasksChange: (tasks: TaskShort[]) => void;
     onModalOpen: (id: string) => void;
 };
 
@@ -128,7 +128,7 @@ export function Board(props: Props) {
             }
         });
 
-        const tasks: ITask[] = entriesToTasks(entries);
+        const tasks: TaskShort[] = entriesToTasks(entries);
         props.onTasksChange(tasks);
     }
 
