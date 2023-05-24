@@ -13,30 +13,13 @@ import { TaskShort } from "./data/TaskShort";
 import { kanbanApiContainer } from "./store/Api";
 import { selectShortTasks } from "./store/TaskShortSelector";
 import { ITask, ITaskStatus } from "./types/ITask";
-import { Status } from "./data/Status";
+import { BaseStatuses, Status } from "./data/Status";
 
 const Container = styled.div`
     padding-top: 32px;
     max-width: 1664px;
     margin: 0 auto;
 `;
-
-function useTasks()
-{
-    const [tasks, setTasks] = useState<ITask[] | null>(null);
-
-    useEffect(() =>
-    {
-        // setTimeout(() => {
-        fetch(provider.shortTasks)
-            .then((r) => r.json())
-            .then((data) => data.map(taskAdapter))
-            .then(setTasks);
-        // }, 5000);
-    }, []);
-
-    return [tasks, setTasks] as const;
-}
 
 const useShortTasks = () =>
 {
@@ -45,19 +28,11 @@ const useShortTasks = () =>
     return useAppSelector(selectShortTasks);
 }
 
-const usePatchStatus = (taskId: number, newStatus: Status) =>
-{
-    const [getFullTaskSerializable, data] = kanbanApiContainer.useGetFullTaskSerializableMutation();
-    //TODO put fullTask
-
-}
 
 export const KanbanPage = () =>
 {
-    useShortTasks();
-    kanbanApiContainer.useGetProjectsQuery();
-    const tasks = useShortTasks().data?.map(t => taskAdapter(t));
-    const setTasks = (...args: any[]) => { }
+    const tasks = useShortTasks().data!;
+    const [removeTaskFromKanban] = kanbanApiContainer.useRemoveTaskFromKanbanMutation();
     const selectedId = useRef("");
     const taskViewRef = useRef<HTMLDivElement | null>(null);
 
@@ -70,19 +45,15 @@ export const KanbanPage = () =>
 
     function removeCompletedTasks()
     {
-        //@ts-ignore
-        setTasks((prev) =>
-        {
-            if (!prev) return [];
-            //@ts-ignore
-            return prev.filter((task) => task.status !== "Завершенные");
-        });
+        for(const task of tasks.filter(t => t.status.id == BaseStatuses.Compleated.id )){
+            removeTaskFromKanban(task.id);
+        }
     }
 
     function renderModal()
     {
         if (!tasks) return;
-        const selectedTask = tasks.find((t) => t.title === selectedId.current) as ITask;
+        const selectedTask = tasks.find((t) => t.title === selectedId.current) as TaskShort;
 
         return (
             <>

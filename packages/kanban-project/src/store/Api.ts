@@ -1,10 +1,12 @@
 import { Person } from "@kanban/data/Person";
 import { Project } from "@kanban/data/Project";
+import { Status } from "@kanban/data/Status";
 import { TaskFull } from "@kanban/data/TaskFull";
 import { TaskFullSerializable } from '@kanban/data/TaskFullSerializable';
 import { TaskSHortSerializable } from "@kanban/data/TaskShortSerializable";
 import { ProjectGetResponse } from "@kanban/dto/ProjectGetResponse";
 import { TaskFullGetResponse } from "@kanban/dto/TaskFullGetResponse";
+import { TaskPutRequest } from "@kanban/dto/TaskPutRequest";
 import { TaskShortGetResponse } from "@kanban/dto/TaskShortGetResponse";
 import { SqlDateConverter } from "@kanban/utils/converters/SqlDateConverter";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
@@ -21,9 +23,8 @@ export const kanbanApi = createApi(
         getShortTasksSerializable: builder.query<TaskSHortSerializable[], void>({
           query: () => "/tasks",
           providesTags: ["tasks"],
-          transformResponse: (baseQuery: TaskShortGetResponse[], meta) =>
+          transformResponse: (baseQuery: TaskShortGetResponse[]) =>
           {
-            debugger;
             return baseQuery.map(dto => ({
               author: {
                 id: dto.responsible_id,
@@ -40,16 +41,16 @@ export const kanbanApi = createApi(
               },
               tag: dto.team_tag,
               status: {
-                id: 0,
-                name: "В работу"
-              }, //надо добавить на сервере
+                id: dto.status_id,
+                name: dto.status_name,
+              },
               title: dto.task_name
             }));
           }
         }),
         getFullTaskSerializable: builder.mutation<TaskFullSerializable, number>({
           query: (taskId: number) => `tasks/${taskId}`,
-          transformResponse: (dto: TaskFullGetResponse, meta) =>
+          transformResponse: (dto: TaskFullGetResponse) =>
           {
             return {
               id: dto.task_id,
@@ -94,17 +95,38 @@ export const kanbanApi = createApi(
             }
           },
         }),
-        putFullTask: builder.mutation<TaskFullSerializable, TaskFull>({
+        patchTaskStatus: builder.mutation<TaskPutRequest, {taskId: number, newStatusId: number}>({
+          query: (args) => (
+            {
+              url: `/tasks/${args.taskId}`,
+              method: "Put",
+              body: {
+                status_id: args.newStatusId
+              }
+            }),
+            invalidatesTags: ["tasks"]
+        }),
+        putFullTask: builder.mutation<TaskPutRequest, TaskFull>({
           query: () => ({
             url: "/tasks",
             method: "Put",
           }),
+          invalidatesTags: ["tasks"]
+        }),
+        removeTaskFromKanban: builder.mutation<TaskPutRequest, number>({
+          query: (taskId) => ({
+            url: `/tasks/${taskId}`,
+            method: "Put",
+            body: {
+              is_on_kanban: 0,
+            }
+          }),
+          invalidatesTags: ["tasks"]
         }),
         getProjects: builder.query<Project[], void>({
           query: () => "/projects",
-          transformResponse: (baseQuery: ProjectGetResponse[], meta) =>
+          transformResponse: (baseQuery: ProjectGetResponse[]) =>
           {
-            debugger;
             return baseQuery.map(dto => ({
               id: dto.id,
               name: dto.title,
@@ -127,11 +149,15 @@ const {
   useGetProjectsQuery,
   useGetCurrentUserQuery,
   useGetFullTaskSerializableMutation,
+  usePatchTaskStatusMutation,
+  useRemoveTaskFromKanbanMutation,
 } = kanbanApi;
 
 export const kanbanApiContainer = {
+  usePatchTaskStatusMutation,
   useGetShortTasksSerializableQuery,
   useGetProjectsQuery,
   useGetCurrentUserQuery,
   useGetFullTaskSerializableMutation,
+  useRemoveTaskFromKanbanMutation,
 }

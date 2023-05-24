@@ -3,10 +3,12 @@ import { TaskPosition } from "@kanban/types/ITaskPosition";
 import { useRef } from "react";
 import styled from "styled-components";
 import { Column } from "./Column/Column";
+import { TaskShort } from "@kanban/data/TaskShort";
+import { BaseStatuses, Status } from "@kanban/data/Status";
 
 type Props = {
-    tasks: ITask[];
-    onTasksChange: (tasks: ITask[]) => void;
+    tasks: TaskShort[];
+    onTasksChange: (tasks: TaskShort) => void;
     onModalOpen: (id: string) => void;
 };
 
@@ -18,25 +20,28 @@ const Columns = styled.div`
     }
 `;
 
-function entriesToTasks(entries: [ITaskStatus, ITask[]][]): ITask[] {
+function entriesToTasks(entries: [TaskStatusLiteral, TaskShort[]][]): TaskShort[] {
     const temp = Object.fromEntries(entries);
     return Object.values(temp).flat(1);
 }
 
-function getColumns(tasks: ITask[]) {
-    const cols: Record<ITaskStatus, ITask[]> = {
+type TaskStatusLiteral = (typeof BaseStatuses[keyof typeof BaseStatuses])["name"] | string;
+
+
+function getColumns(tasks: TaskShort[]) {
+    const cols: Record<TaskStatusLiteral, TaskShort[]> = {
         "В работу": [],
-        Выполняются: [],
-        Проверка: [],
-        Тестирование: [],
-        Завершенные: [],
+        "Выполняются": [],
+        "Завершенные": [],
+        "Проверка": [],
+        "Тестирование": [],
     };
 
     tasks.forEach((task) => {
-        if (!cols[task.status]) {
-            cols[task.status] = [task];
+        if (!cols[task.status.name]) {
+            cols[task.status.name] = [task];
         } else {
-            cols[task.status].push(task);
+            cols[task.status.name].push(task);
         }
     });
 
@@ -48,7 +53,7 @@ export function Board(props: Props) {
     const dragTarget = useRef<TaskPosition | null>(null);
 
     function onReplaceItems(to: TaskPosition) {
-        const entries = Object.entries(cols) as [ITaskStatus, ITask[]][];
+        const entries = Object.entries(cols) as [TaskStatusLiteral, TaskShort[]][];
         const deleted = removeDraggedTask(entries);
 
         entries.forEach((col, colIndex) => {
@@ -57,20 +62,20 @@ export function Board(props: Props) {
                 const colTasks = col[1];
 
                 if (to.itemIndex >= colTasks.length) {
-                    deleted.status = colTitle;
+                    deleted.status.name = colTitle;
                     colTasks.push(deleted);
                     return;
                 }
 
                 colTasks.forEach((_, taskIndex) => {
                     if (taskIndex === to.itemIndex) {
-                        deleted.status = colTitle;
+                        deleted.status.name = colTitle;
                         colTasks.splice(taskIndex, 0, deleted);
                     }
                 });
             }
         });
-        const tasks: ITask[] = entriesToTasks(entries);
+        const tasks: TaskShort[] = entriesToTasks(entries);
         props.onTasksChange(tasks);
     }
 
@@ -96,8 +101,8 @@ export function Board(props: Props) {
         };
     }
 
-    function removeDraggedTask(entries: [ITaskStatus, ITask[]][]) {
-        let dragged: ITask;
+    function removeDraggedTask(entries: [TaskStatusLiteral, TaskShort[]][]) {
+        let dragged: TaskShort;
 
         entries.forEach((col, colIndex) => {
             if (colIndex === dragTarget.current?.colIndex) {
@@ -113,12 +118,12 @@ export function Board(props: Props) {
     }
 
     function onEmptyColumnDrop(colIndex: number) {
-        const entries = Object.entries(cols) as [ITaskStatus, ITask[]][];
+        const entries = Object.entries(cols) as [TaskStatusLiteral, TaskShort[]][];
         const dragged = removeDraggedTask(entries);
 
         entries.forEach((col, i) => {
             if (i === colIndex) {
-                dragged.status = col[0];
+                dragged.status.name = col[0];
                 col[1] = [dragged];
             }
         });

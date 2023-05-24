@@ -10,5 +10,7 @@ export type TaskShortGetResponse = {
   responsible_first_name: string,
   responsible_last_name: string,
   responsible_patronymic: string,
-  deadline: string //2019-03-28
+  deadline: string, //2019-03-28
+  status_id: number,
+  status_name: string
 }

@@ -23,6 +23,6 @@ export type TaskFullGetResponse = {
   status_name: string,
   completed_at: string, //хз какой формат, наверное 2019-03-28
   description: string,
-  stages: StageDto[]
-  comments: [] // пока без dto
+  stages: StageDto[],
+  comments: [], // пока без dto
 }
