@@ -92,10 +92,21 @@ export const kanbanApi = createApi(
                   time: SqlDateConverter.toJs(dto.responsible_time_spent).getMilliseconds()
                 }
               ],
+              comments: dto.comments.map(comment => ({
+                author: {
+                  id: comment.author_id,
+                  name: comment.author_first_name,
+                  surname: comment.author_last_name,
+                  patronymic: comment.author_patronymic,
+                },
+                content: comment.content,
+                id: comment.id,
+                time: null!, // позже напишу selector или hook
+              })),
             }
           },
         }),
-        patchTaskStatus: builder.mutation<TaskPutRequest, {taskId: number, newStatusId: number}>({
+        patchTaskStatus: builder.mutation<TaskPutRequest, { taskId: number, newStatusId: number }>({
           query: (args) => (
             {
               url: `/tasks/${args.taskId}`,
@@ -104,7 +115,7 @@ export const kanbanApi = createApi(
                 status_id: args.newStatusId
               }
             }),
-            invalidatesTags: ["tasks"]
+          invalidatesTags: ["tasks"]
         }),
         putFullTask: builder.mutation<TaskPutRequest, TaskFull>({
           query: () => ({

@@ -14,6 +14,7 @@ import { kanbanApi, kanbanApiContainer } from "./store/Api";
 import { selectShortTasks } from "./store/TaskShortSelector";
 import { useFullTask } from "./store/TaskFullTransform";
 import { TaskFull } from "./data/TaskFull";
+import { selectFilteredShortTasks } from "./store/FilteredTaskSelector";
 
 const Container = styled.div`
     padding-top: 32px;
@@ -28,12 +29,18 @@ const useShortTasks = () =>
     return useAppSelector(selectShortTasks);
 }
 
+const useFilteredShortTasks = () => {
+    kanbanApiContainer.useGetShortTasksSerializableQuery();
+
+    return useAppSelector(selectFilteredShortTasks);
+}
+
 export const KanbanPage = () =>
 {
-    const tasks = useShortTasks().data!;
+    // const tasks = useShortTasks().data!;
+    const tasks = useFilteredShortTasks().data!;
     const [removeTaskFromKanban] = kanbanApiContainer.useRemoveTaskFromKanbanMutation();
     const [patchStatus] = kanbanApiContainer.usePatchTaskStatusMutation();
-    // const [getFullTask, fullTaskResponse] = kanbanApi.endpoints.getFullTaskSerializable.useLazyQuery();
     const [getFullTask, fullTaskResponse] = useFullTask();
     const taskViewRef = useRef<HTMLDivElement | null>(null);
 
@@ -61,7 +68,6 @@ export const KanbanPage = () =>
     {
         const canRender = !!fullTaskResponse.data && tasks?.length > 0 && !!stage;
         const fullTask = fullTaskResponse.data as TaskFull;
-        debugger;
 
         return (
             <>

@@ -205,6 +205,7 @@ export default class Gantt extends Component {
             }
 
             if ($new) {
+                //TODO replace form
                 // Show the create task form
                 form = getForm("create_task");
 

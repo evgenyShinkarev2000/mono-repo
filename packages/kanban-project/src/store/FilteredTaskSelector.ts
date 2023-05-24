@@ -3,25 +3,34 @@ import { Project } from "@kanban/data/Project";
 import { TaskShort } from "@kanban/data/TaskShort";
 import { createSelector } from "@reduxjs/toolkit";
 import { RootState } from '../../../shared/src/store';
-import { kanbanApi } from "./Api";
+import { selectShortTasks } from "./TaskShortSelector";
+import { ExecutorFilter } from "@kanban/types/ExecutorFilter";
 
 const selectProjectFilter = (store: RootState) => store.kanbanReducer.projectFilter;
 const selectExecutorFilter = (store: RootState) => store.kanbanReducer.taskExecutorFilter;
-const selectCurrentUser = kanbanApi.endpoints.getCurrentUser.select();
-const selectSerializableTasks = kanbanApi.endpoints.getShortTasksSerializable.select();
-const emptyTasks: any[] = [];
+const selectCurrentUser = (store: RootState) => store.kanbanReducer.currentUser;
 
-export const selectFilteredTasks = createSelector(
-  selectSerializableTasks,
+export const selectFilteredShortTasks = createSelector(
+  selectShortTasks,
   selectProjectFilter,
   selectExecutorFilter,
   selectCurrentUser,
-  (tasksData, projectFilter, executorFilter, currentUserData) =>
+  (tasksData, projectFilter, executorFilter, currentUser) =>
   {
 
-    return tasksData.data?.filter(
-      task => isWantedProject(task, projectFilter) && isWasntedExecutor(task, executorFilter, currentUserData.data)
-    ) ?? emptyTasks;
+    const filteredData = tasksData.data?.filter(
+      task => isWantedProject(task, projectFilter) && isWasntedExecutor(task, executorFilter, currentUser)
+    )
+
+    if (filteredData)
+    {
+      return {
+        ...tasksData,
+        data: filteredData
+      }
+    }
+
+    return tasksData;
   }
 )
 
@@ -35,9 +44,9 @@ const isWantedProject = (task: TaskShort, project: Project | undefined) =>
   return task.project.id === project.id;
 }
 
-const isWasntedExecutor = (task: TaskShort, executorFilter: "all" | "my", executor: Person | undefined) =>
+const isWasntedExecutor = (task: TaskShort, executorFilter: ExecutorFilter, executor: Person | undefined) =>
 {
-  if (!executor || executorFilter === "all")
+  if (!executor || executorFilter === "Все задачи")
   {
     return true;
   }

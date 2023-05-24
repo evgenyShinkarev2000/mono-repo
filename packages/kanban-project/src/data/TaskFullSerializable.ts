@@ -1,6 +1,7 @@
 import { Stage } from "./Stage";
 import { Person } from "./Person";
 import { TaskShortSerializable as TaskShortSerializable } from "./TaskShortSerializable";
+import { Commentary } from "./Commentary";
 
 export type TaskFullSerializable = TaskShortSerializable & {
   description: string,
@@ -11,4 +12,5 @@ export type TaskFullSerializable = TaskShortSerializable & {
   },
   checkList: Stage[],
   wastedTimes: Array<{time: number, contractor: Person}>,
+  comments: Commentary[],
 }
