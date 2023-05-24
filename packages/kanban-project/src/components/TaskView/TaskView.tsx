@@ -16,11 +16,12 @@ import { mockComments } from "@kanban/mock/MockComments";
 import { CSSTransition } from "react-transition-group";
 import { DateRangeView } from "@kanban/ui/DatePicker/DateRangeView";
 import { TextView } from "@kanban/ui/TextArea/TextView";
+import { TaskFull } from "@kanban/data/TaskFull";
 
 type Props = {
     onClose: () => void;
     onEdit: () => void;
-    task: ITask;
+    task: TaskFull;
 };
 
 export const TaskView = forwardRef<HTMLDivElement, Props>(function TaskView(props, ref) {
@@ -53,7 +54,7 @@ export const TaskView = forwardRef<HTMLDivElement, Props>(function TaskView(prop
                         <S.BaseTask>
                             Базовая задача: <span>Название задачи родителя</span>
                         </S.BaseTask>
-                        <S.Status>Статус “{props.task.status}”</S.Status>
+                        <S.Status>Статус “{props.task.status.name}”</S.Status>
                     </div>
                     <div>
                         <Text indent={1} type="body-5">

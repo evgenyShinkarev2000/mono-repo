@@ -15,10 +15,11 @@ import { CloseItem } from "@kanban/ui/icons/CloseItem";
 import { CheckboxGroup } from "@kanban/ui/Checkbox/CheckboxGroup";
 import { Checkbox } from "@kanban/ui/Checkbox";
 import { Button } from "@kanban/ui/Button";
+import { TaskFull } from "@kanban/data/TaskFull";
 
 type Props = {
     onClose: () => void;
-    onCreate: (task: ITask) => void;
+    onCreate: (task: TaskFull) => void;
 };
 
 type Project = "Канбан" | "Гант" | "Оценка";
