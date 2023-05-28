@@ -20,7 +20,12 @@ export const useFullTask = () =>
         parentTask: {
           ...data.parentTask,
           deadline: new Date(data.parentTask?.deadline)
-        }
+        },
+        comments: data.comments.map(comment => ({
+          ...comment,
+          time: new Date(comment.time!),
+        })),
+        wastedTime: new Date(data.wastedTime),
       } as TaskFull
     }
     ] as const
