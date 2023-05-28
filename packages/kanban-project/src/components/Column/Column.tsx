@@ -60,7 +60,7 @@ export function Column(props: ColumnProps): JSX.Element
                 <S.Tasks>
                     {props.tasks.map((task, i) => (
                         <Task
-                            onClick={() => props.onModalOpen(task.id)}
+                            onClick={() => props.onModalOpen(task.id!)}
                             key={task.id}
                             task={task}
                             onDrop={(e, position) =>
