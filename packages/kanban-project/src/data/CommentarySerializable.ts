@@ -1,8 +1,8 @@
 import { Entity } from "./Entity";
 import { Person } from "./Person";
 
-export type Commentary = Partial<Entity> & {
+export type CommentarySerializable = Partial<Entity> & {
   author: Person,
   content: string,
-  time?: Date,
+  time?: number,
 }

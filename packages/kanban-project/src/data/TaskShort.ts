@@ -3,7 +3,7 @@ import { Person } from "./Person";
 import { Project } from "./Project";
 import { Status } from "./Status";
 
-export type TaskShort = Entity & {
+export type TaskShort = Partial<Entity> & {
   title: string;
   status: Status;
   project: Project;

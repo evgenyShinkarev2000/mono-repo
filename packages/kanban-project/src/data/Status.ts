@@ -37,5 +37,5 @@ export const BaseStatuses = {
   Perfomed,
   Review,
   Testing,
-  Compleated,
+  Completed: Compleated,
 }

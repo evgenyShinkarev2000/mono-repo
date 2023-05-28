@@ -2,6 +2,7 @@ import { Stage } from "./Stage";
 import { Person } from "./Person";
 import { TaskShortSerializable as TaskShortSerializable } from "./TaskShortSerializable";
 import { Commentary } from "./Commentary";
+import { CommentarySerializable } from "./CommentarySerializable";
 
 export type TaskFullSerializable = TaskShortSerializable & {
   description: string,
@@ -11,6 +12,7 @@ export type TaskFullSerializable = TaskShortSerializable & {
     end: number,
   },
   checkList: Stage[],
-  wastedTimes: Array<{time: number, contractor: Person}>,
-  comments: Commentary[],
+  wastedTime: number,
+  comments: CommentarySerializable[],
+  isOnKanban: boolean,
 }

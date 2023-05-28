@@ -1,5 +1,5 @@
 export type StageDto =         {
-  id: number,
+  id?: number,
   description: string,
   is_ready: number,
 }

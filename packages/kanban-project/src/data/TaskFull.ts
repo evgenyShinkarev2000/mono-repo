@@ -11,6 +11,7 @@ export type TaskFull = TaskShort & {
     end: Date,
   },
   checkList: Stage[],
-  wastedTimes: Array<{time: number, contractor: Person}>,
+  wastedTime: Date,
   comments: Commentary[],
+  isOnKanban: boolean,
 }
