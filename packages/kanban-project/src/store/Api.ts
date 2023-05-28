@@ -95,7 +95,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 
 
-const baseUrl = "http://kaban/public/api";
+const baseUrl = import.meta.env.VITE_KANBAN_API_URI;
 
 export const kanbanApi = createApi(
   {

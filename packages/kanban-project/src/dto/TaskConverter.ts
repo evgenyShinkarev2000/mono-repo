@@ -64,7 +64,6 @@ export class TaskConverter
 
   public fullModelToDto(task: TaskFull): TaskFullDto
   {
-    debugger;
     return {
       task_id: task.id!,
       task_name: task.title,

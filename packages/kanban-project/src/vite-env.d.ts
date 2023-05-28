@@ -1,5 +1,6 @@
 /// <reference types="vite/client" />
 interface ImportMetaEnv {
+  readonly VITE_KANBAN_API_URI: string
   // more env variables...
 }
 

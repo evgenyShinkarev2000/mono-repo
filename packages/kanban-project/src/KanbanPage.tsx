@@ -9,12 +9,11 @@ import { TaskEdit } from "./components/TaskEdit/TaskEdit";
 import { TaskLoader } from "./components/TaskLoader/TaskLoader";
 import { TaskView } from "./components/TaskView/TaskView";
 import { BaseStatuses } from "./data/Status";
-import { TaskShort } from "./data/TaskShort";
-import { kanbanApi, kanbanApiContainer } from "./store/Api";
-import { selectShortTasks } from "./store/TaskShortSelector";
-import { useFullTask } from "./store/useFullTask";
 import { TaskFull } from "./data/TaskFull";
+import { TaskShort } from "./data/TaskShort";
+import { kanbanApiContainer } from "./store/Api";
 import { selectFilteredShortTasks } from "./store/FilteredTaskSelector";
+import { useFullTask } from "./store/useFullTask";
 
 const Container = styled.div`
     padding-top: 32px;
