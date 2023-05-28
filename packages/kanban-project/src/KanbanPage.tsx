@@ -12,7 +12,7 @@ import { BaseStatuses } from "./data/Status";
 import { TaskShort } from "./data/TaskShort";
 import { kanbanApi, kanbanApiContainer } from "./store/Api";
 import { selectShortTasks } from "./store/TaskShortSelector";
-import { useFullTask } from "./store/TaskFullTransform";
+import { useFullTask } from "./store/useFullTask";
 import { TaskFull } from "./data/TaskFull";
 import { selectFilteredShortTasks } from "./store/FilteredTaskSelector";
 
@@ -21,13 +21,6 @@ const Container = styled.div`
     max-width: 1664px;
     margin: 0 auto;
 `;
-
-const useShortTasks = () =>
-{
-    kanbanApiContainer.useGetShortTasksSerializableQuery();
-
-    return useAppSelector(selectShortTasks);
-}
 
 const useFilteredShortTasks = () => {
     kanbanApiContainer.useGetShortTasksSerializableQuery();
@@ -53,14 +46,14 @@ export const KanbanPage = () =>
 
     const handleStatusChange = (task: TaskShort, statusId: number) =>
     {
-        patchStatus({ taskId: task.id, newStatusId: statusId });
+        patchStatus({ taskId: task.id!, newStatusId: statusId });
     }
 
     function removeCompletedTasks()
     {
-        for (const task of tasks.filter(t => t.status.id == BaseStatuses.Compleated.id))
+        for (const task of tasks.filter(t => t.status.id == BaseStatuses.Completed.id))
         {
-            removeTaskFromKanban(task.id);
+            removeTaskFromKanban(task.id!);
         }
     }
 

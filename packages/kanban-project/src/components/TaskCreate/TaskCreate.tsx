@@ -1,34 +1,57 @@
-import { forwardRef, useRef, useState } from "react";
+import { TaskFull } from "@kanban/data/TaskFull";
 import { useOnClickOutside } from "@kanban/hooks/useOnClickOutside";
-import { ITask } from "@kanban/types/ITask";
-import * as S from "./TaskCreate.styled";
-import { TextField } from "@kanban/ui/TextField";
-import { Dropdown } from "@kanban/ui/Dropdown";
-import { DropdownConverter } from "@kanban/utils/converters/DropdownConverter";
-import { Text } from "@kanban/ui/Text";
-import { BookmarkIcon, CalendarIcon, ClockIcon, PlusInsideBoxIcon, PointsIcon } from "@kanban/ui/icons";
+import { Button } from "@kanban/ui/Button";
 import { DatePicker } from "@kanban/ui/DatePicker/DatePicker";
 import { DateRange } from "@kanban/ui/DatePicker/DateRange";
 import { DateRangeObject } from "@kanban/ui/DatePicker/types";
-import { CloseItem } from "@kanban/ui/icons/CloseItem";
-import { Button } from "@kanban/ui/Button";
-import { TaskFull } from "@kanban/data/TaskFull";
+import { Dropdown } from "@kanban/ui/Dropdown";
+import { Text } from "@kanban/ui/Text";
 import { TextArea } from "@kanban/ui/TextArea";
+import { TextField } from "@kanban/ui/TextField";
+import { BookmarkIcon, CalendarIcon, ClockIcon, PlusInsideBoxIcon, PointsIcon } from "@kanban/ui/icons";
+import { CloseItem } from "@kanban/ui/icons/CloseItem";
+import { DropdownConverter } from "@kanban/utils/converters/DropdownConverter";
+import { forwardRef, useRef, useState } from "react";
+import * as S from "./TaskCreate.styled";
+import { useAppSelector } from "../../../../shared/src/store/Hooks";
+import { kanbanApi, kanbanApiContainer } from "@kanban/store/Api";
+import { BaseStatuses } from "@kanban/data/Status";
+import { useForm, Controller } from "react-hook-form";
+import { nameof } from "@kanban/utils/converters/nameof";
+import { Project } from "@kanban/data/Project";
 
 type Props = {
     onClose: () => void;
     onCreate: (task: TaskFull) => void;
 };
 
-type Project = "Канбан" | "Гант" | "Оценка";
 type Tag = "селфи" | "лето" | "отдых";
 
-export const TaskCreate = forwardRef<HTMLDivElement, Props>(function TaskView(props, ref) {
+export const TaskCreate = forwardRef<HTMLDivElement, Props>(function TaskView(props, ref)
+{
     const contentRef = useRef<HTMLDivElement | null>(null);
     useOnClickOutside(contentRef, props.onClose);
+    const projects = kanbanApiContainer.useGetProjectsQuery().data;
 
-    const [title, setTitle] = useState("Название задачи");
-    const [project, setProject] = useState<Project | null>(null);
+
+    const [taskModel, setTaskModel] = useState<Partial<TaskFull>>({
+        author: useAppSelector(state => state.kanbanReducer.currentUser),
+        checkList: [],
+        deadline: new Date(),
+        isOnKanban: true,
+        title: "Новая задача",
+        description: "",
+        project: useAppSelector(state => state.kanbanReducer.projectFilter) ?? projects?.[0],
+        plannedDates: {
+            begin: new Date(),
+            end: new Date(),
+        },
+        status: BaseStatuses.ToWork,
+    });
+
+    const { control, getValues } = useForm({ defaultValues: taskModel });
+    console.log(getValues());
+
     const [tag, setTag] = useState<Tag | null>(null);
     const [deadline, setDeadline] = useState<Date | null>(null);
     const [plannedDeadline, setPlannedDeadline] = useState<DateRangeObject>({ from: new Date(), to: new Date() });
@@ -41,31 +64,45 @@ export const TaskCreate = forwardRef<HTMLDivElement, Props>(function TaskView(pr
             <S.Content ref={contentRef}>
                 <S.Body>
                     <div>
-                        <TextField
-                            onChange={setTitle}
-                            value={title}
-                            placeholder="Название задачи"
-                            style={{ padding: 8, fontWeight: 500, fontSize: 20, lineHeight: "20px", marginBottom: 4 }}
+                        <Controller
+                            name={nameof<TaskFull>("title")}
+                            control={control}
+                            render={
+                                ({ field }) => <TextField
+                                    onChange={field.onChange}
+                                    value={field.value as string}
+                                    placeholder="Название задачи"
+                                    style={{ padding: 8, fontWeight: 500, fontSize: 20, lineHeight: "20px", marginBottom: 4 }}
+                                />
+                            }
                         />
+
                         <S.BaseTask>
                             Базовая задача: <span>Название задачи родителя</span>
                         </S.BaseTask>
                     </div>
                     <div>
-                        <Dropdown<Project, string>
-                            style={{ padding: "0 8px" }}
-                            placeholder="Проект"
-                            data={["Канбан", "Гант", "Оценка"]}
-                            onSelect={(item) => setProject(item)}
-                            dataConverter={(item) => (
-                                <DropdownConverter.Data.CreateTask>{item}</DropdownConverter.Data.CreateTask>
-                            )}
-                            idAccessor={(item) => item}
-                            selectedConverter={(item) => <Text type="description-6">{item}</Text>}
-                            placeholderConverter={(item) => <Text type="description-6">{item}</Text>}
-                            selectedId={project}
-                            icon={<PointsIcon />}
+                        <Controller
+                            name={nameof<TaskFull>("project")}
+                            control={control}
+                            render={
+                                ({ field }) => <Dropdown<Project, number>
+                                    style={{ padding: "0 8px" }}
+                                    placeholder="Проект"
+                                    data={projects ?? []}
+                                    onSelect={field.onChange}
+                                    dataConverter={(item) => (
+                                        <DropdownConverter.Data.CreateTask>{item.name}</DropdownConverter.Data.CreateTask>
+                                    )}
+                                    idAccessor={(item) => item.id}
+                                    selectedConverter={(item) => <Text type="description-6">{item.name}</Text>}
+                                    placeholderConverter={(item) => <Text type="description-6">{item}</Text>}
+                                    selectedId={ (field.value as Project).id }
+                                    icon={<PointsIcon />}
+                                />
+                            }
                         />
+
                     </div>
                     <div>
                         <S.Inline>
@@ -124,7 +161,7 @@ export const TaskCreate = forwardRef<HTMLDivElement, Props>(function TaskView(pr
                                         <DropdownConverter.Selected.CreateTask>{item}</DropdownConverter.Selected.CreateTask>
                                     )}
                                     idAccessor={(item) => item}
-                                    onSelect={() => {}}
+                                    onSelect={() => { }}
                                     placeholder="Не выбран"
                                     placeholderConverter={(item) => <Text type="description-4">{item}</Text>}
                                 />
@@ -152,7 +189,8 @@ export const TaskCreate = forwardRef<HTMLDivElement, Props>(function TaskView(pr
                                                 <DropdownConverter.Selected.CreateTask>{x}</DropdownConverter.Selected.CreateTask>
                                             )}
                                             idAccessor={(x) => x}
-                                            onSelect={(x) => {
+                                            onSelect={(x) =>
+                                            {
                                                 const updated = [...executors];
                                                 updated[i] = x;
                                                 setExecutors(updated);
@@ -162,7 +200,8 @@ export const TaskCreate = forwardRef<HTMLDivElement, Props>(function TaskView(pr
                                             selectedId={x}
                                         />
                                         <CloseItem
-                                            onClick={() => {
+                                            onClick={() =>
+                                            {
                                                 const updated = [...executors];
                                                 updated.splice(i, 1);
                                                 setExecutors(updated);
@@ -187,7 +226,8 @@ export const TaskCreate = forwardRef<HTMLDivElement, Props>(function TaskView(pr
                                     <input
                                         style={{ padding: 5, width: 200 }}
                                         value={x}
-                                        onChange={(e) => {
+                                        onChange={(e) =>
+                                        {
                                             const text = e.target.value;
                                             const updated = [...checklist];
                                             updated.splice(i, 1, text);
@@ -195,7 +235,8 @@ export const TaskCreate = forwardRef<HTMLDivElement, Props>(function TaskView(pr
                                         }}
                                     />
                                     <CloseItem
-                                        onClick={() => {
+                                        onClick={() =>
+                                        {
                                             const updated = [...checklist];
                                             updated.splice(i, 1);
                                             setChecklist(updated);
@@ -207,7 +248,7 @@ export const TaskCreate = forwardRef<HTMLDivElement, Props>(function TaskView(pr
                     </div>
                     <div>
                         <S.TaskButtons>
-                            <Button onClick={() => {}} variant="primary" style={{ padding: "0 16px" }}>
+                            <Button onClick={() => { }} variant="primary" style={{ padding: "0 16px" }}>
                                 Сохранить
                             </Button>
 
