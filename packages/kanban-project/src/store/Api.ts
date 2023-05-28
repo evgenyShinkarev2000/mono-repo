@@ -1,13 +1,16 @@
 import { Person } from "@kanban/data/Person";
 import { Project } from "@kanban/data/Project";
+import { Tag } from "@kanban/data/Tag";
 import { TaskFull } from "@kanban/data/TaskFull";
 import { TaskFullSerializable } from '@kanban/data/TaskFullSerializable';
 import { TaskShortSerializable } from "@kanban/data/TaskShortSerializable";
 import { ProjectGetResponse } from "@kanban/dto/ProjectGetResponse";
+import { TagDto } from "@kanban/dto/TagDto";
 import { TaskConverter } from "@kanban/dto/TaskConverter";
 import { TaskFullDto } from "@kanban/dto/TaskFullDto";
 import { TaskPutResponse } from "@kanban/dto/TaskPutResponse";
 import { TaskShortGetResponse } from "@kanban/dto/TaskShortGetResponse";
+import { UserDto } from "@kanban/dto/UserDto";
 import { SqlDateConverter } from "@kanban/utils/converters/SqlDateConverter";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
@@ -113,6 +116,12 @@ export const kanbanApi = createApi(
                 surname: dto.responsible_last_name,
                 patronymic: dto.responsible_patronymic
               },
+              responsible: {
+                id: dto.responsible_id,
+                name: dto.responsible_first_name,
+                surname: dto.responsible_last_name,
+                patronymic: dto.responsible_patronymic
+              },
               contractors: [],
               deadline: SqlDateConverter.toJs(dto.deadline).getMilliseconds(),
               id: dto.task_id,
@@ -120,7 +129,10 @@ export const kanbanApi = createApi(
                 id: dto.project_id,
                 name: dto.project_name
               },
-              tag: dto.team_tag,
+              tag: {
+                id: dto.team_id,
+                tag: dto.team_tag,
+              },
               status: {
                 id: dto.status_id,
                 name: dto.status_name,
@@ -167,7 +179,7 @@ export const kanbanApi = createApi(
           query: (id) => ({
             url: `tasks/${id}`,
             method: "Post",
-            body:{
+            body: {
               _method: "Delete",
             }
           }),
@@ -194,6 +206,28 @@ export const kanbanApi = createApi(
           },
 
         }),
+        getUsers: builder.query<Person[], void>({
+          query: () => "/users",
+          transformResponse: (data: UserDto[]) =>
+          {
+            return data.map(user => ({
+              id: user.id,
+              name: user.first_name,
+              surname: user.last_name,
+              patronymic: user.patronymic
+            }))
+          },
+        }),
+        getTags: builder.query<Tag[], void>({
+          query: () => "/teams",
+          transformResponse: (data: TagDto[]) =>
+          {
+            return data.map(t => ({
+              id: t.id,
+              tag: t.teg,
+            }))
+          }
+        }),
         getCurrentUser: builder.query<Person, void>({
           query: () => "user/current",
         }),
@@ -211,6 +245,9 @@ const {
   useGetFullTaskSerializableQuery,
   usePatchTaskStatusMutation,
   useRemoveTaskFromKanbanMutation,
+  useGetTagsQuery,
+  useGetUsersQuery,
+  useAddFullTaskMutation,
 } = kanbanApi;
 
 export const kanbanApiContainer = {
@@ -220,4 +257,7 @@ export const kanbanApiContainer = {
   useGetCurrentUserQuery,
   useGetFullTaskSerializableQuery,
   useRemoveTaskFromKanbanMutation,
+  useGetTagsQuery,
+  useGetUsersQuery,
+  useAddFullTaskMutation,
 }

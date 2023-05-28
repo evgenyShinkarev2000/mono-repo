@@ -62,7 +62,7 @@ export const TaskEdit = forwardRef<HTMLDivElement, Props>(function TaskView(prop
                             </Text>
                             <S.Field width={184}>
                                 <BookmarkIcon />
-                                <Text type="description-6">{task.tag}</Text>
+                                <Text type="description-6">{task.tag.tag}</Text>
                             </S.Field>
                         </div>
                         <DateRangeView
@@ -168,7 +168,8 @@ export const TaskEdit = forwardRef<HTMLDivElement, Props>(function TaskView(prop
                             </Button>
                         </S.AnimatedButton>
                     </CSSTransition>
-                    <TaskViewComments comments={mockComments} />
+                    
+                    <TaskViewComments comments={props.task.comments} />
                 </S.Comments>
             </S.Content>
         </S.Wrapper>

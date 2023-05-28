@@ -1,41 +1,45 @@
+import { Person } from "@kanban/data/Person";
+import { Project } from "@kanban/data/Project";
+import { Stage } from "@kanban/data/Stage";
+import { BaseStatuses } from "@kanban/data/Status";
+import { Tag } from "@kanban/data/Tag";
 import { TaskFull } from "@kanban/data/TaskFull";
 import { useOnClickOutside } from "@kanban/hooks/useOnClickOutside";
+import { kanbanApiContainer } from "@kanban/store/Api";
 import { Button } from "@kanban/ui/Button";
+import { CheckList } from "@kanban/ui/CheckList/CheckList";
 import { DatePicker } from "@kanban/ui/DatePicker/DatePicker";
 import { DateRange } from "@kanban/ui/DatePicker/DateRange";
-import { DateRangeObject } from "@kanban/ui/DatePicker/types";
 import { Dropdown } from "@kanban/ui/Dropdown";
 import { Text } from "@kanban/ui/Text";
 import { TextArea } from "@kanban/ui/TextArea";
 import { TextField } from "@kanban/ui/TextField";
-import { BookmarkIcon, CalendarIcon, ClockIcon, PlusInsideBoxIcon, PointsIcon } from "@kanban/ui/icons";
-import { CloseItem } from "@kanban/ui/icons/CloseItem";
+import { BookmarkIcon, CalendarIcon, ClockIcon, PointsIcon } from "@kanban/ui/icons";
 import { DropdownConverter } from "@kanban/utils/converters/DropdownConverter";
-import { forwardRef, useRef, useState } from "react";
-import * as S from "./TaskCreate.styled";
-import { useAppSelector } from "../../../../shared/src/store/Hooks";
-import { kanbanApi, kanbanApiContainer } from "@kanban/store/Api";
-import { BaseStatuses } from "@kanban/data/Status";
-import { useForm, Controller } from "react-hook-form";
 import { nameof } from "@kanban/utils/converters/nameof";
-import { Project } from "@kanban/data/Project";
+import { forwardRef, useEffect, useMemo, useRef, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { useAppSelector } from "../../../../shared/src/store/Hooks";
+import * as S from "./TaskCreate.styled";
 
 type Props = {
-    onClose: () => void;
-    onCreate: (task: TaskFull) => void;
+    onClose: () => void,
+    onCreate: (task: TaskFull) => void,
 };
-
-type Tag = "селфи" | "лето" | "отдых";
 
 export const TaskCreate = forwardRef<HTMLDivElement, Props>(function TaskView(props, ref)
 {
     const contentRef = useRef<HTMLDivElement | null>(null);
     useOnClickOutside(contentRef, props.onClose);
     const projects = kanbanApiContainer.useGetProjectsQuery().data;
+    const tags = kanbanApiContainer.useGetTagsQuery().data;
+    const users = kanbanApiContainer.useGetUsersQuery().data;
 
-
-    const [taskModel, setTaskModel] = useState<Partial<TaskFull>>({
+    const currentUser = useAppSelector(s => s.kanbanReducer.currentUser);
+    const taskModel = {
         author: useAppSelector(state => state.kanbanReducer.currentUser),
+        responsible: useAppSelector(state => state.kanbanReducer.currentUser),
+        tag: tags?.[0],
         checkList: [],
         deadline: new Date(),
         isOnKanban: true,
@@ -47,17 +51,16 @@ export const TaskCreate = forwardRef<HTMLDivElement, Props>(function TaskView(pr
             end: new Date(),
         },
         status: BaseStatuses.ToWork,
-    });
+        wastedTime: new Date(0),
+    } as Partial<TaskFull>
 
-    const { control, getValues } = useForm({ defaultValues: taskModel });
-    console.log(getValues());
-
-    const [tag, setTag] = useState<Tag | null>(null);
-    const [deadline, setDeadline] = useState<Date | null>(null);
-    const [plannedDeadline, setPlannedDeadline] = useState<DateRangeObject>({ from: new Date(), to: new Date() });
-    const [description, setDescription] = useState("");
-    const [checklist, setChecklist] = useState<string[]>(["таск 1", "таск 2"]);
-    const [executors, setExecutors] = useState<string[]>([]);
+    const { control, getValues, reset } = useForm({ defaultValues: taskModel });
+    useEffect(() => {reset(taskModel)}, [tags]);
+    
+    const handleSaveClick = () =>
+    {
+        props.onCreate(getValues() as TaskFull);
+    }
 
     return (
         <S.Wrapper ref={ref}>
@@ -97,7 +100,7 @@ export const TaskCreate = forwardRef<HTMLDivElement, Props>(function TaskView(pr
                                     idAccessor={(item) => item.id}
                                     selectedConverter={(item) => <Text type="description-6">{item.name}</Text>}
                                     placeholderConverter={(item) => <Text type="description-6">{item}</Text>}
-                                    selectedId={ (field.value as Project).id }
+                                    selectedId={(field.value as Project).id}
                                     icon={<PointsIcon />}
                                 />
                             }
@@ -106,36 +109,69 @@ export const TaskCreate = forwardRef<HTMLDivElement, Props>(function TaskView(pr
                     </div>
                     <div>
                         <S.Inline>
-                            <DatePicker label="Дедлайн" onChange={setDeadline} value={deadline} icon={<ClockIcon />} />
+                            <Controller
+                                name={nameof<TaskFull>("deadline")}
+                                control={control}
+                                render={
+                                    ({ field }) => <DatePicker label="Дедлайн" onChange={field.onChange} value={field.value as Date} icon={<ClockIcon />} />
+                                }
+                            />
+
                             <div>
                                 <Text indent={1} type="body-5">
                                     Тег команды
                                 </Text>
-                                <Dropdown<Tag, string>
-                                    width={184}
-                                    data={["селфи", "лето", "отдых"]}
-                                    dataConverter={(item) => (
-                                        <DropdownConverter.Data.CreateTask>{item}</DropdownConverter.Data.CreateTask>
-                                    )}
-                                    idAccessor={(item) => item}
-                                    onSelect={setTag}
-                                    selectedConverter={(item) => <Text type="description-6">{item}</Text>}
-                                    selectedId={tag}
-                                    placeholder="Тег команды"
-                                    placeholderConverter={(item) => <Text type="description-6">{item}</Text>}
-                                    icon={<BookmarkIcon />}
+                                <Controller
+                                    name={nameof<TaskFull>("tag")}
+                                    control={control}
+                                    render={
+                                        ({ field }) => <Dropdown<Tag, number>
+                                            width={184}
+                                            data={tags ?? []}
+                                            dataConverter={(item) => (
+                                                <DropdownConverter.Data.CreateTask>{item.tag}</DropdownConverter.Data.CreateTask>
+                                            )}
+                                            idAccessor={(item) => item.id}
+                                            onSelect={field.onChange}
+                                            selectedConverter={(item) => <Text type="description-6">{item.tag}</Text>}
+                                            selectedId={(field?.value as Tag)?.id}
+                                            placeholder="Тег команды"
+                                            placeholderConverter={(item) => <Text type="description-6">{item}</Text>}
+                                            icon={<BookmarkIcon />}
+                                        />
+                                    }
                                 />
+
                             </div>
-                            <DateRange
-                                from={plannedDeadline.from}
-                                to={plannedDeadline.to}
-                                label="Планируемые сроки выполнения"
-                                onChange={setPlannedDeadline}
-                                icon={<CalendarIcon />}
+                            <Controller
+                                name={nameof<TaskFull>("plannedDates")}
+                                control={control}
+                                render={
+                                    ({ field }) => <DateRange
+                                        from={(field.value as TaskFull["plannedDates"]).begin}
+                                        to={(field.value as TaskFull["plannedDates"]).end}
+                                        label="Планируемые сроки выполнения"
+                                        onChange={
+                                            (range) => field.onChange({
+                                                begin: range.from,
+                                                end: range.to
+                                            } as TaskFull["plannedDates"])
+                                        }
+                                        icon={<CalendarIcon />}
+                                    />
+                                }
                             />
+
                         </S.Inline>
                     </div>
-                    <TextArea onChange={setDescription} value={description} placeholder="Описание" />
+                    <Controller
+                        name={nameof<TaskFull>("description")}
+                        control={control}
+                        render={
+                            ({ field }) => <TextArea onChange={field.onChange} value={field.value as string} placeholder="Описание" />
+                        }
+                    />
+
                     <S.Inline>
                         <div style={{ display: "flex", gap: 8 }}>
                             <div style={{ display: "grid" }}>
@@ -144,31 +180,38 @@ export const TaskCreate = forwardRef<HTMLDivElement, Props>(function TaskView(pr
                                 </Text>
 
                                 <Text type="description-7" style={{ display: "flex", justifySelf: "stretch" }}>
-                                    Иван Иванович Иванов
+                                    {`${currentUser.name} ${currentUser.surname}`}
                                 </Text>
                             </div>
                             <div>
                                 <Text indent={1} type="body-5">
                                     Ответственный
                                 </Text>
-                                <Dropdown
-                                    data={["типо", "метод", "получения", "данных"]}
-                                    dataConverter={(item) => (
-                                        <DropdownConverter.Data.CreateTask>{item}</DropdownConverter.Data.CreateTask>
-                                    )}
-                                    selectedId={"Не выбран"}
-                                    selectedConverter={(item) => (
-                                        <DropdownConverter.Selected.CreateTask>{item}</DropdownConverter.Selected.CreateTask>
-                                    )}
-                                    idAccessor={(item) => item}
-                                    onSelect={() => { }}
-                                    placeholder="Не выбран"
-                                    placeholderConverter={(item) => <Text type="description-4">{item}</Text>}
+                                <Controller
+                                    name={nameof<TaskFull>("responsible")}
+                                    control={control}
+                                    render={
+                                        ({ field }) => <Dropdown<Person, number>
+                                            data={users ?? []}
+                                            dataConverter={(item) => (
+                                                <DropdownConverter.Data.CreateTask>{`${item.name} ${item.surname}`}</DropdownConverter.Data.CreateTask>
+                                            )}
+                                            selectedId={(field.value as Person).id}
+                                            selectedConverter={(item) => (
+                                                <DropdownConverter.Selected.CreateTask>{`${item.name} ${item.surname}`}</DropdownConverter.Selected.CreateTask>
+                                            )}
+                                            idAccessor={(item) => item.id}
+                                            onSelect={field.onChange}
+                                            placeholder="Не выбран"
+                                            placeholderConverter={(item) => <Text type="description-4">{item}</Text>}
+                                        />
+                                    }
                                 />
+
                             </div>
                         </div>
                     </S.Inline>
-                    <div>
+                    {/* <div>
                         <div style={{ display: "flex", gap: 8, marginBottom: 8, flexDirection: "column" }}>
                             <div style={{ display: "flex", gap: 8 }}>
                                 <Text type="body-5">Исполнители</Text>
@@ -211,47 +254,19 @@ export const TaskCreate = forwardRef<HTMLDivElement, Props>(function TaskView(pr
                                 ))}
                             </div>
                         </div>
-                    </div>
-                    <div>
-                        <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
-                            <Text type="body-5">Чек лист</Text>
-                            <PlusInsideBoxIcon
-                                onClick={() => setChecklist((prev) => [...prev, ""])}
-                                style={{ cursor: "pointer" }}
-                            />
-                        </div>
-                        <div style={{ display: "flex", gap: 8, flexDirection: "column" }}>
-                            {checklist.map((x, i) => (
-                                <div style={{ display: "flex", gap: 8, alignItems: "center" }} key={i}>
-                                    <input
-                                        style={{ padding: 5, width: 200 }}
-                                        value={x}
-                                        onChange={(e) =>
-                                        {
-                                            const text = e.target.value;
-                                            const updated = [...checklist];
-                                            updated.splice(i, 1, text);
-                                            setChecklist(updated);
-                                        }}
-                                    />
-                                    <CloseItem
-                                        onClick={() =>
-                                        {
-                                            const updated = [...checklist];
-                                            updated.splice(i, 1);
-                                            setChecklist(updated);
-                                        }}
-                                    />
-                                </div>
-                            ))}
-                        </div>
-                    </div>
+                    </div> */}
+                    <Controller
+                        name={nameof<TaskFull>("checkList")}
+                        control={control}
+                        render={
+                            ({ field }) => <CheckList value={field.value as Stage[]} onChange={field.onChange} isReadonly={false} />
+                        }
+                    />
                     <div>
                         <S.TaskButtons>
-                            <Button onClick={() => { }} variant="primary" style={{ padding: "0 16px" }}>
+                            <Button onClick={handleSaveClick} variant="primary" style={{ padding: "0 16px" }}>
                                 Сохранить
                             </Button>
-
                             <Button onClick={props.onClose} variant="secondary" style={{ padding: "0 16px" }}>
                                 Отмена
                             </Button>

@@ -16,6 +16,12 @@ export class TaskConverter
         surname: dto.responsible_last_name,
         patronymic: dto.responsible_patronymic
       },
+      responsible: {
+        id: dto.responsible_id,
+        name: dto.responsible_first_name,
+        surname: dto.responsible_last_name,
+        patronymic: dto.responsible_patronymic
+      },
       checkList: dto.stages.map(s => ({ id: s.id, isCompleted: !!s.is_ready, title: s.description })),
       contractors: [],
       deadline: SqlDateConverter.toJs(dto.deadline).getMilliseconds(),
@@ -31,7 +37,10 @@ export class TaskConverter
         id: dto.project_id,
         name: dto.project_name
       },
-      tag: dto.team_tag,
+      tag: {
+        id: dto.team_id!,
+        tag: dto.team_tag,
+      },
       status: {
         id: dto.status_id,
         name: dto.status_name
@@ -55,6 +64,7 @@ export class TaskConverter
 
   public fullModelToDto(task: TaskFull): TaskFullDto
   {
+    debugger;
     return {
       task_id: task.id!,
       task_name: task.title,
@@ -65,15 +75,16 @@ export class TaskConverter
       project_name: task.project.name,
       status_id: task.status.id,
       status_name: task.status.name,
-      responsible_id: task.author.id,
-      responsible_first_name: task.author.name,
-      responsible_last_name: task.author.surname,
-      responsible_patronymic: task.author.patronymic,
+      responsible_id: task.responsible.id,
+      responsible_first_name: task.responsible.name,
+      responsible_last_name: task.responsible.surname,
+      responsible_patronymic: task.responsible.patronymic,
       responsible_time_spent: SqlDateConverter.toSql(task.wastedTime),
-      team_tag: task.tag,
+      team_id: task.tag?.id,
+      team_tag: task.tag?.tag,
       planned_start_date: SqlDateConverter.toSql(task.plannedDates.begin),
       planned_final_date: SqlDateConverter.toSql(task.plannedDates.end),
-      stages: task.checkList.map(stage =>
+      stages: task.checkList?.map(stage =>
       {
         if (stage.id)
         {
@@ -89,7 +100,7 @@ export class TaskConverter
           is_ready: stage.isCompleted ? 1 : 0,
         }
       }),
-      comments: task.comments.map(comment => ({
+      comments: task.comments?.map(comment => ({
         id: comment.id,
         content: comment.content,
         author_id:  comment.author.id,

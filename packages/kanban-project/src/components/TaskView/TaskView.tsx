@@ -74,7 +74,7 @@ export const TaskView = forwardRef<HTMLDivElement, Props>(function TaskView(prop
                             </Text>
                             <S.Field width={184}>
                                 <BookmarkIcon />
-                                <Text type="description-6">{props.task.tag}</Text>
+                                <Text type="description-6">{props.task.tag.tag}</Text>
                             </S.Field>
                         </div>
                         <DateRangeView

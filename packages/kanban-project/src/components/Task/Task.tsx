@@ -70,7 +70,7 @@ export function Task(props: Props) {
             >
                 <S.TaskTitle>{props.task.title}</S.TaskTitle>
                 <S.ProjectTitle>{props.task.project.name}</S.ProjectTitle>
-                <S.Tag>#{props.task.tag}</S.Tag>
+                <S.Tag>#{props.task.tag.tag}</S.Tag>
                 <S.Name>
                     <PersonIcon />
                     <p>{`${props.task.author.name} ${props.task.author.surname}`}</p>

@@ -30,9 +30,9 @@ const useFilteredShortTasks = () => {
 
 export const KanbanPage = () =>
 {
-    // const tasks = useShortTasks().data!;
     const tasks = useFilteredShortTasks().data!;
     const [removeTaskFromKanban] = kanbanApiContainer.useRemoveTaskFromKanbanMutation();
+    const [addTask] = kanbanApiContainer.useAddFullTaskMutation();
     const [patchStatus] = kanbanApiContainer.usePatchTaskStatusMutation();
     const [getFullTask, fullTaskResponse] = useFullTask();
     const taskViewRef = useRef<HTMLDivElement | null>(null);
@@ -47,6 +47,11 @@ export const KanbanPage = () =>
     const handleStatusChange = (task: TaskShort, statusId: number) =>
     {
         patchStatus({ taskId: task.id!, newStatusId: statusId });
+    }
+
+    const handleTaskAdd = (fullTask: TaskFull) => {
+        console.log(fullTask);
+        addTask(fullTask);
     }
 
     function removeCompletedTasks()
@@ -82,7 +87,7 @@ export const KanbanPage = () =>
                     />
                 </CSSTransition>
                 <CSSTransition timeout={300} in={stage === "create"} unmountOnExit mountOnEnter>
-                    <TaskCreate ref={taskViewRef} onClose={() => setStage(null)} onCreate={console.log} />
+                    <TaskCreate ref={taskViewRef} onClose={() => setStage(null)} onCreate={handleTaskAdd} />
                 </CSSTransition>
             </>
         );

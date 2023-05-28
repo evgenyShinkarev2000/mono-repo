@@ -14,8 +14,8 @@ const initialState: KanbanState = {
   taskExecutorFilter: "Все задачи",
   currentUser: {
     id: 1,
-    name: "Имя",
-    surname: "Фамилия",
+    name: "Свой",
+    surname: "Исполнитель",
     patronymic: "Отчестов",
   }
 };
