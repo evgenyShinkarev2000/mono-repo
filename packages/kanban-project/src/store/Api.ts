@@ -1,5 +1,6 @@
 import { Person } from "@kanban/data/Person";
 import { Project } from "@kanban/data/Project";
+import { Status } from "@kanban/data/Status";
 import { Tag } from "@kanban/data/Tag";
 import { TaskFull } from "@kanban/data/TaskFull";
 import { TaskFullSerializable } from '@kanban/data/TaskFullSerializable';
@@ -12,6 +13,7 @@ import { TaskPutResponse } from "@kanban/dto/TaskPutResponse";
 import { TaskShortGetResponse } from "@kanban/dto/TaskShortGetResponse";
 import { UserDto } from "@kanban/dto/UserDto";
 import { SqlDateConverter } from "@kanban/utils/converters/SqlDateConverter";
+import { QueryReturnValue } from "@reduxjs/toolkit/dist/query/baseQueryTypes";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 
@@ -30,14 +32,36 @@ const buildKanbanApiMock = () => createApi(
           query: (taskId: number) => `tasks/${taskId}`,
         }),
         patchTaskStatus: builder.mutation<TaskPutResponse, { taskId: number, newStatusId: number }>({
-          query: (args) => (
+          queryFn: (arg, api, options, baseFetch) =>
+          {
+            const resposne = baseFetch(`/tasks/${arg.taskId}`) as Promise<QueryReturnValue<TaskFull>>
+            const result = resposne.then((task) =>
             {
-              url: `/tasks/${args.taskId}`,
-              method: "Put",
-              body: {
-                status_id: args.newStatusId
+              debugger;
+              const statusResponse = baseFetch(`/statuses/${arg.newStatusId}`) as Promise<QueryReturnValue<Status>>
+              return statusResponse.then(status => ({
+                task: task.data,
+                status: status.data,
+              }))
+            }).then(data =>
+            {
+              debugger;
+              return baseFetch({
+                url: `tasks/${arg.taskId}`,
+                method: "Put",
+                body: {
+                  ...(data.task),
+                  status: data.status,
+                }
+              })
+            }).then(() => ({
+              data: {
+                message: "successful"
               }
-            }),
+            }));
+
+            return result;
+          },
           invalidatesTags: ["tasks"]
         }),
         putFullTask: builder.mutation<TaskPutResponse, TaskFull>({
@@ -89,7 +113,7 @@ const buildKanbanApiMock = () => createApi(
             method: "Delete",
           }),
           invalidatesTags: ["tasks"],
-          transformResponse: () => ({message: "successful"})
+          transformResponse: () => ({ message: "successful" })
         })
       }
     },
