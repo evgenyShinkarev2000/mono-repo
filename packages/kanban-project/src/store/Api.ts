@@ -15,7 +15,7 @@ import { SqlDateConverter } from "@kanban/utils/converters/SqlDateConverter";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 
-export const kanbanApiMock = createApi(
+const buildKanbanApiMock = () => createApi(
   {
     baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:8050" }),
     tagTypes: ["tasks"],
@@ -69,7 +69,7 @@ export const kanbanApiMock = createApi(
         getUsers: builder.query<Person[], void>({
           query: () => "/users"
         }),
-        addFullTask: builder.mutation<Partial<TaskFullSerializable>, TaskFull>({
+        addFullTask: builder.mutation<TaskFullSerializable, TaskFull>({
           //@ts-ignore
           queryFn: (args) => ({
             data: {
@@ -82,6 +82,14 @@ export const kanbanApiMock = createApi(
               wastedTime: args.wastedTime?.getMilliseconds(),
             }
           })
+        }),
+        removeTask: builder.mutation<TaskPutResponse, number>({
+          query: (args) => ({
+            url: `tasks/${args}`,
+            method: "Delete",
+          }),
+          invalidatesTags: ["tasks"],
+          transformResponse: () => ({message: "successful"})
         })
       }
     },
@@ -97,7 +105,7 @@ export const kanbanApiMock = createApi(
 
 const baseUrl = import.meta.env.VITE_KANBAN_API_URI;
 
-export const kanbanApiRemote = createApi(
+const buildKanbanApiRemote = () => createApi(
   {
     baseQuery: fetchBaseQuery({ baseUrl }),
     tagTypes: ["tasks"],
@@ -228,22 +236,21 @@ export const kanbanApiRemote = createApi(
             }))
           }
         }),
-        getCurrentUser: builder.query<Person, void>({
-          query: () => "user/current",
-        }),
       }
     },
     reducerPath: "kanbanApi"
   }
 );
 
-export const kanbanApi = import.meta.env.VITE_KANBAN_MOCK_API === "true" ? kanbanApiMock : kanbanApiRemote;
+//can't map typeof Dto to model
+//@ts-ignore 
+export const kanbanApi: ReturnType<typeof buildKanbanApiRemote>
+  = import.meta.env.VITE_KANBAN_MOCK_API === "true" ? buildKanbanApiMock() : buildKanbanApiRemote();
 
 
 const {
   useGetShortTasksSerializableQuery,
   useGetProjectsQuery,
-  useGetCurrentUserQuery,
   useGetFullTaskSerializableQuery,
   usePatchTaskStatusMutation,
   useRemoveTaskFromKanbanMutation,
@@ -256,7 +263,6 @@ export const kanbanApiContainer = {
   usePatchTaskStatusMutation,
   useGetShortTasksSerializableQuery,
   useGetProjectsQuery,
-  useGetCurrentUserQuery,
   useGetFullTaskSerializableQuery,
   useRemoveTaskFromKanbanMutation,
   useGetTagsQuery,
