@@ -15,80 +15,80 @@ import { SqlDateConverter } from "@kanban/utils/converters/SqlDateConverter";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 
-// const baseUrl = "http://localhost:8050";
+export const kanbanApiMock = createApi(
+  {
+    baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:8050" }),
+    tagTypes: ["tasks"],
+    endpoints: (builder) =>
+    {
+      return {
+        getShortTasksSerializable: builder.query<TaskShortSerializable[], void>({
+          query: () => "/tasks",
+          providesTags: ["tasks"],
+        }),
+        getFullTaskSerializable: builder.query<TaskFullSerializable, number>({
+          query: (taskId: number) => `tasks/${taskId}`,
+        }),
+        patchTaskStatus: builder.mutation<TaskPutResponse, { taskId: number, newStatusId: number }>({
+          query: (args) => (
+            {
+              url: `/tasks/${args.taskId}`,
+              method: "Put",
+              body: {
+                status_id: args.newStatusId
+              }
+            }),
+          invalidatesTags: ["tasks"]
+        }),
+        putFullTask: builder.mutation<TaskPutResponse, TaskFull>({
+          query: () => ({
+            url: "/tasks",
+            method: "Put",
+          }),
+          invalidatesTags: ["tasks"]
+        }),
+        removeTaskFromKanban: builder.mutation<TaskPutResponse, number>({
+          query: (taskId) => ({
+            url: `/tasks/${taskId}`,
+            method: "Put",
+            body: {
+              is_on_kanban: 0,
+            }
+          }),
+          invalidatesTags: ["tasks"]
+        }),
+        getProjects: builder.query<Project[], void>({
+          query: () => "/projects",
+        }),
+        getCurrentUser: builder.query<Person, void>({
+          query: () => "user/current",
+        }),
+        getTags: builder.query<Tag[], void>({
+          query: () => "/teams"
+        }),
+        getUsers: builder.query<Person[], void>({
+          query: () => "/users"
+        }),
+        addFullTask: builder.mutation<Partial<TaskFullSerializable>, TaskFull>({
+          //@ts-ignore
+          queryFn: (args) => ({
+            data: {
+              ...args,
+              deadline: args.deadline?.getMilliseconds(),
+              plannedDates: {
+                begin: args.deadline?.getMilliseconds(),
+                end: args.deadline?.getMilliseconds(),
+              },
+              wastedTime: args.wastedTime?.getMilliseconds(),
+            }
+          })
+        })
+      }
+    },
+    reducerPath: "kanbanApi"
+  }
+);
 
-// export const kanbanApi = createApi(
-//   {
-//     baseQuery: fetchBaseQuery({ baseUrl }),
-//     tagTypes: ["tasks"],
-//     endpoints: (builder) =>
-//     {
-//       return {
-//         getShortTasksSerializable: builder.query<TaskShortSerializable[], void>({
-//           query: () => "/tasks",
-//           providesTags: ["tasks"],
-//         }),
-//         getFullTaskSerializable: builder.query<TaskFullSerializable, number>({
-//           query: (taskId: number) => `tasks/${taskId}`,
-//         }),
-//         patchTaskStatus: builder.mutation<TaskPutRequest, { taskId: number, newStatusId: number }>({
-//           query: (args) => (
-//             {
-//               url: `/tasks/${args.taskId}`,
-//               method: "Put",
-//               body: {
-//                 status_id: args.newStatusId
-//               }
-//             }),
-//           invalidatesTags: ["tasks"]
-//         }),
-//         putFullTask: builder.mutation<TaskPutRequest, TaskFull>({
-//           query: () => ({
-//             url: "/tasks",
-//             method: "Put",
-//           }),
-//           invalidatesTags: ["tasks"]
-//         }),
-//         removeTaskFromKanban: builder.mutation<TaskPutRequest, number>({
-//           query: (taskId) => ({
-//             url: `/tasks/${taskId}`,
-//             method: "Put",
-//             body: {
-//               is_on_kanban: 0,
-//             }
-//           }),
-//           invalidatesTags: ["tasks"]
-//         }),
-//         getProjects: builder.query<Project[], void>({
-//           query: () => "/projects",
-//         }),
-//         getCurrentUser: builder.query<Person, void>({
-//           query: () => "user/current",
-//         }),
-//       }
-//     },
-//     reducerPath: "kanbanApi"
-//   }
-// );
-
-
-// const {
-//   useGetShortTasksSerializableQuery,
-//   useGetProjectsQuery,
-//   useGetCurrentUserQuery,
-//   useGetFullTaskSerializableQuery,
-//   usePatchTaskStatusMutation,
-//   useRemoveTaskFromKanbanMutation,
-// } = kanbanApi;
-
-// export const kanbanApiContainer = {
-//   usePatchTaskStatusMutation,
-//   useGetShortTasksSerializableQuery,
-//   useGetProjectsQuery,
-//   useGetCurrentUserQuery,
-//   useGetFullTaskSerializableQuery,
-//   useRemoveTaskFromKanbanMutation,
-// }
 
 
 
@@ -97,7 +97,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 const baseUrl = import.meta.env.VITE_KANBAN_API_URI;
 
-export const kanbanApi = createApi(
+export const kanbanApiRemote = createApi(
   {
     baseQuery: fetchBaseQuery({ baseUrl }),
     tagTypes: ["tasks"],
@@ -236,6 +236,8 @@ export const kanbanApi = createApi(
     reducerPath: "kanbanApi"
   }
 );
+
+export const kanbanApi = import.meta.env.VITE_KANBAN_MOCK_API === "true" ? kanbanApiMock : kanbanApiRemote;
 
 
 const {
