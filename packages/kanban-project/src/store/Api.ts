@@ -37,7 +37,6 @@ const buildKanbanApiMock = () => createApi(
             const resposne = baseFetch(`/tasks/${arg.taskId}`) as Promise<QueryReturnValue<TaskFull>>
             const result = resposne.then((task) =>
             {
-              debugger;
               const statusResponse = baseFetch(`/statuses/${arg.newStatusId}`) as Promise<QueryReturnValue<Status>>
               return statusResponse.then(status => ({
                 task: task.data,
@@ -45,7 +44,6 @@ const buildKanbanApiMock = () => createApi(
               }))
             }).then(data =>
             {
-              debugger;
               return baseFetch({
                 url: `tasks/${arg.taskId}`,
                 method: "Put",
@@ -59,7 +57,7 @@ const buildKanbanApiMock = () => createApi(
                 message: "successful"
               }
             }));
-
+            
             return result;
           },
           invalidatesTags: ["tasks"]
