@@ -4,6 +4,7 @@ import { Stage } from "@kanban/data/Stage";
 import { BaseStatuses } from "@kanban/data/Status";
 import { Tag } from "@kanban/data/Tag";
 import { TaskFull } from "@kanban/data/TaskFull";
+import { TaskShort } from "@kanban/data/TaskShort";
 import { useOnClickOutside } from "@kanban/hooks/useOnClickOutside";
 import { kanbanApiContainer } from "@kanban/store/Api";
 import { Button } from "@kanban/ui/Button";
@@ -17,7 +18,7 @@ import { TextField } from "@kanban/ui/TextField";
 import { BookmarkIcon, CalendarIcon, ClockIcon, PointsIcon } from "@kanban/ui/icons";
 import { DropdownConverter } from "@kanban/utils/converters/DropdownConverter";
 import { nameof } from "@kanban/utils/converters/nameof";
-import { forwardRef, useEffect, useMemo, useRef, useState } from "react";
+import { forwardRef, useEffect, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useAppSelector } from "../../../../shared/src/store/Hooks";
 import * as S from "./TaskCreate.styled";
@@ -25,6 +26,7 @@ import * as S from "./TaskCreate.styled";
 type Props = {
     onClose: () => void,
     onCreate: (task: TaskFull) => void,
+    parentTask?: Pick<TaskShort, "id" | "title">,
 };
 
 export const TaskCreate = forwardRef<HTMLDivElement, Props>(function TaskView(props, ref)
@@ -37,6 +39,7 @@ export const TaskCreate = forwardRef<HTMLDivElement, Props>(function TaskView(pr
 
     const currentUser = useAppSelector(s => s.kanbanReducer.currentUser);
     const taskModel = {
+        parentTask: props.parentTask,
         author: useAppSelector(state => state.kanbanReducer.currentUser),
         responsible: useAppSelector(state => state.kanbanReducer.currentUser),
         tag: tags?.[0],
@@ -52,7 +55,7 @@ export const TaskCreate = forwardRef<HTMLDivElement, Props>(function TaskView(pr
         },
         status: BaseStatuses.ToWork,
         wastedTime: new Date(0),
-    } as Partial<TaskFull>
+    } as Readonly<Partial<TaskFull>>
 
     const { control, getValues, reset } = useForm({ defaultValues: taskModel });
     useEffect(() => {reset(taskModel)}, [tags]);
@@ -60,6 +63,7 @@ export const TaskCreate = forwardRef<HTMLDivElement, Props>(function TaskView(pr
     const handleSaveClick = () =>
     {
         props.onCreate(getValues() as TaskFull);
+        props.onClose();
     }
 
     return (
@@ -81,7 +85,12 @@ export const TaskCreate = forwardRef<HTMLDivElement, Props>(function TaskView(pr
                         />
 
                         <S.BaseTask>
-                            Базовая задача: <span>Название задачи родителя</span>
+                        Базовая задача:
+                            {
+                                taskModel.parentTask
+                                    ? <span>{taskModel.parentTask?.title}</span>
+                                    : <span>Нет</span>
+                            }
                         </S.BaseTask>
                     </div>
                     <div>
@@ -259,7 +268,7 @@ export const TaskCreate = forwardRef<HTMLDivElement, Props>(function TaskView(pr
                         name={nameof<TaskFull>("checkList")}
                         control={control}
                         render={
-                            ({ field }) => <CheckList value={field.value as Stage[]} onChange={field.onChange} isReadonly={false} />
+                            ({ field }) => <CheckList value={field.value as Stage[]} onChange={field.onChange} mode="editNoCheck" />
                         }
                     />
                     <div>
