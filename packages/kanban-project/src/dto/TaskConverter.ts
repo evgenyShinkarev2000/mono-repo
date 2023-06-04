@@ -24,14 +24,14 @@ export class TaskConverter
       },
       checkList: dto.stages.map(s => ({ id: s.id, isCompleted: !!s.is_ready, title: s.description })),
       contractors: [],
-      deadline: SqlDateConverter.toJs(dto.deadline).getMilliseconds(),
+      deadline: SqlDateConverter.toJs(dto.deadline).getTime(),
       description: dto.description,
       parentTask: {
         id: dto.parent_id
       } as unknown as TaskShortSerializable,
       plannedDates: {
-        begin: SqlDateConverter.toJs(dto.planned_start_date).getMilliseconds(),
-        end: SqlDateConverter.toJs(dto.planned_final_date).getMilliseconds(),
+        begin: SqlDateConverter.toJs(dto.planned_start_date).getTime(),
+        end: SqlDateConverter.toJs(dto.planned_final_date).getTime(),
       },
       project: {
         id: dto.project_id,
@@ -46,7 +46,7 @@ export class TaskConverter
         name: dto.status_name
       },
       title: dto.task_name,
-      wastedTime: SqlDateConverter.toJs(dto.responsible_time_spent).getMilliseconds(),
+      wastedTime: SqlDateConverter.toJs(dto.responsible_time_spent).getTime(),
       isOnKanban: !!dto.is_on_kanban,
       comments: dto.comments.map(comment => ({
         author: {
@@ -57,7 +57,7 @@ export class TaskConverter
         },
         content: comment.content,
         id: comment.id!,
-        time: comment.created_at ? SqlDateConverter.toJs(comment.created_at).getMilliseconds() : undefined, // позже напишу selector или hook
+        time: comment.created_at ? SqlDateConverter.toJs(comment.created_at).getTime() : undefined, // позже напишу selector или hook
       })),
     }
   }
@@ -78,7 +78,7 @@ export class TaskConverter
       responsible_first_name: task.responsible.name,
       responsible_last_name: task.responsible.surname,
       responsible_patronymic: task.responsible.patronymic,
-      responsible_time_spent: SqlDateConverter.toSql(task.wastedTime),
+      responsible_time_spent: SqlDateConverter.toSqlTimeOnly(task.wastedTime),
       team_id: task.tag?.id,
       team_tag: task.tag?.tag,
       planned_start_date: SqlDateConverter.toSql(task.plannedDates.begin),

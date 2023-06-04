@@ -13,6 +13,7 @@ import { TaskPutResponse } from "@kanban/dto/TaskPutResponse";
 import { TaskShortGetResponse } from "@kanban/dto/TaskShortGetResponse";
 import { UserDto } from "@kanban/dto/UserDto";
 import { SqlDateConverter } from "@kanban/utils/converters/SqlDateConverter";
+import { nameof } from "@kanban/utils/converters/nameof";
 import { QueryReturnValue } from "@reduxjs/toolkit/dist/query/baseQueryTypes";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
@@ -96,12 +97,12 @@ const buildKanbanApiMock = () => createApi(
           queryFn: (args) => ({
             data: {
               ...args,
-              deadline: args.deadline?.getMilliseconds(),
+              deadline: args.deadline?.getTime(),
               plannedDates: {
-                begin: args.deadline?.getMilliseconds(),
-                end: args.deadline?.getMilliseconds(),
+                begin: args.deadline?.getTime(),
+                end: args.deadline?.getTime(),
               },
-              wastedTime: args.wastedTime?.getMilliseconds(),
+              wastedTime: args.wastedTime?.getTime(),
             }
           })
         }),
@@ -118,8 +119,6 @@ const buildKanbanApiMock = () => createApi(
     reducerPath: "kanbanApi"
   }
 );
-
-
 
 
 
@@ -153,7 +152,7 @@ const buildKanbanApiRemote = () => createApi(
                 patronymic: dto.responsible_patronymic
               },
               contractors: [],
-              deadline: SqlDateConverter.toJs(dto.deadline).getMilliseconds(),
+              deadline: SqlDateConverter.toJs(dto.deadline).getTime(),
               id: dto.task_id,
               project: {
                 id: dto.project_id,
@@ -201,7 +200,13 @@ const buildKanbanApiRemote = () => createApi(
           query: (task: TaskFull) => ({
             url: "/tasks",
             method: "Post",
-            body: new TaskConverter().fullModelToDto(task),
+            body: function(){
+              const dto =  new TaskConverter().fullModelToDto(task);
+              return {
+                ...dto,
+                [nameof<TaskFullDto>("stages")]: dto.stages.map(s => s.description)
+              }
+            }(),
           }),
           invalidatesTags: ["tasks"],
         }),
