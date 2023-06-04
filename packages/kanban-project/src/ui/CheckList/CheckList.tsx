@@ -1,18 +1,22 @@
-import React from "react";
-import * as S from "../Checkbox/CheckboxGroup.styled";
 import { Stage } from "@kanban/data/Stage";
-import { CheckListItem } from "./CheckListItem";
-import { PlusInsideBoxIcon } from "../icons";
 import { Text } from "@kanban/ui/Text";
+import React, { useMemo } from "react";
+import * as S from "../Checkbox/CheckboxGroup.styled";
+import { PlusInsideBoxIcon } from "../icons";
+import { CheckListItem } from "./CheckListItem";
+import { CheckListMode } from "./CheckListMode";
 
 export type CheckListProps = {
   value: Stage[],
   onChange: (stages: Stage[]) => void,
-  isReadonly: boolean,
+  mode: CheckListMode,
 }
 
 export const CheckList: React.FC<CheckListProps> = (props) =>
 {
+  const isRemoveDisabled = useMemo(() => props.mode === "check" || props.mode === "readonly", [props.mode]);
+  const isAddDisabled = useMemo(() => props.mode === "check" || props.mode === "readonly", [props.mode]);
+
   const handleChange = (stage: Stage, index: number) =>
   {
     const newStages = [...props.value];
@@ -22,6 +26,10 @@ export const CheckList: React.FC<CheckListProps> = (props) =>
 
   const handleAdd = () =>
   {
+    if (isAddDisabled)
+    {
+      return;
+    }
     const newStages = [...props.value];
     newStages.push({ isCompleted: false, title: "" });
     props.onChange(newStages);
@@ -29,6 +37,10 @@ export const CheckList: React.FC<CheckListProps> = (props) =>
 
   const handleRemove = (index: number) =>
   {
+    if (isRemoveDisabled)
+    {
+      return;
+    }
     const newStages = [...props.value];
     newStages.splice(index, 1);
     props.onChange(newStages);
@@ -38,16 +50,20 @@ export const CheckList: React.FC<CheckListProps> = (props) =>
     <div>
       <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
         <Text type="body-5">Чек лист</Text>
-        <PlusInsideBoxIcon
-          onClick={handleAdd}
-          style={{ cursor: "pointer" }}
-        />
+        {
+          !isAddDisabled &&
+          <PlusInsideBoxIcon
+            onClick={handleAdd}
+            style={{ cursor: "pointer" }}
+          />
+        }
+
       </div>
       <S.CheckboxGroup>
         {
           props.value.map((stage, i) =>
             <CheckListItem
-              isReadonly={props.isReadonly}
+              mode={props.mode}
               key={i}
               stage={stage}
               onChange={(stage) => handleChange(stage, i)}
