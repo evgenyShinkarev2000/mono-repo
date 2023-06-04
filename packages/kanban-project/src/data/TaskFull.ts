@@ -1,7 +1,6 @@
-import { Stage } from "./Stage";
-import { Person } from "./Person";
-import { TaskShort } from "./TaskShort";
 import { Commentary } from "./Commentary";
+import { Stage } from "./Stage";
+import { TaskShort } from "./TaskShort";
 
 export type TaskFull = TaskShort & {
   description: string,
