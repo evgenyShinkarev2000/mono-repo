@@ -2,14 +2,18 @@ export class SqlDateConverter
 {
   public static toJs(dateString: string): Date
   {
-    const date = new Date(dateString);
+    const date = new Date(dateString ?? undefined);
 
     return date;
   }
 
   public static toSql(date: Date): string{
-    const newDate = new Date(date).toISOString().slice(0, 19).replace('T', ' ')    
+    const newDate = new Date(date).toISOString().slice(0, 19).replace('T', ' ');  
 
     return newDate;
+  }
+
+  public static toSqlTimeOnly(date: Date): string{
+    return SqlDateConverter.toSql(date).split(" ")[1];
   }
 }
