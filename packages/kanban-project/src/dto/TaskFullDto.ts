@@ -3,6 +3,7 @@ import { StageDto } from "./StageDto";
 
 export type TaskFullDto = {
   parent_id?: number,
+  parent_name?: string,
   task_id?: number,
   task_name: string,
   project_id: number,

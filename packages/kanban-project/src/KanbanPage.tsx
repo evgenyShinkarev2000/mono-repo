@@ -32,6 +32,7 @@ export const KanbanPage = () =>
 {
     const tasks = useFilteredShortTasks().data!;
     const [removeTaskFromKanban] = kanbanApiContainer.useRemoveTaskFromKanbanMutation();
+    const [putTask] = kanbanApiContainer.usePutFullTaskMutation();
     const [addTask] = kanbanApiContainer.useAddFullTaskMutation();
     const [addCommentary] = kanbanApiContainer.useAddCommentaryMutation();
     const [eraseTask] = kanbanApiContainer.useRemoveTaskMutation();
@@ -52,7 +53,6 @@ export const KanbanPage = () =>
     }
 
     const handleTaskAdd = (fullTask: TaskFull) => {
-        console.log(fullTask);
         addTask(fullTask);
     }
 
@@ -96,11 +96,13 @@ export const KanbanPage = () =>
                 </CSSTransition>
                 <CSSTransition timeout={300} in={stage === "edit" && canRender} unmountOnExit mountOnEnter>
                     <TaskEdit
-                        onChange={() => { }}
-                        onSave={() => { }}
+                        onSave={(task) => putTask(task)}
+                        onRemove={() => handleRemoveTask(fullTask.id)}
                         ref={taskViewRef}
                         task={fullTask}
                         onClose={() => setStage(null)}
+                        onRemoveFromKanban={() => handleRemoveTaskFromKanban(fullTask.id)}
+                        onAddCommentary={handleAddCommentary}
                     />
                 </CSSTransition>
                 <CSSTransition timeout={300} in={stage === "create"} unmountOnExit mountOnEnter>

@@ -1,4 +1,3 @@
-import { useSyncStates } from "@kanban/hooks/useSyncStates";
 import * as S from "./TextArea.styled";
 
 type Props = {
@@ -8,7 +7,5 @@ type Props = {
 };
 
 export function TextArea(props: Props) {
-    const [text, setText] = useSyncStates(props.value);
-
-    return <S.TextArea placeholder={props.placeholder} onChange={(e) => setText(e.target.value)} value={text}></S.TextArea>;
+    return <S.TextArea placeholder={props.placeholder} onChange={(e) => props.onChange(e.currentTarget.value)} value={props.value}></S.TextArea>;
 }

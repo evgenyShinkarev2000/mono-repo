@@ -1,6 +1,6 @@
+import { Commentary } from "@kanban/data/Commentary";
 import { TaskFull } from "@kanban/data/TaskFull";
 import { useOnClickOutside } from "@kanban/hooks/useOnClickOutside";
-import { mockComments } from "@kanban/mock/MockComments";
 import { Button } from "@kanban/ui/Button";
 import { CheckList } from "@kanban/ui/CheckList/CheckList";
 import { DateRangeView } from "@kanban/ui/DatePicker/DateRangeView";
@@ -13,11 +13,9 @@ import { PointsIcon } from "@kanban/ui/icons/Points";
 import { TimerIcon } from "@kanban/ui/icons/Timer";
 import { forwardRef, useRef, useState } from "react";
 import { CSSTransition } from "react-transition-group";
+import { useAppSelector } from "../../../../shared/src/store/Hooks";
 import * as S from "./TaskView.styled";
 import { TaskViewComments } from "./TaskViewComments";
-import { useAppSelector } from "../../../../shared/src/store/Hooks";
-import { kanbanApiContainer } from "@kanban/store/Api";
-import { Commentary } from "@kanban/data/Commentary";
 
 type Props = {
     onClose: () => void;
@@ -33,7 +31,6 @@ export const TaskView = forwardRef<HTMLDivElement, Props>(function TaskView(prop
     const contentRef = useRef<HTMLDivElement | null>(null);
     useOnClickOutside(contentRef, props.onClose);
     const currentUser = useAppSelector(s => s.kanbanReducer.currentUser);
-    const [addCommentary] = kanbanApiContainer.useAddCommentaryMutation();
     const removeTask = () => {
         props.onRemove();
         props.onClose();
@@ -45,7 +42,7 @@ export const TaskView = forwardRef<HTMLDivElement, Props>(function TaskView(prop
             author: currentUser,
             task: props.task,
         }
-        addCommentary(commentary);
+        props.onAddCommentary(commentary);
     }
 
     const [comment, setComment] = useState("");

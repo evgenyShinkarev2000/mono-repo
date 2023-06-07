@@ -18,10 +18,6 @@ export const useFullTask = () =>
           begin: new Date(data.plannedDates.begin),
           end: new Date(data.plannedDates.end),
         },
-        parentTask: {
-          ...data.parentTask,
-          deadline: new Date(data.parentTask?.deadline)
-        },
         comments: data.comments.map(comment => ({
           ...comment,
           time: new Date(comment.time!),

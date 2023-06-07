@@ -5,7 +5,7 @@ import { TaskShort } from "./TaskShort";
 
 export type TaskFull = TaskShort & {
   description: string,
-  parentTask: TaskShort,
+  parentTask?: Pick<TaskShort, "id" | "title">,
   plannedDates: {
     begin: Date,
     end: Date,

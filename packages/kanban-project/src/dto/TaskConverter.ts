@@ -28,9 +28,7 @@ export class TaskConverter
       contractors: [],
       deadline: SqlDateConverter.toJs(dto.deadline).getTime(),
       description: dto.description,
-      parentTask: {
-        id: dto.parent_id
-      } as unknown as TaskShortSerializable,
+      parentTask: dto.parent_id ? {id: dto.parent_id, title: dto.parent_name!} : undefined,
       plannedDates: {
         begin: SqlDateConverter.toJs(dto.planned_start_date).getTime(),
         end: SqlDateConverter.toJs(dto.planned_final_date).getTime(),

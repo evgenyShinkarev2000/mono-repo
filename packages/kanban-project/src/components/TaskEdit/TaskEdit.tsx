@@ -1,176 +1,282 @@
-import { forwardRef, useRef, useState } from "react";
-import { useOnClickOutside } from "@kanban/hooks/useOnClickOutside";
-import { TimerIcon } from "@kanban/ui/icons/Timer";
-import { ITask } from "@kanban/types/ITask";
-import { PointsIcon } from "@kanban/ui/icons/Points";
-import * as S from "./TaskEdit.styled";
-import { DateView } from "@kanban/ui/DatePicker/DateView";
-import { BookmarkIcon, CalendarIcon, ClockIcon, PlayIcon, PlusInsideBoxIcon, TrashIcon } from "@kanban/ui/icons";
-import { Text } from "@kanban/ui/Text";
-import { CheckboxGroup } from "@kanban/ui/Checkbox/CheckboxGroup";
-import { Checkbox } from "@kanban/ui/Checkbox";
-import { Button } from "@kanban/ui/Button";
-import { TextField } from "@kanban/ui/TextField";
-import { mockComments } from "@kanban/mock/MockComments";
-import { CSSTransition } from "react-transition-group";
-import { DateRangeView } from "@kanban/ui/DatePicker/DateRangeView";
-import { TextView } from "@kanban/ui/TextArea/TextView";
-import { TaskViewComments } from "../TaskView/TaskViewComments";
+import { Person } from "@kanban/data/Person";
+import { Project } from "@kanban/data/Project";
+import { Stage } from "@kanban/data/Stage";
+import { Tag } from "@kanban/data/Tag";
 import { TaskFull } from "@kanban/data/TaskFull";
+import { useOnClickOutside } from "@kanban/hooks/useOnClickOutside";
+import { kanbanApiContainer } from "@kanban/store/Api";
+import { ITask } from "@kanban/types/ITask";
+import { Button } from "@kanban/ui/Button";
+import { CheckList } from "@kanban/ui/CheckList/CheckList";
+import { DatePicker } from "@kanban/ui/DatePicker/DatePicker";
+import { DateRange } from "@kanban/ui/DatePicker/DateRange";
+import { Dropdown } from "@kanban/ui/Dropdown";
+import { Text } from "@kanban/ui/Text";
+import { TextArea } from "@kanban/ui/TextArea";
+import { TextField } from "@kanban/ui/TextField";
+import { BookmarkIcon, CalendarIcon, ClockIcon } from "@kanban/ui/icons";
+import { PointsIcon } from "@kanban/ui/icons/Points";
+import { DropdownConverter } from "@kanban/utils/converters/DropdownConverter";
+import { nameof } from "@kanban/utils/converters/nameof";
+import { forwardRef, useRef, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { CSSTransition } from "react-transition-group";
+import { useAppSelector } from "../../../../shared/src/store/Hooks";
+import { TaskViewComments } from "../TaskView/TaskViewComments";
+import { Input } from "@kanban/ui/TextField/TextField.styled";
+import * as S from "./TaskEdit.styled";
+import { Commentary } from "@kanban/data/Commentary";
 
 type Props = {
     onClose: () => void;
-    onSave: () => void;
+    onSave: (task: TaskFull) => void;
     task: TaskFull;
-    onChange: (task: ITask) => void;
+    onRemoveFromKanban: () => void;
+    onRemove: () => void;
+    onAddCommentary: (commentary: Commentary) => void;
 };
 
-export const TaskEdit = forwardRef<HTMLDivElement, Props>(function TaskView(props, ref) {
+export const TaskEdit = forwardRef<HTMLDivElement, Props>(function TaskView(props, ref)
+{
     const contentRef = useRef<HTMLDivElement | null>(null);
-    const { task } = props;
     useOnClickOutside(contentRef, props.onClose);
-
     const [comment, setComment] = useState("");
+
+    const projects = kanbanApiContainer.useGetProjectsQuery().data;
+    const tags = kanbanApiContainer.useGetTagsQuery().data;
+    const users = kanbanApiContainer.useGetUsersQuery().data;
+
+    const currentUser = useAppSelector(s => s.kanbanReducer.currentUser);
+
+
+    const { control, getValues } = useForm({ defaultValues: props.task });
+
+    const saveChanges = () =>
+    {
+        props.onSave(getValues());
+        props.onClose();
+    }
+
+    const removeTask = () =>
+    {
+        props.onRemove();
+        props.onClose();
+    }
+
+    const addCommentary = () =>
+    {
+        const commentary: Commentary = {
+            author: currentUser,
+            content: comment,
+            task: {
+                id: props.task.id
+            }
+        }
+        props.onAddCommentary(commentary);
+    }
 
     return (
         <S.Wrapper ref={ref}>
             <S.Content ref={contentRef}>
                 <S.Body>
                     <div>
-                        <Text type="body-8" indent={1} style={{ padding: "8px 0" }}>
-                            {task.title}
-                        </Text>
-                        <S.BaseTask>
-                            Базовая задача: <span>Название задачи родителя</span>
-                        </S.BaseTask>
-                        <S.Status>Статус “{task.status.name}”</S.Status>
-                    </div>
-                    <div>
-                        <Text indent={1} type="body-5">
-                            Проект
-                        </Text>
-                        <S.Field width={184}>
-                            <PointsIcon />
-                            <Text type="description-6">Название проекта</Text>
-                        </S.Field>
-                    </div>
-                    <S.Inline>
-                        <DateView label="Дедлайн" value={new Date()} icon={<TimerIcon />} />
-                        <div>
-                            <Text indent={1} type="body-5">
-                                Тег команды
-                            </Text>
-                            <S.Field width={184}>
-                                <BookmarkIcon />
-                                <Text type="description-6">{task.tag.tag}</Text>
-                            </S.Field>
-                        </div>
-                        <DateRangeView
-                            label="Планируемые сроки выполнения"
-                            from={new Date()}
-                            to={new Date()}
-                            icon={<CalendarIcon />}
+                        <Controller
+                            name={nameof<TaskFull>("title")}
+                            control={control}
+                            render={
+                                ({ field }) => <TextField
+                                    onChange={field.onChange}
+                                    value={field.value as string}
+                                    placeholder="Название задачи"
+                                    style={{ padding: 8, fontWeight: 500, fontSize: 20, lineHeight: "20px", marginBottom: 4 }}
+                                />
+                            }
                         />
+
+                        <S.BaseTask>
+                            Базовая задача:
+                            {
+                                props.task.parentTask
+                                    ? <span>{props.task.parentTask?.title}</span>
+                                    : <span>Нет</span>
+                            }
+                        </S.BaseTask>
+                    </div>
+                    <div>
+                        <Controller
+                            name={nameof<TaskFull>("project")}
+                            control={control}
+                            render={
+                                ({ field }) => <Dropdown<Project, number>
+                                    style={{ padding: "0 8px" }}
+                                    placeholder="Проект"
+                                    data={projects ?? []}
+                                    onSelect={field.onChange}
+                                    dataConverter={(item) => (
+                                        <DropdownConverter.Data.CreateTask>{item.name}</DropdownConverter.Data.CreateTask>
+                                    )}
+                                    idAccessor={(item) => item.id}
+                                    selectedConverter={(item) => <Text type="description-6">{item.name}</Text>}
+                                    placeholderConverter={(item) => <Text type="description-6">{item}</Text>}
+                                    selectedId={(field.value as Project).id}
+                                    icon={<PointsIcon />}
+                                />
+                            }
+                        />
+
+                    </div>
+                    <div>
+                        <S.Inline>
+                            <Controller
+                                name={nameof<TaskFull>("deadline")}
+                                control={control}
+                                render={
+                                    ({ field }) => <DatePicker label="Дедлайн" onChange={field.onChange} value={field.value as Date} icon={<ClockIcon />} />
+                                }
+                            />
+
+                            <div>
+                                <Text indent={1} type="body-5">
+                                    Тег команды
+                                </Text>
+                                <Controller
+                                    name={nameof<TaskFull>("tag")}
+                                    control={control}
+                                    render={
+                                        ({ field }) => <Dropdown<Tag, number>
+                                            width={184}
+                                            data={tags ?? []}
+                                            dataConverter={(item) => (
+                                                <DropdownConverter.Data.CreateTask>{item.tag}</DropdownConverter.Data.CreateTask>
+                                            )}
+                                            idAccessor={(item) => item.id}
+                                            onSelect={field.onChange}
+                                            selectedConverter={(item) => <Text type="description-6">{item.tag}</Text>}
+                                            selectedId={(field?.value as Tag)?.id}
+                                            placeholder="Тег команды"
+                                            placeholderConverter={(item) => <Text type="description-6">{item}</Text>}
+                                            icon={<BookmarkIcon />}
+                                        />
+                                    }
+                                />
+
+                            </div>
+                            <Controller
+                                name={nameof<TaskFull>("plannedDates")}
+                                control={control}
+                                render={
+                                    ({ field }) => <DateRange
+                                        from={(field.value as TaskFull["plannedDates"]).begin}
+                                        to={(field.value as TaskFull["plannedDates"]).end}
+                                        label="Планируемые сроки выполнения"
+                                        onChange={
+                                            (range) => field.onChange({
+                                                begin: range.from,
+                                                end: range.to
+                                            } as TaskFull["plannedDates"])
+                                        }
+                                        icon={<CalendarIcon />}
+                                    />
+                                }
+                            />
+
+                        </S.Inline>
+                    </div>
+                    <Controller
+                        name={nameof<TaskFull>("description")}
+                        control={control}
+                        render={
+                            ({ field }) => <TextArea onChange={field.onChange} value={field.value as string ?? ""} placeholder="Описание" />
+                        }
+                    />
+
+                    <S.Inline>
+                        <div style={{ display: "flex", gap: 8 }}>
+                            <div style={{ display: "grid" }}>
+                                <Text indent={1} type="body-5">
+                                    Постановщик
+                                </Text>
+
+                                <Text type="description-7" style={{ display: "flex", justifySelf: "stretch" }}>
+                                    {`${currentUser.name} ${currentUser.surname}`}
+                                </Text>
+                            </div>
+                            <div>
+                                <Text indent={1} type="body-5">
+                                    Ответственный
+                                </Text>
+                                <Controller
+                                    name={nameof<TaskFull>("responsible")}
+                                    control={control}
+                                    render={
+                                        ({ field }) => <Dropdown<Person, number>
+                                            data={users ?? []}
+                                            dataConverter={(item) => (
+                                                <DropdownConverter.Data.CreateTask>{`${item.name} ${item.surname}`}</DropdownConverter.Data.CreateTask>
+                                            )}
+                                            selectedId={(field.value as Person).id}
+                                            selectedConverter={(item) => (
+                                                <DropdownConverter.Selected.CreateTask>{`${item.name} ${item.surname}`}</DropdownConverter.Selected.CreateTask>
+                                            )}
+                                            idAccessor={(item) => item.id}
+                                            onSelect={field.onChange}
+                                            placeholder="Не выбран"
+                                            placeholderConverter={(item) => <Text type="description-4">{item}</Text>}
+                                        />
+                                    }
+                                />
+
+                            </div>
+                        </div>
                     </S.Inline>
-                    <TextView value="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation" />
-                    <div style={{ display: "flex", gap: 8 }}>
-                        <div>
-                            <Text indent={1} type="body-5">
-                                Постановщик
-                            </Text>
-                            <Text type="description-7">Иван Иванович Иванов</Text>
-                        </div>
-                        <div>
-                            <Text indent={1} type="body-5">
-                                Ответственный
-                            </Text>
-                            <S.Field>
-                                <Text type="description-7">Иван Иванович Иванов</Text>
-                            </S.Field>
-                        </div>
-                    </div>
-                    <div>
-                        <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
-                            <Text type="body-5">Исполнители</Text>
-                            <PlusInsideBoxIcon />
-                        </div>
-                        <div>
-                            <Text type="description-7">Иван Иванович Иванов</Text>
-                            <Text type="description-7">Иван Иванович Иванов</Text>
-                        </div>
-                    </div>
-                    <div>
-                        <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
-                            <Text type="body-5">Чек лист</Text>
-                            <PlusInsideBoxIcon />
-                        </div>
-                        <CheckboxGroup onChange={console.log} readonly>
-                            <Checkbox value="1 пункт" label="1 пункт" />
-                            <Checkbox value="2 пункт" label="2 пункт" />
-                            <Checkbox value="3 пункт" label="3 пункт" />
-                            <Checkbox value="4 пункт" label="4 пункт" />
-                        </CheckboxGroup>
-                    </div>
-                    <div>
-                        <Text indent={2} type="body-5">
-                            Таймер
+                    <Controller
+                        name={nameof<TaskFull>("checkList")}
+                        control={control}
+                        render={
+                            ({ field }) => <CheckList value={field.value as Stage[]} onChange={field.onChange} mode="edit" />
+                        }
+                    />
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                        <Controller name={nameof<TaskFull>("wastedTime")} control={control} render={
+                            ({ field }) => <Input type="time" value={field.value as string} onChange={field.onChange} style={{ width: "min-content" }} />
+                        } />
+
+                        <Text type="description-7">{
+                            `${props.task.author.name} ${props.task.author.surname}`
+                        }
                         </Text>
-                        <S.TimerWrapper>
-                            <S.Field width={118}>
-                                <ClockIcon />
-                                <Text type="body-1">100:60:60</Text>
-                            </S.Field>
-                            <S.TaskButtons>
-                                <Button onClick={() => {}} variant="primary" style={{ padding: 8 }}>
-                                    <PlayIcon />
-                                </Button>
-                                <Button onClick={() => {}} variant="primary" style={{ padding: "0 16px" }}>
-                                    Сохранить
-                                </Button>
-                                <Button onClick={() => {}} variant="secondary" style={{ padding: 8 }}>
-                                    <TrashIcon />
-                                </Button>
-                            </S.TaskButtons>
-                        </S.TimerWrapper>
-                    </div>
-                    <div>
-                        <Text indent={2} type="body-5">
-                            Затраченное время
-                        </Text>
-                        <Text type="description-7">10:12:56 Иван Иванович Иванов</Text>
                     </div>
                     <div style={{ marginBottom: 48 }}>
                         <S.TaskButtons>
-                            <Button onClick={props.onSave} variant="primary" style={{ padding: "0 16px" }}>
+                            <Button onClick={saveChanges} variant="primary" style={{ padding: "0 16px" }}>
                                 Сохранить
                             </Button>
-                            <Button onClick={() => {}} variant="danger" style={{ padding: "0 16px" }}>
+                            <Button onClick={removeTask} variant="danger" style={{ padding: "0 16px" }}>
                                 Удалить задачу
                             </Button>
-                            <Button onClick={() => {}} variant="secondary" style={{ padding: "0 16px" }}>
+                            <Button onClick={props.onRemoveFromKanban} variant="secondary" style={{ padding: "0 16px" }}>
                                 Убрать с канбан доски
                             </Button>
                         </S.TaskButtons>
                     </div>
+                    <S.Comments>
+                        <TextField
+                            onChange={setComment}
+                            value={comment}
+                            label="Комментарии"
+                            placeholder="Введите комментарий..."
+                            onKeyDown={(e) => e.key === "Enter" && addCommentary()}
+                        />
+                        <CSSTransition timeout={300} in={Boolean(comment)} unmountOnExit>
+                            <S.AnimatedButton>
+                                <Button variant="primary" onClick={addCommentary}>
+                                    Отправить
+                                </Button>
+                            </S.AnimatedButton>
+                        </CSSTransition>
+                        <TaskViewComments comments={props.task.comments} />
+                    </S.Comments>
                 </S.Body>
-                <S.Comments>
-                    <TextField
-                        onChange={setComment}
-                        value={comment}
-                        label="Комментарии"
-                        placeholder="Введите комментарий..."
-                        onKeyDown={(e) => e.key === "Enter" && setComment("")}
-                    />
-                    <CSSTransition timeout={300} in={Boolean(comment)} unmountOnExit>
-                        <S.AnimatedButton>
-                            <Button variant="primary" onClick={() => setComment("")}>
-                                Отправить
-                            </Button>
-                        </S.AnimatedButton>
-                    </CSSTransition>
-                    
-                    <TaskViewComments comments={props.task.comments} />
-                </S.Comments>
             </S.Content>
         </S.Wrapper>
     );

@@ -87,9 +87,30 @@ const buildKanbanApiRemote = () => createApi(
         }),
         putFullTask: builder.mutation<TaskPutResponse, TaskFull>({
           query: (task: TaskFull) => ({
-            url: "/tasks",
+            url: `/tasks/${task.id}`,
             method: "Put",
-            body: new TaskConverter().fullModelToDto(task),
+            body: function(){
+              const dto = new TaskConverter().fullModelToDto(task);
+              const kostil: any = {
+                ...dto,
+                id: dto.task_id,
+                name: dto.task_name,
+              }
+
+              delete kostil["task_name"];
+              delete kostil["task_id"];
+              delete kostil["project_name"];
+              delete kostil["status_name"];
+              delete kostil["responsible_id"];
+              delete kostil["responsible_first_name"];
+              delete kostil["responsible_last_name"];
+              delete kostil["responsible_patronymic"];
+              delete kostil["responsible_time_spent"];
+              delete kostil["team_tag"];
+              delete kostil["comments"];
+
+              return kostil; //удалить после правок на сервере
+            }(),
           }),
           invalidatesTags: ["tasks"]
         }),
@@ -191,6 +212,7 @@ const {
   useAddFullTaskMutation,
   useAddCommentaryMutation,
   useRemoveTaskMutation,
+  usePutFullTaskMutation
 } = kanbanApi;
 
 export const kanbanApiContainer = {
@@ -204,4 +226,5 @@ export const kanbanApiContainer = {
   useAddFullTaskMutation,
   useAddCommentaryMutation,
   useRemoveTaskMutation,
+  usePutFullTaskMutation,
 }
