@@ -22,6 +22,9 @@ import { Commentary } from "@kanban/data/Commentary";
 type Props = {
     onClose: () => void;
     onEdit: () => void;
+    onAddCommentary: (commentary: Commentary) => void,
+    onRemove: () => void,
+    onRemoveFromKanban: () => void,
     task: TaskFull;
 };
 
@@ -31,6 +34,10 @@ export const TaskView = forwardRef<HTMLDivElement, Props>(function TaskView(prop
     useOnClickOutside(contentRef, props.onClose);
     const currentUser = useAppSelector(s => s.kanbanReducer.currentUser);
     const [addCommentary] = kanbanApiContainer.useAddCommentaryMutation();
+    const removeTask = () => {
+        props.onRemove();
+        props.onClose();
+    }
 
     const onAddCommentary = () => {
         const commentary: Commentary = {
@@ -153,10 +160,10 @@ export const TaskView = forwardRef<HTMLDivElement, Props>(function TaskView(prop
                             <Button onClick={props.onEdit} variant="primary" style={{ padding: "0 16px" }}>
                                 Редактировать
                             </Button>
-                            <Button onClick={() => { }} variant="danger" style={{ padding: "0 16px" }}>
+                            <Button onClick={removeTask} variant="danger" style={{ padding: "0 16px" }}>
                                 Удалить задачу
                             </Button>
-                            <Button onClick={() => { }} variant="secondary" style={{ padding: "0 16px" }}>
+                            <Button onClick={props.onRemoveFromKanban} variant="secondary" style={{ padding: "0 16px" }}>
                                 Убрать с канбан доски
                             </Button>
                         </S.TaskButtons>

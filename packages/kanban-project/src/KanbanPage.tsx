@@ -14,6 +14,7 @@ import { TaskShort } from "./data/TaskShort";
 import { kanbanApiContainer } from "./store/Api";
 import { selectFilteredShortTasks } from "./store/FilteredTaskSelector";
 import { useFullTask } from "./store/useFullTask";
+import { Commentary } from "./data/Commentary";
 
 const Container = styled.div`
     padding-top: 32px;
@@ -32,6 +33,8 @@ export const KanbanPage = () =>
     const tasks = useFilteredShortTasks().data!;
     const [removeTaskFromKanban] = kanbanApiContainer.useRemoveTaskFromKanbanMutation();
     const [addTask] = kanbanApiContainer.useAddFullTaskMutation();
+    const [addCommentary] = kanbanApiContainer.useAddCommentaryMutation();
+    const [eraseTask] = kanbanApiContainer.useRemoveTaskMutation();
     const [patchStatus] = kanbanApiContainer.usePatchTaskStatusMutation();
     const [getFullTask, fullTaskResponse] = useFullTask();
     const taskViewRef = useRef<HTMLDivElement | null>(null);
@@ -61,6 +64,18 @@ export const KanbanPage = () =>
         }
     }
 
+    const handleAddCommentary = (commentary: Commentary) => {
+        addCommentary(commentary);
+    }
+
+    const handleRemoveTaskFromKanban = (taskId: number) => {
+        removeTaskFromKanban(taskId);
+    }
+
+    const handleRemoveTask = (taskId: number) => {
+        eraseTask(taskId);
+    }
+
     function renderModal()
     {
         const canRender = !!fullTaskResponse.data && tasks?.length > 0 && !!stage;
@@ -74,6 +89,9 @@ export const KanbanPage = () =>
                         ref={taskViewRef}
                         task={fullTask}
                         onClose={() => setStage(null)}
+                        onAddCommentary={handleAddCommentary}
+                        onRemoveFromKanban={() => handleRemoveTaskFromKanban(fullTask.id)}
+                        onRemove={() => handleRemoveTask(fullTask.id)}
                     />
                 </CSSTransition>
                 <CSSTransition timeout={300} in={stage === "edit" && canRender} unmountOnExit mountOnEnter>
