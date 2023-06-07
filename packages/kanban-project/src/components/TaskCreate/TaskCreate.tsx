@@ -22,6 +22,7 @@ import { forwardRef, useEffect, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useAppSelector } from "../../../../shared/src/store/Hooks";
 import * as S from "./TaskCreate.styled";
+import { TimeOnly } from "@kanban/utils/TimeOnly";
 
 type Props = {
     onClose: () => void,
@@ -54,6 +55,7 @@ export const TaskCreate = forwardRef<HTMLDivElement, Props>(function TaskView(pr
             end: new Date(),
         },
         status: BaseStatuses.ToWork,
+        wastedTime: new TimeOnly(0),
     } as Readonly<Partial<TaskFull>>
 
     const { control, getValues, reset } = useForm({ defaultValues: taskModel });
