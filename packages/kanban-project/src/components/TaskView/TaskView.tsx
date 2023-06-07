@@ -143,7 +143,7 @@ export const TaskView = forwardRef<HTMLDivElement, Props>(function TaskView(prop
                             Затраченное время
                         </Text>
                         <Text type="description-7">{
-                            `${props.task.wastedTime.getHours()}:${props.task.wastedTime.getMinutes()}:${props.task.wastedTime.getSeconds()} `
+                            `${props.task.wastedTime.toString()} `
                             + `${props.task.author.name} ${props.task.author.surname}`
                         }
                         </Text>

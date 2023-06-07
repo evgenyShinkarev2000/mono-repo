@@ -1,5 +1,6 @@
 import { TaskFull } from "@kanban/data/TaskFull";
 import { kanbanApi } from "./Api";
+import { TimeOnly } from "@kanban/utils/TimeOnly";
 
 
 export const useFullTask = () =>
@@ -25,7 +26,7 @@ export const useFullTask = () =>
           ...comment,
           time: new Date(comment.time!),
         })),
-        wastedTime: new Date(data.wastedTime),
+        wastedTime: new TimeOnly(data.wastedTime),
       } as TaskFull
     }
     ] as const

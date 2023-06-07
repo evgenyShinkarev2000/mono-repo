@@ -1,3 +1,4 @@
+import { TimeOnly } from "@kanban/utils/TimeOnly";
 import { Commentary } from "./Commentary";
 import { Stage } from "./Stage";
 import { TaskShort } from "./TaskShort";
@@ -10,7 +11,7 @@ export type TaskFull = TaskShort & {
     end: Date,
   },
   checkList: Stage[],
-  wastedTime: Date,
+  wastedTime: TimeOnly,
   comments: Commentary[],
   isOnKanban: boolean,
 }

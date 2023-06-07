@@ -54,7 +54,6 @@ export const TaskCreate = forwardRef<HTMLDivElement, Props>(function TaskView(pr
             end: new Date(),
         },
         status: BaseStatuses.ToWork,
-        wastedTime: new Date(0),
     } as Readonly<Partial<TaskFull>>
 
     const { control, getValues, reset } = useForm({ defaultValues: taskModel });

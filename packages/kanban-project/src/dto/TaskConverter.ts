@@ -3,6 +3,7 @@ import { TaskFullSerializable } from "@kanban/data/TaskFullSerializable";
 import { TaskShortSerializable } from "@kanban/data/TaskShortSerializable";
 import { SqlDateConverter } from "@kanban/utils/converters/SqlDateConverter";
 import { TaskFullDto } from "./TaskFullDto";
+import { TimeOnly } from "@kanban/utils/TimeOnly";
 
 export class TaskConverter
 {
@@ -46,7 +47,7 @@ export class TaskConverter
         name: dto.status_name
       },
       title: dto.task_name,
-      wastedTime: SqlDateConverter.toJs(dto.responsible_time_spent).getTime(),
+      wastedTime: TimeOnly.parseFromString(dto.responsible_time_spent).toSeconds(),
       isOnKanban: !!dto.is_on_kanban,
       comments: dto.comments.map(comment => ({
         author: {
@@ -78,7 +79,7 @@ export class TaskConverter
       responsible_first_name: task.responsible.name,
       responsible_last_name: task.responsible.surname,
       responsible_patronymic: task.responsible.patronymic,
-      responsible_time_spent: SqlDateConverter.toSqlTimeOnly(task.wastedTime),
+      responsible_time_spent: task.wastedTime.toString(),
       team_id: task.tag?.id,
       team_tag: task.tag?.tag,
       planned_start_date: SqlDateConverter.toSql(task.plannedDates.begin),
