@@ -1,3 +1,4 @@
+import { CommentaryDto } from "./CommentaryDto";
 import { StageDto } from "./StageDto";
 
 export type TaskFullDto = {
@@ -24,13 +25,5 @@ export type TaskFullDto = {
   completed_at?: string, //хз какой формат, наверное 2019-03-28
   description: string,
   stages: StageDto[],
-  comments: {
-    id?: number,
-    author_id: number,
-    author_first_name: string,
-    author_last_name: string,
-    author_patronymic: string,
-    content: string,
-    created_at?: string, //2019-03-28
-  }[],
+  comments: CommentaryDto[],
 }

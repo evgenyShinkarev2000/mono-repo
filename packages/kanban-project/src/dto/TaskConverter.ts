@@ -4,6 +4,7 @@ import { TaskShortSerializable } from "@kanban/data/TaskShortSerializable";
 import { SqlDateConverter } from "@kanban/utils/converters/SqlDateConverter";
 import { TaskFullDto } from "./TaskFullDto";
 import { TimeOnly } from "@kanban/utils/TimeOnly";
+import { CommentaryConverter } from "./CommentaryConverter";
 
 export class TaskConverter
 {
@@ -49,17 +50,7 @@ export class TaskConverter
       title: dto.task_name,
       wastedTime: TimeOnly.parseFromString(dto.responsible_time_spent).toSeconds(),
       isOnKanban: !!dto.is_on_kanban,
-      comments: dto.comments.map(comment => ({
-        author: {
-          id: comment.author_id,
-          name: comment.author_first_name,
-          surname: comment.author_last_name,
-          patronymic: comment.author_patronymic,
-        },
-        content: comment.content,
-        id: comment.id!,
-        time: comment.created_at ? SqlDateConverter.toJs(comment.created_at).getTime() : undefined, // позже напишу selector или hook
-      })),
+      comments: dto.comments.map(c => CommentaryConverter.dtoToSerializable(c)),
     }
   }
 
@@ -100,14 +91,7 @@ export class TaskConverter
           is_ready: stage.isCompleted ? 1 : 0,
         }
       }),
-      comments: task.comments?.map(comment => ({
-        id: comment.id,
-        content: comment.content,
-        author_id:  comment.author.id,
-        author_first_name: comment.author.name,
-        author_last_name: comment.author.surname,
-        author_patronymic: comment.author.patronymic,
-      })),
+      comments: task.comments?.map(comment => CommentaryConverter.toDto(comment)),
     }
   }
 }

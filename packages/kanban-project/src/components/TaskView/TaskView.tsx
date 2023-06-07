@@ -15,6 +15,9 @@ import { forwardRef, useRef, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 import * as S from "./TaskView.styled";
 import { TaskViewComments } from "./TaskViewComments";
+import { useAppSelector } from "../../../../shared/src/store/Hooks";
+import { kanbanApiContainer } from "@kanban/store/Api";
+import { Commentary } from "@kanban/data/Commentary";
 
 type Props = {
     onClose: () => void;
@@ -26,22 +29,19 @@ export const TaskView = forwardRef<HTMLDivElement, Props>(function TaskView(prop
 {
     const contentRef = useRef<HTMLDivElement | null>(null);
     useOnClickOutside(contentRef, props.onClose);
+    const currentUser = useAppSelector(s => s.kanbanReducer.currentUser);
+    const [addCommentary] = kanbanApiContainer.useAddCommentaryMutation();
+
+    const onAddCommentary = () => {
+        const commentary: Commentary = {
+            content: comment,
+            author: currentUser,
+            task: props.task,
+        }
+        addCommentary(commentary);
+    }
 
     const [comment, setComment] = useState("");
-    const [comments, setComments] = useState(mockComments);
-
-    function onSendComment()
-    {
-        setComment("");
-        setComments((prev) => [
-            {
-                name: "user01",
-                text: comment,
-                time: new Date(),
-            },
-            ...prev,
-        ]);
-    }
 
     return (
         <S.Wrapper ref={ref}>
@@ -168,11 +168,11 @@ export const TaskView = forwardRef<HTMLDivElement, Props>(function TaskView(prop
                         value={comment}
                         label="Комментарии"
                         placeholder="Введите комментарий..."
-                        onKeyDown={(e) => e.key === "Enter" && onSendComment()}
+                        onKeyDown={(e) => e.key === "Enter" && onAddCommentary()}
                     />
                     <CSSTransition timeout={300} in={Boolean(comment)} unmountOnExit>
                         <S.AnimatedButton>
-                            <Button variant="primary" onClick={onSendComment}>
+                            <Button variant="primary" onClick={onAddCommentary}>
                                 Отправить
                             </Button>
                         </S.AnimatedButton>

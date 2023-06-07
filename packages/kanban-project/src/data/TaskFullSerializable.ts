@@ -1,8 +1,6 @@
-import { Stage } from "./Stage";
-import { Person } from "./Person";
-import { TaskShortSerializable as TaskShortSerializable } from "./TaskShortSerializable";
-import { Commentary } from "./Commentary";
 import { CommentarySerializable } from "./CommentarySerializable";
+import { Stage } from "./Stage";
+import { TaskShortSerializable } from "./TaskShortSerializable";
 
 export type TaskFullSerializable = TaskShortSerializable & {
   description: string,

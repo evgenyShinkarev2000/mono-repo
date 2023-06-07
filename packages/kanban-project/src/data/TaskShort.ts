@@ -4,7 +4,7 @@ import { Project } from "./Project";
 import { Status } from "./Status";
 import { Tag } from "./Tag";
 
-export type TaskShort = Partial<Entity> & {
+export type TaskShort = Entity & {
   title: string,
   status: Status,
   project: Project,

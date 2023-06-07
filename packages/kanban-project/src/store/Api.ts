@@ -1,3 +1,5 @@
+import { Commentary } from "@kanban/data/Commentary";
+import { CommentarySerializable } from "@kanban/data/CommentarySerializable";
 import { Person } from "@kanban/data/Person";
 import { Project } from "@kanban/data/Project";
 import { Status } from "@kanban/data/Status";
@@ -5,6 +7,8 @@ import { Tag } from "@kanban/data/Tag";
 import { TaskFull } from "@kanban/data/TaskFull";
 import { TaskFullSerializable } from '@kanban/data/TaskFullSerializable';
 import { TaskShortSerializable } from "@kanban/data/TaskShortSerializable";
+import { CommentaryConverter } from "@kanban/dto/CommentaryConverter";
+import { CommentaryDto } from "@kanban/dto/CommentaryDto";
 import { ProjectGetResponse } from "@kanban/dto/ProjectGetResponse";
 import { TagDto } from "@kanban/dto/TagDto";
 import { TaskConverter } from "@kanban/dto/TaskConverter";
@@ -102,7 +106,7 @@ const buildKanbanApiMock = () => createApi(
                 begin: args.deadline?.getTime(),
                 end: args.deadline?.getTime(),
               },
-              wastedTime: args.wastedTime?.getTime(),
+              wastedTime: args.wastedTime?.toSeconds(),
             }
           })
         }),
@@ -129,7 +133,7 @@ const baseUrl = import.meta.env.VITE_KANBAN_API_URI;
 const buildKanbanApiRemote = () => createApi(
   {
     baseQuery: fetchBaseQuery({ baseUrl }),
-    tagTypes: ["tasks"],
+    tagTypes: ["tasks", "openTask"],
     endpoints: (builder) =>
     {
       return {
@@ -172,6 +176,7 @@ const buildKanbanApiRemote = () => createApi(
         }),
         getFullTaskSerializable: builder.query<TaskFullSerializable, number>({
           query: (taskId: number) => `tasks/${taskId}`,
+          providesTags: ["openTask"],
           transformResponse: (dto: TaskFullDto) =>
           {
             return new TaskConverter().fullDtoToSerilizable(dto);
@@ -263,6 +268,17 @@ const buildKanbanApiRemote = () => createApi(
             }))
           }
         }),
+        addCommentary: builder.mutation<CommentarySerializable, Commentary>({
+          query: (args) => ({
+            url: "/comments",
+            method: "Post",
+            body: CommentaryConverter.toDto(args),
+          }),
+          invalidatesTags: ["openTask"],
+          transformResponse: (dto: CommentaryDto) => {
+            return CommentaryConverter.dtoToSerializable(dto);
+          }
+        }),
       }
     },
     reducerPath: "kanbanApi"
@@ -284,6 +300,7 @@ const {
   useGetTagsQuery,
   useGetUsersQuery,
   useAddFullTaskMutation,
+  useAddCommentaryMutation
 } = kanbanApi;
 
 export const kanbanApiContainer = {
@@ -295,4 +312,5 @@ export const kanbanApiContainer = {
   useGetTagsQuery,
   useGetUsersQuery,
   useAddFullTaskMutation,
+  useAddCommentaryMutation,
 }
