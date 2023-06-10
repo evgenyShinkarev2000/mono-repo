@@ -1,11 +1,11 @@
 import { useOnClickOutside } from "@kanban/hooks/useOnClickOutside";
-import { ReactNode, useEffect, useRef, useState } from "react";
-import { ArrowIcon } from "../icons";
+import { ReactNode, useRef, useState } from "react";
 import { Text } from "../Text";
+import { ArrowIcon } from "../icons";
 import * as S from "./DatePicker.styled";
 import { DatePickerDropdown } from "./DatePickerDropdown";
 import { DateObject } from "./types";
-import { getDate } from "./utils";
+import { toDateObj } from "./utils";
 
 type Props = {
     label: string;
@@ -14,21 +14,13 @@ type Props = {
     icon?: ReactNode;
 };
 
+
+
 export function DatePicker(props: Props) {
     const [open, setOpen] = useState(false);
-    const [currentDate, setCurrentDate] = useState<DateObject>(getDate(props.value));
     const ref = useRef<HTMLDivElement | null>(null);
+    const currentDate = toDateObj(props.value ?? new Date());
     useOnClickOutside(ref, closeDropdown);
-
-    useEffect(() => {
-        if (props.value) {
-            setCurrentDate({
-                day: props.value.getDate(),
-                month: props.value.getMonth() + 1,
-                year: props.value.getFullYear(),
-            });
-        }
-    }, [props.value]);
 
     function closeDropdown() {
         setOpen(false);
@@ -38,6 +30,15 @@ export function DatePicker(props: Props) {
         return `${currentDate.day.toString().padStart(2, "0")}
         .${currentDate.month.toString().padStart(2, "0")}
         .${currentDate.year}`;
+    }
+
+    const handleDateObjChange = (dateObj: DateObject) => {
+        const date = new Date();
+        date.setFullYear(dateObj.year);
+        date.setMonth(dateObj.month - 1);
+        date.setDate(dateObj.day);
+
+        props.onChange(date);
     }
 
     return (
@@ -54,7 +55,7 @@ export function DatePicker(props: Props) {
                     <ArrowIcon style={{ transitionDuration: ".3s", transform: `rotate3d(1, 0, 0, ${open ? 180 : 0}deg)` }} />
                 </S.Field>
             </div>
-            {open && <DatePickerDropdown currentDate={currentDate} close={closeDropdown} onDateChange={setCurrentDate} />}
+            {open && <DatePickerDropdown currentDate={currentDate} close={closeDropdown} onDateChange={handleDateObjChange} />}
         </S.Date>
     );
 }

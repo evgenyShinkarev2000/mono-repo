@@ -1,3 +1,5 @@
+import { DateObject } from "./types";
+
 // Use 1 for January, 2 for February, etc.
 export function getDaysInMonth(month: number, year: number) {
     return new Date(year, month, 0).getDate();
@@ -89,11 +91,24 @@ export function fillByDate(currentMonth: number, currentYear: number) {
     return filledInEnd;
 }
 
+/**
+ * 
+ * @deprecated
+ */
 export function getDate(date: Date | null) {
     const noNullableDate = date ? date : new Date();
+    // наверное, вместо getDay должно быть getDate. DatePicker начал работать правильно после замены этого метода на toDateObj
     return {
         day: noNullableDate.getDay(),
         month: noNullableDate.getMonth() + 1,
         year: noNullableDate.getFullYear(),
     };
+}
+
+export function toDateObj(date: Date): DateObject{
+    return {
+        day: date.getDate(),
+        month: date.getMonth() + 1,
+        year: date.getFullYear(),
+    }
 }
