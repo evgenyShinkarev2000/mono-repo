@@ -93,19 +93,14 @@ const buildKanbanApiRemote = () => createApi(
               const dto = new TaskConverter().fullModelToDto(task);
               const kostil: any = {
                 ...dto,
-                id: dto.task_id,
-                name: dto.task_name,
               }
 
-              delete kostil["task_name"];
-              delete kostil["task_id"];
               delete kostil["project_name"];
               delete kostil["status_name"];
               delete kostil["responsible_id"];
               delete kostil["responsible_first_name"];
               delete kostil["responsible_last_name"];
               delete kostil["responsible_patronymic"];
-              delete kostil["responsible_time_spent"];
               delete kostil["team_tag"];
               delete kostil["comments"];
 
