@@ -1,3 +1,4 @@
+import { DefaultAppEnv } from './../../../root-project/src/AppEnv/DefaultAppEnv';
 import { Commentary } from "@kanban/data/Commentary";
 import { CommentarySerializable } from "@kanban/data/CommentarySerializable";
 import { Person } from "@kanban/data/Person";
@@ -20,7 +21,8 @@ import { nameof } from "@kanban/utils/converters/nameof";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 
-const baseUrl = import.meta.env.VITE_KANBAN_API_URI;
+const baseUrl = DefaultAppEnv.kanbanApiUri;
+
 
 const buildKanbanApiRemote = () => createApi(
   {

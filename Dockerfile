@@ -11,6 +11,8 @@ COPY --from=stage-prepare-packages /build .
 RUN yarn
 COPY . .
 RUN yarn
+# Take from .env if not defined
+#ENV KANBAN_API_URI=naxui
 RUN yarn build
 
 FROM nginx:latest as stage-server

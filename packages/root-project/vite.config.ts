@@ -9,6 +9,9 @@ export default defineConfig({
         react(),
         svgr(),
     ],
+    define:{
+        "BuildEnv.KANBAN_API_URI": JSON.stringify(process.env.KANBAN_API_URI),
+    },
     resolve: {
         alias: {
             // Kanban

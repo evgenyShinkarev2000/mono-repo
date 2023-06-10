@@ -5,11 +5,15 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import "./index.css";
 import { store } from "../../shared/src";
+import { AppEnvProvider } from "./AppEnv/AppEnvProvider";
+import { DefaultAppEnv } from "./AppEnv/DefaultAppEnv";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <BrowserRouter>
         <Provider store={store}>
-            <App />
+            <AppEnvProvider appEnv={DefaultAppEnv}>
+                <App />
+            </AppEnvProvider>
         </Provider>
     </BrowserRouter>
 );
