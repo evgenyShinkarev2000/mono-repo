@@ -2,15 +2,15 @@ export class TimeOnly{
   private _allSeconds: number = 0;
 
   public get hours(): number{
-    return Math.floor(this._allSeconds / 60 * 60);
+    return Math.floor(this._allSeconds / (60 * 60));
   }
 
   public get minutes(): number{
-    return Math.floor((this._allSeconds % 60 * 60) / 60);
+    return Math.floor((this._allSeconds % (60 * 60)) / 60);
   }
 
   public get seconds(): number{
-    return this._allSeconds;
+    return this._allSeconds % 60;
   }
 
   constructor(seconds: number){
@@ -59,7 +59,8 @@ export class TimeOnly{
   }
 
   public toString(): string{
-    return `${this.getFormattedString(this.seconds)}:${this.getFormattedString(this.minutes)}:${this.getFormattedString(this.seconds)}`;
+    debugger;
+    return `${this.getFormattedString(this.hours)}:${this.getFormattedString(this.minutes)}:${this.getFormattedString(this.seconds)}`;
   }
 
   public toSeconds(): number{
