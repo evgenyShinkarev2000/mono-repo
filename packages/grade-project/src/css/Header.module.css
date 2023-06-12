@@ -1,0 +1,63 @@
+.main-header{
+    background: #303030;  
+    color:#FFFFFF;
+    font-size: 16px;
+    line-height: 18px;
+    text-transform: uppercase;
+    height:60px;
+    width:100%;
+    display:flex;
+}
+.nav-icon{
+    padding: 18px;
+}
+
+.nav-icon:hover, .profile:hover, .settings-icon:hover, .exit:hover{
+    cursor: pointer;
+    background-color: #4F4F4F;
+}
+
+.nav-icon:active, .profile:active, .settings-icon:active, .exit:active{
+    cursor: pointer;
+    background-color: rgba(79, 79, 79, 0.4);
+}
+
+.small-logo{
+    margin-left:11px;
+    margin-top:7px;
+    
+}
+.profile{
+    display:flex;
+    margin-right:auto;
+    margin-left: 47px;
+    padding-left: 20px;
+    padding-right: 19px;
+}
+
+.profile img{
+    margin-top:19px;
+}
+
+.profile p{
+    margin-left:15px;
+    margin-top:22px;
+}
+.settings-icon{
+    margin:0px;
+    padding:14px;
+}
+.exit{
+    display:flex;
+    padding-right:17px;
+    padding-left:17px;
+}
+
+.exit img{
+    margin-top:19px;
+    margin-right: 9px;
+}
+
+.exit p{
+    margin-top:22px;
+}

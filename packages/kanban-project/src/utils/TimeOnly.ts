@@ -59,7 +59,6 @@ export class TimeOnly{
   }
 
   public toString(): string{
-    debugger;
     return `${this.getFormattedString(this.hours)}:${this.getFormattedString(this.minutes)}:${this.getFormattedString(this.seconds)}`;
   }
 
