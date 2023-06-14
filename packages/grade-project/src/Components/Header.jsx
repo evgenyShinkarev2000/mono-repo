@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import classes from '../css/Header.module.css'
-import Navigation from './Navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { logOut } from '../redux/authSlice';
+import classes from '../css/Header.module.css';
 import { reset } from '../redux/authApi';
+import { logOut } from '../redux/authSlice';
+import Navigation from './Navigation';
 
 function Header() {
 
@@ -13,6 +13,7 @@ function Header() {
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
+
     if(!user){
         return (            
         <header className={classes["main-header"]}>        
@@ -28,6 +29,8 @@ function Header() {
         dispatch(reset());
         dispatch(logOut());
     }
+
+    console.log("lol");
     return (
         <div>
             <header className={classes["main-header"]}>
