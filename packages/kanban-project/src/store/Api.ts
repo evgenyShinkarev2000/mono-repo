@@ -94,6 +94,10 @@ const buildKanbanApiRemote = () => createApi(
             const kostil: any = {
               ...dto,
             }
+            delete kostil["task_id"];
+            kostil["name"] = dto.task_name;
+            delete kostil["task_name"]; // need fix back
+            // delete kostil["responsible_time_spent"];
 
             delete kostil["project_name"];
             delete kostil["status_name"];
