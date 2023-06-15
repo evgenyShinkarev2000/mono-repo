@@ -7,8 +7,6 @@ import 'react-toastify/dist/ReactToastify.css';
 
 export function GantApp() {
 
-    console.log(DefaultAppEnv.gantApiUri);
-
     return (
         <div className={s.container}>
             <Header/>

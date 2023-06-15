@@ -15,8 +15,6 @@ import ChangeUser from "./pages/users/ChangeUser";
 import { DefaultAppEnv } from "@mono-repo/root-project";
 export function App() {
 
-    console.log(DefaultAppEnv.gradeApiUri);
-
     return (
         <div>
             <Header />
