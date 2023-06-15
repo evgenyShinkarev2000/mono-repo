@@ -14,9 +14,12 @@ import {ReactComponent as Clock} from "../../Assets/img/clock.svg"
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {onKanbanViewChange} from './onKanban';
+import {DefaultAppEnv} from "@mono-repo/root-project";
 
 window.onKanbanViewChange = onKanbanViewChange;
 let taskId = null;
+const apiUri = DefaultAppEnv.gantApiUri;
+
 
 export default class Gantt extends Component {
     constructor(props) {
@@ -429,7 +432,7 @@ export default class Gantt extends Component {
         };
 
         // Get запрос задач
-        axios.get(`http://127.0.0.1:8000/api/v1/gant/tasks`)
+        axios.get(`${apiUri}/v1/gant/tasks`)
             .then(response => {
                 const transformedData = this.transformData(response.data);
                 gantt.parse(transformedData);
@@ -466,7 +469,7 @@ export default class Gantt extends Component {
                     return;
                 }
             }
-            axios.post(`http://127.0.0.1:8000/api/v1/gant/task/${id}/edit_dates`, {
+            axios.post(`${apiUri}/v1/gant/task/${id}/edit_dates`, {
                 planned_start_date: new Date(task.start_date).toISOString().slice(0, 10),
                 planned_finish_date: new Date(task.end_date).toISOString().slice(0, 10),
                 deadline: task.deadline
@@ -573,7 +576,7 @@ export default class Gantt extends Component {
             const end_date_formatted = formatter(new Date(end_date));
 
             // Отправляем POST запрос на сервер для создания новой задачи
-            axios.post(`http://127.0.0.1:8000/api/v1/gant/task/create`, {
+            axios.post(`${apiUri}/api/v1/gant/task/create`, {
                 task: {
                     parent_id: parentId ? parentId : null,
                     project_id: 1,
@@ -639,7 +642,7 @@ export default class Gantt extends Component {
             const end_date_formatted = formatter(new Date(end_date));
 
             // Отправляем POST запрос на сервер для создания новой задачи
-            axios.post(`http://127.0.0.1:8000/api/v1/gant/task/${task.id}/edit`, {
+            axios.post(`${apiUri}/v1/gant/task/${task.id}/edit`, {
                 task: {
                     parent_id: parentId ? parentId : null,
                     project_id: 1,
@@ -696,7 +699,7 @@ export default class Gantt extends Component {
 
         function remove() {
             let task = gantt.getTask(taskId)
-            axios.delete(`http://127.0.0.1:8000/api/v1/gant/task/${task.id}/del`)
+            axios.delete(`${apiUri}/v1/gant/task/${task.id}/del`)
                 .then(response => {
                     console.log(response.data);
                     toast.success("Задача удалена", {

@@ -1,3 +1,4 @@
+import { DefaultAppEnv } from '@mono-repo/root-project';
 import s from './App.module.css'
 import Header from './Components/Header/Header'
 import Main from './Components/Main/Main'
@@ -6,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 export function GantApp() {
 
+    console.log(DefaultAppEnv.gantApiUri);
 
     return (
         <div className={s.container}>
