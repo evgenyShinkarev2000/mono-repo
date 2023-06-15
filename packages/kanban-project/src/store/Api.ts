@@ -88,35 +88,37 @@ const buildKanbanApiRemote = () => createApi(
           invalidatesTags: ["tasks"]
         }),
         putFullTask: builder.mutation<TaskPutResponse, TaskFull>({
-          query: (task: TaskFull) => ({
-            url: `/tasks/${task.id}`,
-            method: "Put",
-            body: function(){
-              const dto = new TaskConverter().fullModelToDto(task);
-              const kostil: any = {
-                ...dto,
-              }
+          query: (task: TaskFull) => 
+          {
+            const dto = new TaskConverter().fullModelToDto(task);
+            const kostil: any = {
+              ...dto,
+            }
 
-              delete kostil["project_name"];
-              delete kostil["status_name"];
-              delete kostil["responsible_id"];
-              delete kostil["responsible_first_name"];
-              delete kostil["responsible_last_name"];
-              delete kostil["responsible_patronymic"];
-              delete kostil["team_tag"];
-              delete kostil["comments"];
-
-              return kostil; //удалить после правок на сервере
-            }(),
-          }),
+            delete kostil["project_name"];
+            delete kostil["status_name"];
+            delete kostil["responsible_id"];
+            delete kostil["responsible_first_name"];
+            delete kostil["responsible_last_name"];
+            delete kostil["responsible_patronymic"];
+            delete kostil["team_tag"];
+            delete kostil["comments"];
+            
+            return {
+              url: `/tasks/${task.id}`,
+              method: "Put",
+              body: kostil,
+            }
+          },
           invalidatesTags: ["tasks"]
         }),
         addFullTask: builder.mutation<TaskFullDto, TaskFull>({
           query: (task: TaskFull) => ({
             url: "/tasks",
             method: "Post",
-            body: function(){
-              const dto =  new TaskConverter().fullModelToDto(task);
+            body: function ()
+            {
+              const dto = new TaskConverter().fullModelToDto(task);
               return {
                 ...dto,
                 [nameof<TaskFullDto>("stages")]: dto.stages.map(s => s.description)
@@ -185,7 +187,8 @@ const buildKanbanApiRemote = () => createApi(
             body: CommentaryConverter.toDto(args),
           }),
           invalidatesTags: ["openTask"],
-          transformResponse: (dto: CommentaryDto) => {
+          transformResponse: (dto: CommentaryDto) =>
+          {
             return CommentaryConverter.dtoToSerializable(dto);
           }
         }),
