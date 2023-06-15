@@ -12,7 +12,10 @@ import Stages from "./pages/stages/Stages";
 import Project from "./pages/project/Project";
 import ProjectInterns from "./pages/projectInterns/ProjectInterns";
 import ChangeUser from "./pages/users/ChangeUser";
+import { DefaultAppEnv } from "@mono-repo/root-project";
 export function App() {
+
+    console.log(DefaultAppEnv.gradeApiUri);
 
     return (
         <div>

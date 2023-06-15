@@ -1,4 +1,7 @@
-export const baseURL = "http://127.0.0.1:8000";
+import { DefaultAppEnv } from "@mono-repo/root-project";
+
+export const baseURL = DefaultAppEnv.gradeApiUri;
+//"http://127.0.0.1:8000";
 //http://studprzi.beget.tech
 //http://127.0.0.1:8000
 
