@@ -26,7 +26,7 @@ export class TaskConverter
       },
       checkList: dto.stages.map(s => ({ id: s.id, isCompleted: !!s.is_ready, title: s.description })),
       contractors: [],
-      deadline: SqlDateConverter.toJs(dto.deadline).getTime(),
+      deadline: SqlDateConverter.toJs(dto.deadline ?? Date.now()).getTime(),
       description: dto.description,
       parentTask: dto.parent_id ? {id: dto.parent_id, title: dto.parent_name!} : undefined,
       plannedDates: {

@@ -50,7 +50,7 @@ const buildKanbanApiRemote = () => createApi(
                 patronymic: dto.responsible_patronymic
               },
               contractors: [],
-              deadline: SqlDateConverter.toJs(dto.deadline).getTime(),
+              deadline: SqlDateConverter.toJs(dto.deadline ?? Date.now()).getTime(),
               id: dto.task_id,
               project: {
                 id: dto.project_id,
